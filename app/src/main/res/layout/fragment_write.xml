@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    \
+    <!--상단 - 지역, 완료-->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        >
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="지역선택"
+            android:id="@+id/location_btn"/>
+
+        <Button
+            android:id="@+id/write_comp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:text="완료"/>
+
+    </RelativeLayout>
+
+    <!--image 관리-->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:background="@color/color_lightgray"
+       >
+
+
+
+    </RelativeLayout>
+
+    <!--제목, 가격 상세 입력-->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="상품이름"
+        android:id="@+id/goods_name"
+        />
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/ed_goods_name"
+            android:layout_toRightOf="@id/goods_name"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/ed_goods_name"
+            android:text="가격"
+            android:id="@+id/goods_price"
+            />
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/ed_goods_price"
+            android:layout_toRightOf="@id/goods_price"
+            android:layout_below="@+id/ed_goods_name"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/goods_detail"
+            android:text="세부사항"
+            android:layout_below="@+id/ed_goods_price"/>
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/ed_goods_detail"
+            android:layout_toRightOf="@+id/goods_detail"
+            android:layout_below="@+id/ed_goods_price"
+            />
+
+    </RelativeLayout>
+
+
+
+</LinearLayout>

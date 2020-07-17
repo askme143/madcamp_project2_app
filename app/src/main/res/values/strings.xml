@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">MadcampServerApp</string>
+    <string name="write_tab">Write Tab</string>
+    <string name="home_tab">Home Tab</string>
+  <!--  <string name="facebook_app_id">[APP_ID]</string> <string name="fb_login_protocol_scheme">fb[APP_ID]</string> -->
+    <string name="facebook_app_id">284865136165109</string> <string name="fb_login_protocol_scheme">fb284865136165109</string>
+    <string name="login_facebook">login facebook</string>
+    <string name="input_your_id">input your id</string>
+    <string name="register">회원가입</string>
+
 </resources>

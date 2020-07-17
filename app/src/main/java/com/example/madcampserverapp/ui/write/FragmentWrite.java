@@ -1,4 +1,4 @@
-package com.example.madcampserverapp.ui.contact;
+package com.example.madcampserverapp.ui.write;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -11,17 +11,17 @@ import androidx.fragment.app.Fragment;
 
 import com.example.madcampserverapp.R;
 
-import java.util.ArrayList;
-
-public class FragmentContact extends Fragment {
-    private ArrayList<Contact> contactList;
-    private CustomAdapter mAdapter;
-
+public class FragmentWrite extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_contact, null);
+        View view = inflater.inflate(R.layout.fragment_write, null);
 
+        //위치선택 버튼 클릭시
+
+
+
+        //글쓰기 저장 버튼 클릭시
 
 
         return view;
