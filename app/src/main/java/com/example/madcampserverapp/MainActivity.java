@@ -42,9 +42,6 @@ public class MainActivity extends AppCompatActivity {
 
         networkTask.execute(null);
 
-     //   FacebookSdk.sdkInitialize(getApplicationContext());
-     //   AppEventsLogger.activateApp(this);
-
         fragmentContact = new FragmentContact();
         fragmentGallery = new FragmentGallery();
         fragmentHome = new FragmentHome();
