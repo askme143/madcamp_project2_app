@@ -26,16 +26,15 @@ public class RequestHttpURLConnection {
                 key = parameter.getKey();
                 value = parameter.getValue().toString();
 
+                if (moreThanTwo)
+                    subParams.append("&");
+
                 subParams.append(key).append("=").append(value);
 
                 if (!moreThanTwo && pParams.size() > 1)
                     moreThanTwo = true;
-                if (moreThanTwo)
-                    subParams.append("&");
             }
         }
-
-        System.out.println(subParams.toString());
 
         /* Get data */
         try {
@@ -43,7 +42,7 @@ public class RequestHttpURLConnection {
             urlConnection = (HttpURLConnection) url.openConnection();
 
             /* urlConnection setting */
-            urlConnection.setRequestMethod("GET");
+            urlConnection.setRequestMethod("POST");
             urlConnection.setRequestProperty("Accept-Charset", "UTF-8");
             urlConnection.setRequestProperty("Context_Type",
                     "application/x-www-form-urlencoded;charset=UTF-8");
@@ -56,8 +55,9 @@ public class RequestHttpURLConnection {
             outputStream.close();
 
             /* Check response code */
-            if (urlConnection.getResponseCode() != HttpURLConnection.HTTP_OK)
+            if (urlConnection.getResponseCode() != HttpURLConnection.HTTP_OK) {
                 return null;
+            }
 
             /* Read and make string value PAGE */
             BufferedReader reader = new BufferedReader(
