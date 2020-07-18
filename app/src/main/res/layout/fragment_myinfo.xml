@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:id="@+id/image_person"
+        android:src="@drawable/profile_default"
+        android:layout_gravity="center"
+        android:layout_margin="50dp"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20dp"
+        android:text="전우정"
+        android:layout_gravity="center"
+        android:id="@+id/name_person"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20dp"
+        android:text="eyes_cat@naver.com"
+        android:paddingTop="10dp"
+        android:layout_gravity="center"
+        android:id="@+id/email_person"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20dp"
+        android:text="서울시 서초구"
+        android:paddingTop="10dp"
+        android:layout_gravity="center"
+        android:id="@+id/location_person"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20dp"
+        android:text="010-0000-0000"
+        android:paddingTop="10dp"
+        android:layout_gravity="center"
+        android:id="@+id/phonenumber_person"
+        />
+
+    <com.facebook.login.widget.LoginButton
+        android:id="@+id/login_button2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="50dp"
+        android:layout_marginBottom="30dp"
+
+        />
+
+
+</LinearLayout>
