@@ -123,7 +123,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             protected void onCurrentAccessTokenChanged(AccessToken oldAccessToken, AccessToken currentAccessToken) {
                 if(currentAccessToken == null){
-                    Log.e(TAG, "FaceBook onCurrentAccessTokenChanged currentAccessToken is null");
+                    Log.e(TAG, "FaceBook onCurrentAccessTokenChanged currentAccessToken is null"); //로그아웃 시
                 } else {
                     Log.e(TAG, "FaceBook onCurrentAccessTokenChanged currentAccessToken is not null");
                 }

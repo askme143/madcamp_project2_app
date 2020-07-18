@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@color/color_lightpurple">
 
 
     <de.hdodenhof.circleimageview.CircleImageView
-        android:layout_width="250dp"
-        android:layout_height="250dp"
         android:id="@+id/image_person"
-        android:src="@drawable/profile_default"
-        android:layout_gravity="center"
-        android:layout_margin="50dp"
-        />
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_gravity="left"
+        android:layout_margin="30dp"
+        android:src="@drawable/profile_default" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -21,6 +21,8 @@
         android:text="전우정"
         android:layout_gravity="center"
         android:id="@+id/name_person"
+        android:layout_toRightOf="@+id/image_person"
+        android:layout_marginTop="50dp"
         />
 
     <TextView
@@ -64,4 +66,4 @@
         />
 
 
-</LinearLayout>
+</RelativeLayout>

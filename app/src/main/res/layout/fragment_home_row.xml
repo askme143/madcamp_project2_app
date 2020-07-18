@@ -50,6 +50,17 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:id="@+id/home_goods_writer"
+            android:text="작성자"
+            android:textSize="15dp"
+            android:paddingTop="5dp"
+            android:layout_toRightOf="@+id/home_goods_location"
+            android:layout_below="@+id/home_goods_name"
+            android:layout_marginLeft="20dp"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:id="@+id/home_goods_price"
             android:text="상품가격"
             android:layout_toRightOf="@+id/home_image"
@@ -60,17 +71,17 @@
 
         <TextView
             android:layout_width="wrap_content"
-            android:layout_height="20dp"
+            android:layout_height="30dp"
             android:layout_alignParentRight="true"
             android:layout_alignParentBottom="true"
             android:id="@+id/home_goods_like_cnt"
-
             android:text="0"
+            android:textSize="20dp"
             />
 
             <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:id="@+id/home_goods_like"
                 android:src="@drawable/heart"
                 android:layout_marginRight="5dp"
