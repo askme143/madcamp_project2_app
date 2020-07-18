@@ -92,6 +92,7 @@ public class LoginActivity extends AppCompatActivity {
                             /* Validate access */
                             login(email, name, fbID);
 
+
                         }catch (Exception e){
                             e.printStackTrace();
                         }
@@ -165,6 +166,12 @@ public class LoginActivity extends AppCompatActivity {
             public void response(String result) {
                 if (result.equals("success")) {
                     /* Pass LoginActivity */
+                    /*goto ManiAcivity*/
+                    Intent intent_goActive=new Intent(getApplicationContext(),MainActivity.class);
+                    intent_goActive.putExtra("email",email );
+                    intent_goActive.putExtra("name",name);
+                    intent_goActive.putExtra("fbID", fbID );
+                    startActivity(intent_goActive);
 
                 } else if (result.equals("failed")) {
                     /* Start sign up process */
