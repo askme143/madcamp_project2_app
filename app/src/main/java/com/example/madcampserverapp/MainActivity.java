@@ -36,8 +36,7 @@ public class MainActivity extends AppCompatActivity {
 
         /* Get user info */
         Intent intent = getIntent();
-        Bundle extra = intent.getExtras();
-        mFacebookID = extra.getString("fbID");
+        mFacebookID = intent.getStringExtra("fbID");
 
         /* Make fragment objects */
         fragmentContact = new FragmentContact();

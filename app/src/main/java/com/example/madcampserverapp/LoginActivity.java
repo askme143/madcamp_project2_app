@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.madcampserverapp.server.MyResponse;
 import com.example.madcampserverapp.server.RequestHttpURLConnection;
+import com.example.madcampserverapp.ui.BeforeActivity;
 import com.facebook.AccessToken;
 import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
@@ -156,8 +157,8 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void response(String result) {
                 if (result.equals("success")) {
-                    /* Goto ManiAcivity*/
-                    Intent intent_goActive=new Intent(getApplicationContext(),MainActivity.class);
+                    /* Goto MainAcivity -> BeforeActivity*/ //전화번호 존재하면 Mainactivity
+                    Intent intent_goActive=new Intent(getApplicationContext(),BeforeActivity.class);
                     intent_goActive.putExtra("email",email );
                     intent_goActive.putExtra("name",name);
                     intent_goActive.putExtra("fbID", fbID );

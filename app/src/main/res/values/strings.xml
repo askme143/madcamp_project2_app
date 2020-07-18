@@ -7,5 +7,6 @@
     <string name="login_facebook">login facebook</string>
     <string name="input_your_id">input your id</string>
     <string name="register">회원가입</string>
+    <string name="_010_0000_0000">010-0000-0000</string>
 
 </resources>
