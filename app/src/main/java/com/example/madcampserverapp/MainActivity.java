@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.ContentValues;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 
@@ -26,33 +27,30 @@ public class MainActivity extends AppCompatActivity {
     private NetworkTask networkTask;
 
     private String url = "http://192.249.19.242:7380";
+    private String mFacebookID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-//        ContentValues contentValues = new ContentValues();
-//        contentValues.put("email", "askme143@kaist.ac.kr");
-//        contentValues.put("name", "윤영일");
-//        contentValues.put("fb_id", "12321");
-//        networkTask = new NetworkTask(url, contentValues);
+        /* Get user info */
+        Intent intent = getIntent();
+        Bundle extra = intent.getExtras();
+        mFacebookID = extra.getString("fbID");
 
-//        ContentValues contentValues = new ContentValues();
-//        contentValues.put("fb_id", "12321");
-//        networkTask = new NetworkTask(url, contentValues);
-//
-//        networkTask.execute(null);
-
+        /* Make fragment objects */
         fragmentContact = new FragmentContact();
         fragmentGallery = new FragmentGallery();
         fragmentHome = new FragmentHome();
         fragmentWrite = new FragmentWrite();
         fragmentMyinfo = new FragmentMyinfo2();
 
+        /* Default fragment (home page) */
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.frame_layout, fragmentContact).commitAllowingStateLoss();
+                .replace(R.id.frame_layout, fragmentHome).commitAllowingStateLoss();
 
+        /* bottom navigation view click listener */
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation_view);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView
                 .OnNavigationItemSelectedListener(){
@@ -88,6 +86,14 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    public String getFacebookID() {
+        return mFacebookID;
+    }
+
+    public String getUrl() {
+        return url;
     }
 
     public static class NetworkTask extends ThreadTask<Void, String> {

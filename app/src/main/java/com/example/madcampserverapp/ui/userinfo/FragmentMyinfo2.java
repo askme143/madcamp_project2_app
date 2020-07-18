@@ -21,12 +21,12 @@ import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 
 public class FragmentMyinfo2 extends Fragment {
-    private LoginButton loginButtonfb2;
-
     private static final String TAG = "FragmentMyinfo2";
-    AccessTokenTracker accessTokenTracker;
 
+    AccessTokenTracker accessTokenTracker;
     CallbackManager callbackManager = CallbackManager.Factory.create();
+
+    private LoginButton loginButtonfb2;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -34,8 +34,6 @@ public class FragmentMyinfo2 extends Fragment {
 
         loginButtonfb2 = (LoginButton) view.findViewById(R.id.login_button2);
 
-
-        loginButtonfb2 = (LoginButton) view.findViewById(R.id.login_button);
         loginButtonfb2.setReadPermissions("email");
         // If using in a fragment
         loginButtonfb2.setFragment(this);

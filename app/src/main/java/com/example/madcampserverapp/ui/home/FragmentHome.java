@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.madcampserverapp.R;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class FragmentHome extends Fragment {
@@ -25,17 +26,16 @@ public class FragmentHome extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, null);
 
-        final EditText editText=(EditText) view.findViewById(R.id.search_bar);
-
-        // Total Contacts recycler view area
         final RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(linearLayoutManager);
 
+        Post examplePost = new Post(1, "신발", 1000000, "대전", "askme@hello.com");
+        postArrayList = new ArrayList<>();
+        postArrayList.add(examplePost);
+
+        mAdapter = new HomeRecyclerAdapter(getActivity(), postArrayList);
         recyclerView.setAdapter(mAdapter);// set the Adapter to RecyclerView
-
-
-
 
         return view;
     }

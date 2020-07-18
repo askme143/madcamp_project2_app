@@ -12,7 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.madcampserverapp.R;
-import com.example.madcampserverapp.ui.contact.CustomAdapter;
+import com.example.madcampserverapp.ui.contact.ContactAdapter;
 
 import java.util.ArrayList;
 
@@ -37,12 +37,11 @@ public class HomeRecyclerAdapter extends RecyclerView.Adapter <HomeRecyclerAdapt
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         //data binding
         final Post post=postArrayList.get(position);
+
         holder.goods_name.setText(post.getGoods_name());
-        holder.goods_price.setText(post.getGoods_price());
+        holder.goods_price.setText(post.getGoods_price()+"");
         holder.goods_location.setText(post.getGoods_location());
         holder.photo.setImageDrawable(context.getResources().getDrawable(R.drawable.person_1));
-
-
     }
 
     @Override
@@ -53,9 +52,6 @@ public class HomeRecyclerAdapter extends RecyclerView.Adapter <HomeRecyclerAdapt
         TextView goods_name, goods_price, goods_location;
         ImageView like;
         TextView like_cnt;
-        RelativeLayout hidden_layer;
-        View line;
-
 
         public ViewHolder(View itemView){
             super(itemView);

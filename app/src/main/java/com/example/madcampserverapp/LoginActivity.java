@@ -73,7 +73,6 @@ public class LoginActivity extends AppCompatActivity {
             public void onSuccess(LoginResult loginResult) {
                 Log.e(TAG, "onSucces LoginResult= " + loginResult.getAccessToken().getUserId());
 
-
                 GraphRequest request = new GraphRequest().newMeRequest(loginResult.getAccessToken(), new GraphRequest.GraphJSONObjectCallback() {
 
                     /* Login Successfully. Now we can get email, name, ID, etc. */
@@ -84,16 +83,13 @@ public class LoginActivity extends AppCompatActivity {
                             Log.e(TAG, "FaceBook onSuccess : " + object.getString("email"));
                             Log.e(TAG, "FaceBook onSuccess : " + object.getString("name"));
 
-
                             String email = object.getString("email");
                             String name = object.getString("name");
                             String fbID = object.getString("id");
 
                             /* Validate access */
                             login(email, name, fbID);
-
-
-                        }catch (Exception e){
+                        } catch (Exception e){
                             e.printStackTrace();
                         }
                     }
@@ -103,7 +99,6 @@ public class LoginActivity extends AppCompatActivity {
                 parameters.putString("fields", "id,email,name");
                 request.setParameters(parameters);
                 request.executeAsync();
-
             }
 
             @Override
@@ -116,7 +111,6 @@ public class LoginActivity extends AppCompatActivity {
                 Log.e(TAG, "FaceBook 로그인 에러");
             }
         });
-
 
         /* Build Access Tracker of FB */
         AccessTokenTracker accessTokenTracker = new AccessTokenTracker() {
@@ -140,15 +134,12 @@ public class LoginActivity extends AppCompatActivity {
             Log.e(TAG, "Facebook 로그인 상태 ");
 
             //로그인상태일 경우 바로 MainActivity로
-            Intent intent_goActive=new Intent(getApplicationContext(),MainActivity.class);
-            //intent_goActive.putExtra( ,,, );
+            Intent intent_goActive=new Intent(getApplicationContext(), MainActivity.class);
             startActivity(intent_goActive);
-
         } else {
             Log.e(TAG, "Facebook 비 로그인 상태 " );
         }
     }
-
 
     protected void login(final String email, final String name, final String fbID) {
         /* Login url */
@@ -165,8 +156,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void response(String result) {
                 if (result.equals("success")) {
-                    /* Pass LoginActivity */
-                    /*goto ManiAcivity*/
+                    /* Goto ManiAcivity*/
                     Intent intent_goActive=new Intent(getApplicationContext(),MainActivity.class);
                     intent_goActive.putExtra("email",email );
                     intent_goActive.putExtra("name",name);
@@ -219,14 +209,13 @@ public class LoginActivity extends AppCompatActivity {
         networkTask.execute(null);
     }
 
-    /*callbackManager.onActivityResult를 호출하여
-    로그인 결과를 callbackManager를 통해 LoginManager에 전달*/
+    /* callbackManager.onActivityResult를 호출하여
+    로그인 결과를 callbackManager를 통해 LoginManager에 전달 */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         callbackManager.onActivityResult(requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
     }
-
 
     public static class NetworkTask extends ThreadTask<Void, String> {
 
@@ -256,5 +245,4 @@ public class LoginActivity extends AppCompatActivity {
             mMyResponse.response(result);
         }
     }
-
 }
