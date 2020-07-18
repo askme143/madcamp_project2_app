@@ -134,18 +134,21 @@ public class RequestHttpURLConnection {
         return null;
     }
 
-    public String upload(String pUrl, Bitmap bitmap) {
-        Log.e("upload", "upload!");
+    public String upload(String pUrl, Bitmap bitmap, ContentValues contentValues) {
+        /* Get facebook id and file name */
+        String fb_id = contentValues.getAsString("fb_id");
+        String filename = contentValues.getAsString("file_name");
+
+        if (filename.length() == 0)
+            filename = "userfile.jpg";
+
         /* String constants */
-        String attachmentName = "userfile";
-        String attachmentFileName = "userfile.png";
+        String name = "userfile";
         String crlf = "\r\n";
         String twoHyphens = "--";
         String boundary =  "----WebKitFormBoundaryQGvWeNAiOE4g2VM5";
 
         HttpURLConnection urlConnection = null;
-
-        String response = null;
 
         /* Get data */
         try {
@@ -156,7 +159,6 @@ public class RequestHttpURLConnection {
 
             /* urlConnection setting */
             urlConnection.setRequestMethod("POST");
-            urlConnection.setRequestProperty("Connection", "Keep-Alive");
             urlConnection.setRequestProperty("Cache-Control", "no-cache");
             urlConnection.setRequestProperty(
                     "Content-Type", "multipart/form-data;boundary=" + boundary);
@@ -167,13 +169,14 @@ public class RequestHttpURLConnection {
 
             request.writeBytes(twoHyphens + boundary + crlf);
             request.writeBytes("Content-Disposition: form-data; name=\"" +
-                    attachmentName + "\";filename=\"" +
-                    attachmentFileName + "\"" + crlf);
+                    name + "\";filename=\"" +
+                    filename + "\"" + crlf +
+                    "Content-Type: image/jpg" + crlf);
             request.writeBytes(crlf);
 
             /* Convert bitmap to byte array, and write */
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.PNG, 10, stream);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 10, stream);
             byte[] pixels = stream.toByteArray();
 
             request.write(pixels);
@@ -184,11 +187,6 @@ public class RequestHttpURLConnection {
                     twoHyphens + crlf);
             request.flush();
             request.close();
-
-            Log.e("String", twoHyphens + boundary + crlf +
-                    "Content-Disposition: form-data; name=\"" + attachmentName
-                    + "\"; filename=\"" + attachmentFileName
-                    + "\"" + crlf + "Content-Type: image/png" + crlf + crlf + twoHyphens + boundary + twoHyphens + crlf);
 
             /* Check response code */
             if (urlConnection.getResponseCode() != HttpURLConnection.HTTP_OK) {
@@ -204,14 +202,14 @@ public class RequestHttpURLConnection {
             while ((line = reader.readLine()) != null)
                 page += line;
 
-            response = page;
+            return page;
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
             if (urlConnection != null)
                 urlConnection.disconnect();
-            return response;
         }
+
+        return null;
     }
 
     public String get(String pUrl, ContentValues pParams) {
