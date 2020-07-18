@@ -73,14 +73,21 @@ public class LoginActivity extends AppCompatActivity {
                 Log.e(TAG, "onSucces LoginResult= " + loginResult.getAccessToken().getUserId());
 
 
-
-
                 GraphRequest request = new GraphRequest().newMeRequest(loginResult.getAccessToken(), new GraphRequest.GraphJSONObjectCallback() {
                     @Override
                     public void onCompleted(JSONObject object, GraphResponse response) {
                         try {
                             Log.e(TAG, "FaceBook onSuccess : " + object.getString("email"));
                             Log.e(TAG, "FaceBook onSuccess : " + object.getString("name"));
+
+                            //서버에 고유 id, email, name 전달
+                            //get 방식으로 전달
+
+                            Intent intent_goActive=new Intent(getApplicationContext(),MainActivity.class);
+                            //intent_goActive.putExtra( ,,, );
+                            startActivity(intent_goActive);
+
+
 
                         }catch (Exception e){
                             e.printStackTrace();
@@ -93,28 +100,18 @@ public class LoginActivity extends AppCompatActivity {
                 request.setParameters(parameters);
                 request.executeAsync();
 
-                //서버에 고유 id, email, name 전달
-                //get 방식으로 전달
-
-
-
-
-
             }
 
             @Override
             public void onCancel() {
                 Log.e(TAG, "FaceBook 로그인 취소");
-
             }
 
             @Override
             public void onError(FacebookException exception) {
                 Log.e(TAG, "FaceBook 로그인 에러");
-
             }
         });
-
 
 
         AccessTokenTracker accessTokenTracker = new AccessTokenTracker() {
@@ -134,26 +131,24 @@ public class LoginActivity extends AppCompatActivity {
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
         boolean isLoggedIn = accessToken != null && !accessToken.isExpired();
         if(isLoggedIn){
-            Log.e(TAG, "Facebook 로그인 상테 ");
+            Log.e(TAG, "Facebook 로그인 상태 ");
+
+            //로그인상태일 경우 바로 MainActivity로
+            Intent intent_goActive=new Intent(getApplicationContext(),MainActivity.class);
+            //intent_goActive.putExtra( ,,, );
+            startActivity(intent_goActive);
         } else {
             Log.e(TAG, "Facebook 비 로그인 상태 " );
         }
-
     }
 
-
+    /*callbackManager.onActivityResult를 호출하여
+    로그인 결과를 callbackManager를 통해 LoginManager에 전달*/
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         callbackManager.onActivityResult(requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
 
     }
-
-
-
-
-
-
-
 
 }

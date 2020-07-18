@@ -23,4 +23,10 @@
         android:enabled="true"
         android:checked="true"
         android:title="Contacts" />
+    <item android:id="@+id/myinfo"
+        app:showAsAction="always"
+        android:icon="@drawable/person_icon"
+        android:enabled="true"
+        android:checked="true"
+        android:title="My Info" />
 </menu>

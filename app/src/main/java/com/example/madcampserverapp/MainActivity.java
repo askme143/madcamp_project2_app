@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.view.MenuItem;
 
 import com.example.madcampserverapp.ui.home.FragmentHome;
+import com.example.madcampserverapp.ui.userinfo.FragmentMyinfo;
 import com.example.madcampserverapp.ui.write.FragmentWrite;
 
 import com.example.madcampserverapp.server.NetworkTask;
@@ -27,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
     private FragmentWrite fragmentWrite;
     private FragmentContact fragmentContact;
     private FragmentGallery fragmentGallery;
+    private FragmentMyinfo fragmentMyinfo;
     private NetworkTask networkTask;
 
     @Override
@@ -49,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
         fragmentGallery = new FragmentGallery();
         fragmentHome = new FragmentHome();
         fragmentWrite = new FragmentWrite();
+        fragmentMyinfo = new FragmentMyinfo();
 
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.frame_layout, fragmentContact).commitAllowingStateLoss();
@@ -77,6 +80,11 @@ public class MainActivity extends AppCompatActivity {
                     case R.id.write:{
                         getSupportFragmentManager().beginTransaction()
                                 .replace(R.id.frame_layout, fragmentWrite).commitAllowingStateLoss();
+                        return true;
+                    }
+                    case R.id.myinfo:{
+                        getSupportFragmentManager().beginTransaction()
+                                .replace(R.id.frame_layout, fragmentMyinfo).commitAllowingStateLoss();
                         return true;
                     }
                     default: return false;
