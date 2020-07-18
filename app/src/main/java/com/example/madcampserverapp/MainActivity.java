@@ -4,54 +4,51 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.ContentValues;
-import android.net.Network;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.MenuItem;
 
 import com.example.madcampserverapp.ui.home.FragmentHome;
-import com.example.madcampserverapp.ui.userinfo.FragmentMyinfo;
+import com.example.madcampserverapp.ui.userinfo.FragmentMyinfo2;
 import com.example.madcampserverapp.ui.write.FragmentWrite;
 
-import com.example.madcampserverapp.server.NetworkTask;
 import com.example.madcampserverapp.server.RequestHttpURLConnection;
 
 import com.example.madcampserverapp.ui.contact.FragmentContact;
 import com.example.madcampserverapp.ui.gallery.FragmentGallery;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-import com.facebook.FacebookSdk;
-import com.facebook.appevents.AppEventsLogger;
-
 public class MainActivity extends AppCompatActivity {
     private FragmentHome fragmentHome;
     private FragmentWrite fragmentWrite;
     private FragmentContact fragmentContact;
     private FragmentGallery fragmentGallery;
-    private FragmentMyinfo fragmentMyinfo;
+    private FragmentMyinfo2 fragmentMyinfo;
     private NetworkTask networkTask;
+
+    private String url = "http://192.249.19.242:7380";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        String url = "http://192.249.19.242:7380/login";
 
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("email", "askme143@kaist.ac.kr");
-        contentValues.put("name", "윤영일");
-        networkTask = new NetworkTask(url, contentValues);
+//        ContentValues contentValues = new ContentValues();
+//        contentValues.put("email", "askme143@kaist.ac.kr");
+//        contentValues.put("name", "윤영일");
+//        contentValues.put("fb_id", "12321");
+//        networkTask = new NetworkTask(url, contentValues);
 
-        networkTask.execute(null);
-
-     //   FacebookSdk.sdkInitialize(getApplicationContext());
-     //   AppEventsLogger.activateApp(this);
+//        ContentValues contentValues = new ContentValues();
+//        contentValues.put("fb_id", "12321");
+//        networkTask = new NetworkTask(url, contentValues);
+//
+//        networkTask.execute(null);
 
         fragmentContact = new FragmentContact();
         fragmentGallery = new FragmentGallery();
         fragmentHome = new FragmentHome();
         fragmentWrite = new FragmentWrite();
-        fragmentMyinfo = new FragmentMyinfo();
+        fragmentMyinfo = new FragmentMyinfo2();
 
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.frame_layout, fragmentContact).commitAllowingStateLoss();
@@ -93,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public class NetworkTask extends ThreadTask<Void, String> {
+    public static class NetworkTask extends ThreadTask<Void, String> {
 
         private String mUrl;
         private ContentValues mValues;
