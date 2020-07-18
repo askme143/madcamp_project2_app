@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.Editable;
@@ -20,6 +21,7 @@ import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -33,6 +35,7 @@ import com.example.madcampserverapp.server.MyResponse;
 import com.example.madcampserverapp.server.RequestHttpURLConnection;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -44,7 +47,6 @@ public class FragmentContact extends Fragment {
 
     private ArrayList<Contact> mContactList;
 
-    private Context mContext;
     private View mView;
     private ContactAdapter mAdapter;
 
@@ -54,11 +56,18 @@ public class FragmentContact extends Fragment {
         mView = inflater.inflate(R.layout.fragment_contact, null);
         checkPermission();
 
-        return null;
+        return mView;
     }
 
-    public void startFragment() {
-        updateContacts();
+    public void draw() {
+        RecyclerView recyclerView = mView.findViewById(R.id.recycler_view);
+
+        /* Create and set ContactAdapter and LinearLayoutManager */
+        ContactAdapter contactAdapter = new ContactAdapter(getActivity(), mContactList);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
+
+        recyclerView.setAdapter(contactAdapter);
+        recyclerView.setLayoutManager(linearLayoutManager);
     }
 
     public void updateContacts() {
@@ -68,23 +77,29 @@ public class FragmentContact extends Fragment {
         String url = ((MainActivity) getActivity()).getUrl() + "/contact_put";
 
         /* Make JSONObject of fb_id and contacts */
-        JSONObject jsonObject = new JSONObject();
+        final JSONObject jsonObject = new JSONObject();
         try {
+            String fbID = ((MainActivity) getActivity()).getFacebookID();
+            if (fbID == null) {
+                fbID = "12321";
+            }
+
             /* Put fb_id of a user */
-            jsonObject.put("fb_id", ((MainActivity) getActivity()).getFacebookID());
+            jsonObject.put("fb_id", fbID);
 
             /* Make JSONArray of contacts */
             JSONArray jsonArray = new JSONArray();
             for (Contact contact : mContactList) {
                 JSONObject tempObject = new JSONObject();
 
+                tempObject.put("fb_id_owner", fbID);
                 tempObject.put("name", contact.getName());
                 tempObject.put("phone_number", contact.getPhoneNumber());
 
                 jsonArray.put(tempObject);
             }
 
-            /* Put JSONArary */
+            /* Put JSONArray */
             jsonObject.put("contacts", jsonArray);
         } catch (Exception e) {
             e.printStackTrace();
@@ -92,6 +107,7 @@ public class FragmentContact extends Fragment {
 
         /* Make response */
         MyResponse response = new MyResponse() {
+            @RequiresApi(api = Build.VERSION_CODES.KITKAT)
             @Override
             public void response(String result) {
                 if (result == null) {
@@ -99,7 +115,23 @@ public class FragmentContact extends Fragment {
                 } else if (result.equals("failed")) {
                     Log.e(TAG, "Failed on updateContacts");
                 } else {
-                    Log.e(TAG, result);
+                    try {
+                        /* Make contact list */
+                        JSONObject jsonObject = new JSONObject(result);
+                        JSONArray jsonArray = jsonObject.getJSONArray("contacts");
+                        mContactList = new ArrayList<>();
+
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            Contact contact = new Contact(jsonArray.getJSONObject(i).getString("name"),
+                                    jsonArray.getJSONObject(i).getString("phone_number"));
+
+                            mContactList.add(contact);
+                        }
+
+                        draw();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         };
@@ -111,9 +143,6 @@ public class FragmentContact extends Fragment {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    public void getContacts() {
     }
 
     public ArrayList<Contact> getContactList() {
@@ -168,20 +197,22 @@ public class FragmentContact extends Fragment {
             requestPermissions(tmpArray,REQUEST_PERMISSIONS_CODE_READ_CONTACT);
             ActivityCompat.requestPermissions(getActivity(), tmpArray, REQUEST_PERMISSIONS_CODE_READ_CONTACT);
         } else {
-            startFragment();
+            updateContacts();
         }
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == REQUEST_PERMISSIONS_CODE_READ_CONTACT) {
-            if (permissions[0].equals(Manifest.permission.READ_CONTACTS)
-                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                startFragment();
-            } else {
-                Log.e(TAG, "Permission not granted");
+            for (int i = 0; i < permissions.length; i++) {
+                if (!permissions[i].equals(Manifest.permission.READ_CONTACTS)
+                        || grantResults[i] != PackageManager.PERMISSION_GRANTED) {
+                    Log.e(TAG, "Permission not granted");
+                    return;
+                }
             }
         }
+        updateContacts();
     }
 
     public static class NetworkTask extends ThreadTask<Void, String> {

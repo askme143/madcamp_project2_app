@@ -12,7 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.madcampserverapp.R;
-import com.example.madcampserverapp.ui.contact.CustomAdapter;
+import com.example.madcampserverapp.ui.contact.ContactAdapter;
 
 import java.util.ArrayList;
 
@@ -37,7 +37,7 @@ public class HomeRecyclerAdapter extends RecyclerView.Adapter <HomeRecyclerAdapt
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         //data binding
         final Post post=postArrayList.get(position);
-        holder.email
+//        holder.email
 
     }
 

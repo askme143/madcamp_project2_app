@@ -8,7 +8,7 @@ import android.os.Bundle;
 import android.view.MenuItem;
 
 import com.example.madcampserverapp.ui.home.FragmentHome;
-//import com.example.madcampserverapp.ui.userinfo.FragmentMyinfo2;
+import com.example.madcampserverapp.ui.userinfo.FragmentMyinfo2;
 import com.example.madcampserverapp.ui.write.FragmentWrite;
 
 import com.example.madcampserverapp.server.RequestHttpURLConnection;
@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
         fragmentMyinfo = new FragmentMyinfo2();
 
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.frame_layout, fragmentContact).commitAllowingStateLoss();
+                .replace(R.id.frame_layout, fragmentHome).commitAllowingStateLoss();
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation_view);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView
