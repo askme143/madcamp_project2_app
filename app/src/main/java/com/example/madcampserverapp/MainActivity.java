@@ -25,11 +25,17 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        String url = "http://192.249.19.242:7380/login";
+//        String url = "http://192.249.19.242:7380/login";
+        String url = "http://192.249.19.242:7380/contact";
+
+//        ContentValues contentValues = new ContentValues();
+//        contentValues.put("email", "askme143@kaist.ac.kr");
+//        contentValues.put("name", "윤영일");
+//        contentValues.put("fb_id", "12321");
+//        networkTask = new NetworkTask(url, contentValues);
 
         ContentValues contentValues = new ContentValues();
-        contentValues.put("email", "askme143@kaist.ac.kr");
-        contentValues.put("name", "윤영일");
+        contentValues.put("fb_id", "12321");
         networkTask = new NetworkTask(url, contentValues);
 
         networkTask.execute(null);
@@ -65,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public class NetworkTask extends ThreadTask<Void, String> {
+    public static class NetworkTask extends ThreadTask<Void, String> {
 
         private String mUrl;
         private ContentValues mValues;
