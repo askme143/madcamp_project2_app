@@ -8,7 +8,7 @@ import android.os.Bundle;
 import android.view.MenuItem;
 
 import com.example.madcampserverapp.ui.home.FragmentHome;
-import com.example.madcampserverapp.ui.userinfo.FragmentMyinfo2;
+//import com.example.madcampserverapp.ui.userinfo.FragmentMyinfo2;
 import com.example.madcampserverapp.ui.write.FragmentWrite;
 
 import com.example.madcampserverapp.server.RequestHttpURLConnection;
@@ -26,23 +26,12 @@ public class MainActivity extends AppCompatActivity {
     private NetworkTask networkTask;
 
     private String url = "http://192.249.19.242:7380";
+    private String mFacebookID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-//        ContentValues contentValues = new ContentValues();
-//        contentValues.put("email", "askme143@kaist.ac.kr");
-//        contentValues.put("name", "윤영일");
-//        contentValues.put("fb_id", "12321");
-//        networkTask = new NetworkTask(url, contentValues);
-
-//        ContentValues contentValues = new ContentValues();
-//        contentValues.put("fb_id", "12321");
-//        networkTask = new NetworkTask(url, contentValues);
-//
-//        networkTask.execute(null);
 
         fragmentContact = new FragmentContact();
         fragmentGallery = new FragmentGallery();
@@ -79,15 +68,23 @@ public class MainActivity extends AppCompatActivity {
                                 .replace(R.id.frame_layout, fragmentWrite).commitAllowingStateLoss();
                         return true;
                     }
-                    case R.id.myinfo:{
-                        getSupportFragmentManager().beginTransaction()
-                                .replace(R.id.frame_layout, fragmentMyinfo).commitAllowingStateLoss();
-                        return true;
-                    }
+//                    case R.id.myinfo:{
+//                        getSupportFragmentManager().beginTransaction()
+//                                .replace(R.id.frame_layout, fragmentMyinfo).commitAllowingStateLoss();
+//                        return true;
+//                    }
                     default: return false;
                 }
             }
         });
+    }
+
+    public String getFacebookID() {
+        return mFacebookID;
+    }
+
+    public String getUrl() {
+        return url;
     }
 
     public static class NetworkTask extends ThreadTask<Void, String> {

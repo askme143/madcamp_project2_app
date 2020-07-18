@@ -9,7 +9,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.ContactsContract;
@@ -18,28 +17,24 @@ import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.madcampserverapp.R;
-import java.io.BufferedInputStream;
-import java.io.InputStream;
+
 import java.util.ArrayList;
-public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHolder>{
+public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.MyViewHolder>{
     private ArrayList<Contact> contactList;
     private Context context;
     private SparseBooleanArray selectedItems = new SparseBooleanArray();
     private int prePosition = -1;
 
-    public CustomAdapter(Context context, ArrayList<Contact> contactList) {
+    public ContactAdapter(Context context, ArrayList<Contact> contactList) {
         this.context = context;
         this.contactList = contactList;
     }
