@@ -2,6 +2,7 @@ package com.example.madcampserverapp;
 
 import android.content.ContentValues;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -9,6 +10,7 @@ import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.madcampserverapp.server.MyResponse;
 import com.example.madcampserverapp.server.RequestHttpURLConnection;
 import com.facebook.AccessToken;
 import com.facebook.AccessTokenTracker;
@@ -69,7 +71,6 @@ public class LoginActivity extends AppCompatActivity {
         loginButtonfb.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
-                System.out.println("????????");
                 Log.e(TAG, "onSucces LoginResult= " + loginResult.getAccessToken().getUserId());
 
                 GraphRequest request = new GraphRequest().newMeRequest(loginResult.getAccessToken(), new GraphRequest.GraphJSONObjectCallback() {
@@ -78,14 +79,16 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onCompleted(JSONObject object, GraphResponse response) {
                         try {
-                            Log.i(TAG, "onSuccess LoginResult2 = " + object.getString("id"));
-                            String email = object.getString("email");
-                            String name = object.getString("name");
-
+                            Log.e(TAG, "onSuccess LoginResult2 = " + object.getString("id"));
                             Log.e(TAG, "FaceBook onSuccess : " + object.getString("email"));
                             Log.e(TAG, "FaceBook onSuccess : " + object.getString("name"));
 
+                            String email = object.getString("email");
+                            String name = object.getString("name");
+                            String fbID = object.getString("id");
+
                             /* Validate access */
+                            login(email, name, fbID);
                         }catch (Exception e){
                             e.printStackTrace();
                         }
@@ -127,12 +130,74 @@ public class LoginActivity extends AppCompatActivity {
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
         boolean isLoggedIn = accessToken != null && !accessToken.isExpired();
         if(isLoggedIn){
-            Log.e(TAG, "Facebook 로그인 상테 ");
+            Log.e(TAG, "Facebook 로그인 상태 ");
         } else {
             Log.e(TAG, "Facebook 비 로그인 상태 " );
         }
     }
 
+    protected void login(final String email, final String name, final String fbID) {
+        /* Login url */
+        String url = "http://192.249.19.242:7380/login";
+
+        /* Contain parameters */
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("email", email);
+        contentValues.put("name", name);
+        contentValues.put("fb_id", fbID);
+
+        /* Build response */
+        MyResponse loginResponse = new MyResponse() {
+            @Override
+            public void response(String result) {
+                if (result.equals("success")) {
+                    /* Pass LoginActivity */
+
+                } else if (result.equals("failed")) {
+                    /* Start sign up process */
+                    signUp(email, name, fbID);
+                } else {
+                    /* Error while login process */
+                    Log.e(TAG, "My server login process error occurred");
+                }
+            }
+        };
+
+        /* Start thread task */
+        NetworkTask networkTask = new NetworkTask(url, contentValues, loginResponse);
+        networkTask.execute(null);
+    }
+
+    protected void signUp(final String email, final String name, final String fbID) {
+        /* Login url */
+        String url = "http://192.249.19.242:7380/signup";
+
+        /* Contain parameters */
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("email", email);
+        contentValues.put("name", name);
+        contentValues.put("fb_id", fbID);
+
+        /* Build response */
+        MyResponse signUpResponse = new MyResponse() {
+            @Override
+            public void response(String result) {
+                if (result.equals("success")) {
+                    /* Start login */
+                    login(email, name, fbID);
+                } else if (result.equals("failed")) {
+                    /* Sign up failed */
+                    Log.e(TAG, "My server sign up process failed");
+                } else {
+                    Log.e(TAG, "My server sign up process error occurred");
+                }
+            }
+        };
+
+        /* Start thread task */
+        NetworkTask networkTask = new NetworkTask(url, contentValues, signUpResponse);
+        networkTask.execute(null);
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -144,29 +209,28 @@ public class LoginActivity extends AppCompatActivity {
 
         private String mUrl;
         private ContentValues mValues;
+        private MyResponse mMyResponse;
 
-        public NetworkTask(String url, ContentValues values) {
+        public NetworkTask(String url, ContentValues values, MyResponse myResponse) {
             mUrl = url;
             mValues = values;
+            mMyResponse = myResponse;
         }
 
         @Override
         protected void onPreExecute() {
-
         }
 
         @Override
         protected String doInBackground(Void arg) {
-            String result;
             RequestHttpURLConnection requestHttpURLConnection = new RequestHttpURLConnection();
 
-            result = requestHttpURLConnection.request(mUrl, mValues);
-            return result;
+            return requestHttpURLConnection.request(mUrl, mValues);
         }
 
         @Override
         protected void onPostExecute(String result) {
-            System.out.println(result);
+            mMyResponse.response(result);
         }
     }
 }

@@ -29,12 +29,12 @@ public class MainActivity extends AppCompatActivity {
     private FragmentGallery fragmentGallery;
     private NetworkTask networkTask;
 
+    private String url = "http://192.249.19.242:7380";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-//        String url = "http://192.249.19.242:7380/login";
-        String url = "http://192.249.19.242:7380/contact";
 
 //        ContentValues contentValues = new ContentValues();
 //        contentValues.put("email", "askme143@kaist.ac.kr");
@@ -42,11 +42,11 @@ public class MainActivity extends AppCompatActivity {
 //        contentValues.put("fb_id", "12321");
 //        networkTask = new NetworkTask(url, contentValues);
 
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("fb_id", "12321");
-        networkTask = new NetworkTask(url, contentValues);
-
-        networkTask.execute(null);
+//        ContentValues contentValues = new ContentValues();
+//        contentValues.put("fb_id", "12321");
+//        networkTask = new NetworkTask(url, contentValues);
+//
+//        networkTask.execute(null);
 
         fragmentContact = new FragmentContact();
         fragmentGallery = new FragmentGallery();
