@@ -1,26 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    \
+
     <!--상단 - 지역, 완료-->
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:id="@+id/line4"
         >
-        <Button
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="글쓰기"
+            android:textSize="30dp"
+
+
+            android:layout_centerInParent="true"
+            />
+       <!-- <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="지역선택"
-            android:id="@+id/location_btn"/>
+            android:id="@+id/location_btn"/>-->
 
         <Button
-            android:id="@+id/write_comp"
+            android:id="@+id/write_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
@@ -29,65 +39,71 @@
     </RelativeLayout>
 
     <!--image 관리-->
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="150dp"
         android:background="@color/color_lightgray"
-       >
+        android:layout_below="@+id/line4"
+        android:id="@+id/line5">
+
+    <ImageView
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_gravity="center"
+        android:src="@drawable/blankpic"
+        android:layout_marginLeft="20dp"/>
 
 
 
-    </RelativeLayout>
+    </LinearLayout>
 
     <!--제목, 가격 상세 입력-->
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <TextView
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="상품이름"
-        android:id="@+id/goods_name"
-        />
+        android:layout_marginTop="30dp"
+        android:layout_below="@+id/line5">
+
         <EditText
-            android:layout_width="match_parent"
+            android:layout_width="350dp"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:id="@+id/ed_goods_name"
-            android:layout_toRightOf="@id/goods_name"
+            android:layout_centerHorizontal="true"
+            android:hint="상품이름"
             />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/ed_goods_name"
-            android:text="가격"
-            android:id="@+id/goods_price"
-            />
         <EditText
-            android:layout_width="match_parent"
+            android:layout_width="350dp"
             android:layout_height="wrap_content"
             android:id="@+id/ed_goods_price"
-            android:layout_toRightOf="@id/goods_price"
             android:layout_below="@+id/ed_goods_name"
+            android:hint="가격"
+            android:layout_centerInParent="true"
             />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/goods_detail"
-            android:text="세부사항"
-            android:layout_below="@+id/ed_goods_price"/>
         <EditText
-            android:layout_width="match_parent"
+            android:layout_width="350dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/ed_goods_location"
+            android:layout_below="@+id/ed_goods_price"
+            android:hint="위치(자동저장)"
+            android:enabled="false"
+            android:layout_centerInParent="true"
+            />
+
+        <EditText
+            android:layout_width="350dp"
             android:layout_height="wrap_content"
             android:id="@+id/ed_goods_detail"
-            android:layout_toRightOf="@+id/goods_detail"
-            android:layout_below="@+id/ed_goods_price"
+            android:layout_centerInParent="true"
+            android:layout_below="@+id/ed_goods_location"
+            android:hint="세부사항"
+            android:background="@null"
             />
 
     </RelativeLayout>
 
 
 
-</LinearLayout>
+</RelativeLayout>

@@ -1,59 +1,134 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@color/color_lightpurple">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/linear">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="회원 정보"
+            android:textSize="30dp"
+            android:gravity="center"
+            android:layout_marginTop="30dp"
+            />
+    </LinearLayout>
 
-    <de.hdodenhof.circleimageview.CircleImageView
+   <!-- <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/image_person"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_gravity="left"
         android:layout_margin="30dp"
-        android:src="@drawable/profile_default" />
+        android:src="@drawable/profile_default" />-->
 
+<LinearLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_marginLeft="50dp"
+    >
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20dp"
+            android:text="[이름]         "
+            android:layout_gravity=""
+            android:layout_below="@+id/linear"
+
+            />
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="20dp"
         android:text="전우정"
-        android:layout_gravity="center"
+        android:layout_gravity=""
         android:id="@+id/name_person"
-        android:layout_toRightOf="@+id/image_person"
-        android:layout_marginTop="50dp"
-        />
+        android:layout_below="@+id/linear"
 
+        />
+</LinearLayout>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="20dp"
-        android:text="eyes_cat@naver.com"
+        android:text="[이메일]     "
         android:paddingTop="10dp"
-        android:layout_gravity="center"
-        android:id="@+id/email_person"
-        />
 
+        />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20dp"
+            android:text="eyes_cat@naver.com"
+            android:paddingTop="10dp"
+            android:id="@+id/email_person"
+            />
+</LinearLayout>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="20dp"
-        android:text="서울시 서초구"
+        android:text="[주소]         "
         android:paddingTop="10dp"
-        android:layout_gravity="center"
-        android:id="@+id/location_person"
         />
-
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20dp"
+            android:text="서울시 서초구"
+            android:paddingTop="10dp"
+            android:id="@+id/location_person"
+            />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
     <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20dp"
+        android:text="[전화번호]  "
+        android:paddingTop="10dp"
+        />
+        <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="20dp"
         android:text="010-0000-0000"
         android:paddingTop="10dp"
-        android:layout_gravity="center"
         android:id="@+id/phonenumber_person"
         />
+    </LinearLayout>
+</LinearLayout>
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        >
+        <!--게시한 게시물 , 관심게시물-->
+
+        <!--게시물 말고 사진 할까-->
+
+
+    </RelativeLayout>
+
 
     <com.facebook.login.widget.LoginButton
         android:id="@+id/login_button2"
@@ -66,4 +141,4 @@
         />
 
 
-</RelativeLayout>
+</LinearLayout>

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/color_white">
+
+
+    <ImageView
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_gravity="center"
+        android:src="@drawable/icon1"
+        android:layout_marginTop="50dp"/>
+
+    <!--Get phoneNumber-->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="전화번호 입력"
+        android:textSize="20dp"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:paddingTop="20dp"
+        android:layout_marginTop="30dp"
+        />
+    <EditText
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/input_phonenumber"
+        android:layout_gravity="center"
+        android:gravity="center"
+
+        android:layout_marginTop="20dp"
+        android:hint="@string/_010_0000_0000"
+        android:textSize="20dp"
+        android:textColor="@color/colorPrimaryDark"
+        android:textColorHint="#888888"
+        />
+
+    <!--Get location-->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="거래 위치 설정"
+        android:textSize="20dp"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:layout_marginTop="30dp"
+        />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="15dp"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:text="ㅁㅁ ㅇㅇ구"
+        android:id="@+id/location_result"
+        android:textColor="@color/colorPrimaryDark"
+        />
+
+ <ExpandableListView
+        android:layout_width="130dp"
+        android:layout_height="100dp"
+        android:layout_gravity="center"
+        android:id="@+id/expandable_listview"
+        android:layout_marginTop="20dp"
+        />
+
+
+<Button
+    android:layout_width="wrap_content"
+    android:layout_height="40dp"
+    android:text="완료"
+    android:textSize="15dp"
+    android:id="@+id/before_btn"
+    android:layout_gravity="center"
+    android:layout_marginTop="30dp"/>
+
+</LinearLayout>
