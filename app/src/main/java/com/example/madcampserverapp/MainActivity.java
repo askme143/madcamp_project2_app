@@ -5,9 +5,14 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.ContentValues;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 
+import com.example.madcampserverapp.server.MyResponse;
 import com.example.madcampserverapp.ui.home.FragmentHome;
 import com.example.madcampserverapp.ui.userinfo.FragmentMyinfo2;
 import com.example.madcampserverapp.ui.write.FragmentWrite;
@@ -18,13 +23,14 @@ import com.example.madcampserverapp.ui.contact.FragmentContact;
 import com.example.madcampserverapp.ui.gallery.FragmentGallery;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import org.json.JSONObject;
+
 public class MainActivity extends AppCompatActivity {
     private FragmentHome fragmentHome;
     private FragmentWrite fragmentWrite;
     private FragmentContact fragmentContact;
     private FragmentGallery fragmentGallery;
     private FragmentMyinfo2 fragmentMyinfo;
-    private NetworkTask networkTask;
 
     private String url = "http://192.249.19.242:7380";
     private String mFacebookID;
@@ -34,10 +40,23 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        /* Ignore: Code for testing */
+        String testUrl = url + "/gallery/upload";
+        Bitmap bitmap = ((BitmapDrawable)getResources().getDrawable(R.drawable.contact_icon)).getBitmap();
+
+        MyResponse response = new MyResponse() {
+            @Override
+            public void response(String result) {
+                Log.e("hello", result);
+            }
+        };
+
+        NetworkTask networkTask = new NetworkTask(testUrl, bitmap, response);
+        networkTask.execute(null);
+
         /* Get user info */
         Intent intent = getIntent();
-        Bundle extra = intent.getExtras();
-        mFacebookID = extra.getString("fbID");
+        mFacebookID = intent.getStringExtra("fbID");
 
         /* Make fragment objects */
         fragmentContact = new FragmentContact();
@@ -100,29 +119,49 @@ public class MainActivity extends AppCompatActivity {
 
         private String mUrl;
         private ContentValues mValues;
+        private MyResponse mMyResponse;
+        private JSONObject mJSONObject;
+        private Bitmap mBitmap;
 
-        public NetworkTask(String url, ContentValues values) {
+        public NetworkTask(String url, ContentValues values, MyResponse myResponse) {
             mUrl = url;
             mValues = values;
+            mMyResponse = myResponse;
+        }
+
+        public NetworkTask(String url, JSONObject jsonObject, MyResponse myResponse) {
+            mUrl = url;
+            mJSONObject = jsonObject;
+            mMyResponse = myResponse;
+        }
+
+        public NetworkTask(String url, Bitmap bitmap, MyResponse myResponse) {
+            mUrl = url;
+            mBitmap = bitmap;
+            mMyResponse = myResponse;
         }
 
         @Override
         protected void onPreExecute() {
-
         }
 
         @Override
         protected String doInBackground(Void arg) {
-            String result;
             RequestHttpURLConnection requestHttpURLConnection = new RequestHttpURLConnection();
 
-            result = requestHttpURLConnection.request(mUrl, mValues);
-            return result;
+            if (mJSONObject != null)
+                return requestHttpURLConnection.request(mUrl, mJSONObject);
+            else if (mValues != null)
+                return requestHttpURLConnection.request(mUrl, mValues);
+            else if (mBitmap != null)
+                return requestHttpURLConnection.upload(mUrl, mBitmap);
+            else
+                return null;
         }
 
         @Override
         protected void onPostExecute(String result) {
-            System.out.println(result);
+            mMyResponse.response(result);
         }
     }
 }
