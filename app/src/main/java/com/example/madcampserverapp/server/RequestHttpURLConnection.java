@@ -1,10 +1,16 @@
 package com.example.madcampserverapp.server;
 
 import android.content.ContentValues;
+import android.graphics.Bitmap;
+import android.util.Log;
 
 import org.json.JSONObject;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
@@ -95,6 +101,8 @@ public class RequestHttpURLConnection {
             /* Convert JSON to String*/
             String jsonString = jsonObject.toString();
 
+            System.out.println(jsonString.getBytes("UTF-8"));
+
             /* Parameter passing */
             OutputStream outputStream = urlConnection.getOutputStream();
             outputStream.write(jsonString.getBytes("UTF-8"));
@@ -124,6 +132,86 @@ public class RequestHttpURLConnection {
         }
 
         return null;
+    }
+
+    public String upload(String pUrl, Bitmap bitmap) {
+        Log.e("upload", "upload!");
+        /* String constants */
+        String attachmentName = "userfile";
+        String attachmentFileName = "userfile.png";
+        String crlf = "\r\n";
+        String twoHyphens = "--";
+        String boundary =  "----WebKitFormBoundaryQGvWeNAiOE4g2VM5";
+
+        HttpURLConnection urlConnection = null;
+
+        String response = null;
+
+        /* Get data */
+        try {
+            URL url = new URL(pUrl);
+            urlConnection = (HttpURLConnection) url.openConnection();
+            urlConnection.setUseCaches(false);
+            urlConnection.setDoOutput(true);
+
+            /* urlConnection setting */
+            urlConnection.setRequestMethod("POST");
+            urlConnection.setRequestProperty("Connection", "Keep-Alive");
+            urlConnection.setRequestProperty("Cache-Control", "no-cache");
+            urlConnection.setRequestProperty(
+                    "Content-Type", "multipart/form-data;boundary=" + boundary);
+
+            /* Start content wrapper*/
+            DataOutputStream request = new DataOutputStream(
+                    urlConnection.getOutputStream());
+
+            request.writeBytes(twoHyphens + boundary + crlf);
+            request.writeBytes("Content-Disposition: form-data; name=\"" +
+                    attachmentName + "\";filename=\"" +
+                    attachmentFileName + "\"" + crlf);
+            request.writeBytes(crlf);
+
+            /* Convert bitmap to byte array, and write */
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.PNG, 10, stream);
+            byte[] pixels = stream.toByteArray();
+
+            request.write(pixels);
+
+            /* End content wrapper */
+            request.writeBytes(crlf);
+            request.writeBytes(twoHyphens + boundary +
+                    twoHyphens + crlf);
+            request.flush();
+            request.close();
+
+            Log.e("String", twoHyphens + boundary + crlf +
+                    "Content-Disposition: form-data; name=\"" + attachmentName
+                    + "\"; filename=\"" + attachmentFileName
+                    + "\"" + crlf + "Content-Type: image/png" + crlf + crlf + twoHyphens + boundary + twoHyphens + crlf);
+
+            /* Check response code */
+            if (urlConnection.getResponseCode() != HttpURLConnection.HTTP_OK) {
+                return null;
+            }
+
+            /* Read and make string value PAGE */
+            BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(urlConnection.getInputStream(), "UTF-8"));
+
+            String line;
+            String page = "";
+            while ((line = reader.readLine()) != null)
+                page += line;
+
+            response = page;
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (urlConnection != null)
+                urlConnection.disconnect();
+            return response;
+        }
     }
 
     public String get(String pUrl, ContentValues pParams) {
