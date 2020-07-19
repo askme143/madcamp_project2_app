@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
+import android.media.Image;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -16,6 +17,8 @@ import com.example.madcampserverapp.server.MyResponse;
 import com.example.madcampserverapp.ui.home.FragmentHome;
 import com.example.madcampserverapp.ui.userinfo.FragmentMyinfo2;
 import com.example.madcampserverapp.ui.write.FragmentWrite;
+import com.example.madcampserverapp.ui.gallery.FragmentGallery;
+
 
 import com.example.madcampserverapp.server.RequestHttpURLConnection;
 
@@ -24,6 +27,9 @@ import com.example.madcampserverapp.ui.gallery.FragmentGallery;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import org.json.JSONObject;
+
+
+
 
 public class MainActivity extends AppCompatActivity {
     private FragmentHome fragmentHome;
@@ -39,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
 
         /* Ignore: Code for testing */
         boolean test = true;
@@ -121,6 +128,8 @@ public class MainActivity extends AppCompatActivity {
         return url;
     }
 
+
+
     public static class NetworkTask extends ThreadTask<Void, String> {
 
         private String mUrl;
@@ -172,4 +181,29 @@ public class MainActivity extends AppCompatActivity {
             mMyResponse.response(result);
         }
     }
+
+
+    /*Image Gallery Code */
+    public boolean selectingImage = false;
+    public String startTimeID;
+
+    public boolean isSelection() {
+        return selectingImage;
+    }
+
+    public void startSelectImage(String id) {
+        selectingImage = true;
+        startTimeID = id;
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.frame_layout, fragmentGallery).commitAllowingStateLoss();
+    }
+
+    public void finishSelectImage(com.example.madcampserverapp.ui.gallery.Image image) {
+        image.saveExerciseImage(startTimeID);
+        selectingImage = false;
+        startTimeID = null;
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.frame_layout, fragmentWrite).commitAllowingStateLoss();
+    }
+
 }
