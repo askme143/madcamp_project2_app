@@ -7,7 +7,8 @@
     android:layout_width="match_parent"
     android:layout_margin="0.5dp"
     android:layout_height="wrap_content"
-    card_view:cardCornerRadius="5dp">
+    card_view:cardCornerRadius="5dp"
+    >
 
 
     <RelativeLayout
@@ -75,7 +76,7 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="10dp"
                     android:adjustViewBounds="true"
-                    android:background="@color/colorPrimaryDark"
+                    android:background="@color/colorPrimary"
                     android:contentDescription="Call"
                     android:padding="7dp"
                     android:scaleType="fitCenter"
@@ -89,7 +90,7 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="0dp"
                     android:layout_marginRight="0dp"
-                    android:background="@color/colorPrimaryDark"
+                    android:background="@color/colorPrimary"
                     android:contentDescription="Message"
                     android:padding="7dp"
                     android:scaleType="fitCenter"

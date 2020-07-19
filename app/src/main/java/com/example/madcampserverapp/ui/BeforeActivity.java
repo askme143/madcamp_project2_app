@@ -45,7 +45,11 @@ public class BeforeActivity extends Activity {
                 Toast.makeText(getApplicationContext(), "선택:" + arrayLocation.get(i), Toast.LENGTH_SHORT).show();
                 int groupCount=(int) expandableListView.getExpandableListAdapter().getGroupCount();
                 int childCount = (int) expandableListView.getExpandableListAdapter().getChildrenCount(i);
-
+                // 한 그룹을 클릭하면 나머지 그룹들은 닫힌다.
+//                for (int t = 0; t < groupCount; t++) {
+//                    if (!(t == i))
+//                        eplist.collapseGroup(t);
+//                }
                 return false;
             }
         });
@@ -54,10 +58,7 @@ public class BeforeActivity extends Activity {
         eplist.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
             public boolean onChildClick(ExpandableListView expandableListView, View view, int i, int i1, long l) {
-
                 Toast.makeText(getApplicationContext(), "선택 = " + arrayChild.get(arrayLocation.get(i)).get(i1), Toast.LENGTH_SHORT).show();
-
-
                 return false;
             }
         });
@@ -94,7 +95,5 @@ public class BeforeActivity extends Activity {
 
         arrayChild.put(arrayLocation.get(0),arraySeoulLocation);
         arrayChild.put(arrayLocation.get(1),arrayDaejeonLocation);
-
-
     }
 }

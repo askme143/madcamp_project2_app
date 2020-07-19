@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/big_goods_image"
+        android:src="@drawable/blankpic"
+        android:layout_margin="20dp"
+        />
+
+    <ImageView
+        android:id="@+id/big_goods_like"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginLeft="10dp"
+        android:layout_below="@+id/big_goods_image"
+        android:src="@drawable/heart" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/big_goods_like"
+        android:layout_below="@+id/big_goods_image"
+        android:text="0"
+        android:textSize="20dp"
+        android:layout_marginLeft="5dp"
+        android:id="@+id/big_like_cnt"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/big_goods_image"
+        android:text="작성자"
+        android:textSize="20dp"
+        android:layout_alignParentRight="true"
+        android:id="@+id/big_writer"
+
+        />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="상품이름"
+        android:layout_below="@+id/big_writer"
+        android:layout_margin="10dp"
+        android:textSize="25dp"
+        android:id="@+id/big_goods_name"
+        />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="상품가격"
+        android:layout_below="@+id/big_goods_name"
+        android:textSize="25dp"
+        android:id="@+id/big_goods_price"
+        android:layout_margin="10dp"
+        />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="지역"
+        android:layout_below="@+id/big_goods_price"
+        android:textSize="25dp"
+        android:layout_margin="10dp"
+        android:id="@+id/big_goods_location"
+        />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="상세내용"
+        android:textSize="18dp"
+        android:layout_margin="10dp"
+        android:layout_below="@+id/big_goods_location"
+        android:id="@+id/big_goods_detail"
+        />
+
+
+</RelativeLayout>

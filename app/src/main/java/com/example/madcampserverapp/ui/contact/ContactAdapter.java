@@ -1,4 +1,5 @@
 package com.example.madcampserverapp.ui.contact;
+
 import android.animation.ValueAnimator;
 import android.content.ContentResolver;
 import android.content.ContentUris;

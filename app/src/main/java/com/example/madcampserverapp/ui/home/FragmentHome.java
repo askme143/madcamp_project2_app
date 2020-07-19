@@ -30,7 +30,8 @@ public class FragmentHome extends Fragment {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(linearLayoutManager);
 
-        Post examplePost = new Post(1, "신발", 1000000, "대전", "askme@hello.com");
+        Post examplePost = new Post(1, "신발", 10000, "대전", 3, "전우정");
+
         postArrayList = new ArrayList<>();
         postArrayList.add(examplePost);
 

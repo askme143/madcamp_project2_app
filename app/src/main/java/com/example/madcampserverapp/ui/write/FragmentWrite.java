@@ -29,6 +29,8 @@ public class FragmentWrite extends Fragment {
     private String location;
     private long goods_photoID;
 
+    private int like_cnt;
+
     private EditText ed_goods_name;
     private EditText ed_goods_price;
     private EditText ed_goods_detail;
@@ -66,8 +68,8 @@ public class FragmentWrite extends Fragment {
                     goods_name=ed_goods_name.getText().toString();
                     goods_price = parseInt(ed_goods_price.getText().toString());
                     goods_detail=ed_goods_detail.getText().toString();
-
-                    temp_post=new Post(goods_photoID, goods_name, goods_price, location, goods_detail );
+// public Post(long goods_photoID, String goods_name, int goods_price, String goods_location, int like_cnt, String name){
+                    temp_post=new Post(goods_photoID, goods_name, goods_price, location,like_cnt, goods_detail );
                     postArrayList=new ArrayList<>();
                     postArrayList.add(temp_post);
 

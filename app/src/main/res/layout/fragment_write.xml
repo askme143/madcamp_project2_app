@@ -36,33 +36,75 @@
             android:layout_alignParentRight="true"
             android:text="완료"/>
 
+
     </RelativeLayout>
 
     <!--image 관리-->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="150dp"
-        android:background="@color/color_lightgray"
-        android:layout_below="@+id/line4"
-        android:id="@+id/line5">
-
-    <ImageView
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_gravity="center"
-        android:src="@drawable/blankpic"
-        android:layout_marginLeft="20dp"/>
-
-
-
-    </LinearLayout>
 
     <!--제목, 가격 상세 입력-->
+    <HorizontalScrollView
+        android:id="@+id/hscroll"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:layout_marginTop="45dp"
+        android:background="@color/color_lightgray">
+
+        <LinearLayout
+            android:id="@+id/line5"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:layout_below="@+id/line4"
+            android:background="@color/color_lightgray">
+
+            <ImageView
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_gravity="center"
+                android:layout_marginLeft="20dp"
+                android:src="@drawable/blankpic" />
+
+            <ListView
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_gravity="center"
+                android:layout_marginLeft="20dp"
+                android:id="@+id/imageid1"/>
+
+            <ListView
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_gravity="center"
+                android:layout_marginLeft="20dp"
+                android:id="@+id/imageid2"/>
+
+            <ListView
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_gravity="center"
+                android:layout_marginLeft="20dp"
+                android:id="@+id/imageid3"/>
+            <ListView
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_gravity="center"
+                android:layout_marginLeft="20dp"
+                android:id="@+id/imageid4"/>
+            <ListView
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_gravity="center"
+                android:layout_marginLeft="20dp"
+                android:id="@+id/imageid5"/>
+
+
+        </LinearLayout>
+    </HorizontalScrollView>
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
-        android:layout_below="@+id/line5">
+        android:layout_below="@+id/hscroll">
 
         <EditText
             android:layout_width="350dp"
