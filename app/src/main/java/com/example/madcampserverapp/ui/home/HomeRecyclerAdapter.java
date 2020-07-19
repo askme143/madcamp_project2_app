@@ -53,23 +53,23 @@ public class HomeRecyclerAdapter extends RecyclerView.Adapter <HomeRecyclerAdapt
 
             @Override
             public void onClick(View view) {
-                /*Goto big post activity*/
-                int i=position;
-                if (i!=RecyclerView.NO_POSITION){
-                    Intent intent=new Intent(view.getContext(),BigPostActivity.class);
+            /*Goto big post activity*/
+            int i=position;
+            if (i!=RecyclerView.NO_POSITION){
+                Intent intent=new Intent(view.getContext(),BigPostActivity.class);
 
-                    Post post1=postArrayList.get(i);
-                    intent.putExtra("goods_name",post1.getGoods_name());
-                    intent.putExtra("goods_price",post1.getGoods_price());
-                    intent.putExtra("goods_location",post1.getGoods_location());
-                    intent.putExtra("photoID",post1.getGoods_photoID());
-                    intent.putExtra("like_cnt",post1.getLike_cnt());
-                    intent.putExtra("writer",post1.getName());
-                    //          intent.putExtra("goods_detail"),post1.getGoods_detail;
+                Post post1=postArrayList.get(i);
+                intent.putExtra("goods_name",post1.getGoods_name());
+                intent.putExtra("goods_price",post1.getGoods_price());
+                intent.putExtra("goods_location",post1.getGoods_location());
+                intent.putExtra("photoID",post1.getGoods_photoID());
+                intent.putExtra("like_cnt",post1.getLike_cnt());
+                intent.putExtra("writer",post1.getName());
+                //          intent.putExtra("goods_detail"),post1.getGoods_detail;
 
-                    view.getContext().startActivity(intent);
+                view.getContext().startActivity(intent);
 
-                }
+            }
             }
         });
     }

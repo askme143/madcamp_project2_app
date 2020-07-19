@@ -47,22 +47,22 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 
-        /* Ignore: Code for testing */
-        String testUrl = url + "/gallery/upload";
-        Bitmap bitmap = ((BitmapDrawable)getResources().getDrawable(R.drawable.contact_icon)).getBitmap();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("fb_id", "12321");
-        contentValues.put("file_name", "contact_icon.jpg");
-
-        MyResponse response = new MyResponse() {
-            @Override
-            public void response(String result) {
-                Log.e("hello", result);
-            }
-        };
-
-        NetworkTask networkTask = new NetworkTask(testUrl, bitmap, contentValues, response);
-        networkTask.execute(null);
+//        /* Ignore: Code for testing */
+////        String testUrl = url + "/gallery/upload";
+////        Bitmap bitmap = ((BitmapDrawable)getResources().getDrawable(R.drawable.contact_icon)).getBitmap();
+////        ContentValues contentValues = new ContentValues();
+////        contentValues.put("fb_id", "12321");
+////        contentValues.put("file_name", "contact_icon.jpg");
+////
+////        MyResponse response = new MyResponse() {
+////            @Override
+////            public void response(String result) {
+////                Log.e("hello", result);
+////            }
+////        };
+//
+//        NetworkTask networkTask = new NetworkTask(testUrl, bitmap, contentValues, response);
+//        networkTask.execute(null);
 
         /* Get user info */
         Intent intent = getIntent();
