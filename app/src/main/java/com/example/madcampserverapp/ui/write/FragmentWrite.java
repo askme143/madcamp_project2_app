@@ -1,6 +1,9 @@
 package com.example.madcampserverapp.ui.write;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,15 +11,19 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.madcampserverapp.MainActivity;
 import com.example.madcampserverapp.R;
 import com.example.madcampserverapp.ui.home.FragmentHome;
+import com.example.madcampserverapp.ui.home.HomeRecyclerAdapter;
 import com.example.madcampserverapp.ui.home.Post;
 
 import java.util.ArrayList;
@@ -38,14 +45,33 @@ public class FragmentWrite extends Fragment {
     private Button button_post;
     private ImageView imageView;
     ////////////// image, location 받아오기 //////////////
+    private ArrayList<Bitmap> imageList;
 
     private ArrayList<Post> postArrayList;
+
+    private WriteRecyclerAdapter mAdapter;
 
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_write, null);
+
+        RecyclerView imgRecyclerView=(RecyclerView) view.findViewById(R.id.img_recycler);
+        LinearLayoutManager linearLayoutManager=new LinearLayoutManager(getActivity(),LinearLayoutManager.HORIZONTAL, false);
+        imgRecyclerView.setLayoutManager(linearLayoutManager);
+
+        /*imageList add*/
+      //  imageList.add(0, BitmapFactory.decodeResource(getResources().getIdentifier("num"+1,"drawable",)));
+        imageList = new ArrayList<>();
+        imageList.add(((BitmapDrawable) getResources().getDrawable(R.drawable.blankpic)).getBitmap());
+        imageList.add(((BitmapDrawable) getResources().getDrawable(R.drawable.mail)).getBitmap());
+        imageList.add(((BitmapDrawable) getResources().getDrawable(R.drawable.mail)).getBitmap());
+
+
+        mAdapter=new WriteRecyclerAdapter(getActivity(),imageList);
+        imgRecyclerView.setAdapter(mAdapter);
+
 
         ed_goods_name= (EditText) view.findViewById(R.id.ed_goods_name);
         ed_goods_price= (EditText) view.findViewById(R.id.ed_goods_price);
@@ -70,7 +96,7 @@ public class FragmentWrite extends Fragment {
                 goods_name=ed_goods_name.getText().toString();
                 goods_price = parseInt(ed_goods_price.getText().toString());
                 goods_detail=ed_goods_detail.getText().toString();
-// public Post(long goods_photoID, String goods_name, int goods_price, String goods_location, int like_cnt, String name){
+                // public Post(long goods_photoID, String goods_name, int goods_price, String goods_location, int like_cnt, String name){
                 temp_post=new Post(goods_photoID, goods_name, goods_price, location,like_cnt, goods_detail );
                 postArrayList=new ArrayList<>();
                 postArrayList.add(temp_post);

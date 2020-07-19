@@ -55,14 +55,23 @@
             android:layout_below="@+id/line4"
             android:background="@color/color_lightgray">
 
-            <ImageView
+          <!--  <ImageView
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:layout_gravity="center"
-                android:layout_marginLeft="20dp"
-                android:src="@drawable/blankpic" />
+                android:layout_margin="20dp"
+                android:src="@drawable/blankpic" />-->
 
-            <ListView
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingHorizontal="5dp"
+                android:id="@+id/img_recycler"
+                android:orientation="horizontal"
+                android:scrollbars="none"
+                />
+
+       <!--     <ListView
                 android:id="@+id/imageid1"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
@@ -95,7 +104,7 @@
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:layout_gravity="center"
-                android:layout_marginLeft="20dp" />
+                android:layout_marginLeft="20dp" />-->
 
 
         </LinearLayout>
