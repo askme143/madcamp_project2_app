@@ -56,6 +56,7 @@ public class RequestHttpURLConnection {
 
         /* Get data */
         try {
+            Log.e("hello", pUrl+ " " + subParams.toString());
             URL url = new URL(pUrl);
             urlConnection = (HttpURLConnection) url.openConnection();
 

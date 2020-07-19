@@ -147,6 +147,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     protected void login(final String name, final String fbID) {
+        Log.e(TAG, "login start");
         /* Login url */
         String url = "http://192.249.19.242:7380/login";
 
@@ -186,6 +187,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     protected void signUp(final String name, final String fbID) {
+        Log.e(TAG, "signup start");
         /* Login url */
         String url = "http://192.249.19.242:7380/signup";
 

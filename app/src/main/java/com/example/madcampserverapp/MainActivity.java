@@ -2,16 +2,22 @@ package com.example.madcampserverapp;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import android.Manifest;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.media.Image;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.example.madcampserverapp.server.MyResponse;
 import com.example.madcampserverapp.ui.home.FragmentHome;
@@ -19,17 +25,12 @@ import com.example.madcampserverapp.ui.userinfo.FragmentMyinfo2;
 import com.example.madcampserverapp.ui.write.FragmentWrite;
 import com.example.madcampserverapp.ui.gallery.FragmentGallery;
 
-
 import com.example.madcampserverapp.server.RequestHttpURLConnection;
 
 import com.example.madcampserverapp.ui.contact.FragmentContact;
-import com.example.madcampserverapp.ui.gallery.FragmentGallery;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import org.json.JSONObject;
-
-
-
 
 public class MainActivity extends AppCompatActivity {
     private FragmentHome fragmentHome;
@@ -41,14 +42,18 @@ public class MainActivity extends AppCompatActivity {
     private String url = "http://192.249.19.242:7380";
     private String mFacebookID;
 
+    public String getUrl() { return url; }
+    public String getFacebookID() { return mFacebookID; }
+
+    private int mPermissionCount;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
         /* Ignore: Code for testing */
-        boolean test = true;
+        boolean test = false;
         if (test){
             String testUrl = url + "/gallery/upload";
             Bitmap bitmap = ((BitmapDrawable) getResources().getDrawable(R.drawable.contact_icon)).getBitmap();
@@ -67,20 +72,11 @@ public class MainActivity extends AppCompatActivity {
             networkTask.execute(null);
         }
 
+        checkPermission();
+
         /* Get user info */
         Intent intent = getIntent();
         mFacebookID = intent.getStringExtra("fbID");
-
-        /* Make fragment objects */
-        fragmentContact = new FragmentContact();
-        fragmentGallery = new FragmentGallery();
-        fragmentHome = new FragmentHome();
-        fragmentWrite = new FragmentWrite();
-        fragmentMyinfo = new FragmentMyinfo2();
-
-        /* Default fragment (home page) */
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.frame_layout, fragmentHome).commitAllowingStateLoss();
 
         /* bottom navigation view click listener */
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation_view);
@@ -120,15 +116,61 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public String getFacebookID() {
-        return mFacebookID;
+    public void checkPermission() {
+        String tmp = "";
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS)
+                != PackageManager.PERMISSION_GRANTED)
+            tmp += Manifest.permission.READ_CONTACTS + " ";
+//        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+//                != PackageManager.PERMISSION_GRANTED)
+//            tmp += Manifest.permission.READ_EXTERNAL_STORAGE + " ";
+//        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+//                != PackageManager.PERMISSION_GRANTED)
+//            tmp += Manifest.permission.WRITE_EXTERNAL_STORAGE + " ";
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED)
+            tmp += Manifest.permission.CAMERA + " ";
+
+        if (!TextUtils.isEmpty(tmp)) {
+            String[] tmpArray = tmp.trim().split(" ");
+            mPermissionCount = tmpArray.length;
+            ActivityCompat.requestPermissions(this, tmpArray, 1);
+        } else {
+            startFragment();
+        }
     }
 
-    public String getUrl() {
-        return url;
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String[] permissions, int[] grantResults) {
+        if (grantResults.length != mPermissionCount) {
+            Toast.makeText(this, "아직 승인받지 않았습니다.", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        for (int grantResult : grantResults) {
+            if (grantResult != PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(this,"아직 승인받지 않았습니다.",Toast.LENGTH_LONG).show();
+                return;
+            }
+        }
+
+        startFragment();
     }
 
+    private void startFragment() {
+        /* Make fragment objects */
+        fragmentContact = new FragmentContact();
+        fragmentGallery = new FragmentGallery();
+        fragmentHome = new FragmentHome();
+        fragmentWrite = new FragmentWrite();
+        fragmentMyinfo = new FragmentMyinfo2();
 
+        /* Default fragment (home page) */
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.frame_layout, fragmentHome).commitAllowingStateLoss();
+    }
 
     public static class NetworkTask extends ThreadTask<Void, String> {
 
