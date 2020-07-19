@@ -46,19 +46,23 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-//        /* Ignore: Code for testing */
-//        String testUrl = url + "/gallery/upload";
-//        Bitmap bitmap = ((BitmapDrawable)getResources().getDrawable(R.drawable.contact_icon)).getBitmap();
-//
-//        MyResponse response = new MyResponse() {
-//            @Override
-//            public void response(String result) {
-//                Log.e("hello", result);
-//            }
-//        };
-//
-//        NetworkTask networkTask = new NetworkTask(testUrl, bitmap, response);
-//        networkTask.execute(null);
+
+        /* Ignore: Code for testing */
+        String testUrl = url + "/gallery/upload";
+        Bitmap bitmap = ((BitmapDrawable)getResources().getDrawable(R.drawable.contact_icon)).getBitmap();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("fb_id", "12321");
+        contentValues.put("file_name", "contact_icon.jpg");
+
+        MyResponse response = new MyResponse() {
+            @Override
+            public void response(String result) {
+                Log.e("hello", result);
+            }
+        };
+
+        NetworkTask networkTask = new NetworkTask(testUrl, bitmap, contentValues, response);
+        networkTask.execute(null);
 
         /* Get user info */
         Intent intent = getIntent();
@@ -126,10 +130,11 @@ public class MainActivity extends AppCompatActivity {
     public static class NetworkTask extends ThreadTask<Void, String> {
 
         private String mUrl;
-        private ContentValues mValues;
         private MyResponse mMyResponse;
-        private JSONObject mJSONObject;
+
         private Bitmap mBitmap;
+        private ContentValues mValues;
+        private JSONObject mJSONObject;
 
         public NetworkTask(String url, ContentValues values, MyResponse myResponse) {
             mUrl = url;
@@ -143,9 +148,10 @@ public class MainActivity extends AppCompatActivity {
             mMyResponse = myResponse;
         }
 
-        public NetworkTask(String url, Bitmap bitmap, MyResponse myResponse) {
+        public NetworkTask(String url, Bitmap bitmap, ContentValues contentValues, MyResponse myResponse) {
             mUrl = url;
             mBitmap = bitmap;
+            mValues = contentValues;
             mMyResponse = myResponse;
         }
 
@@ -157,12 +163,12 @@ public class MainActivity extends AppCompatActivity {
         protected String doInBackground(Void arg) {
             RequestHttpURLConnection requestHttpURLConnection = new RequestHttpURLConnection();
 
-            if (mJSONObject != null)
+            if (mBitmap != null)
+                return requestHttpURLConnection.upload(mUrl, mBitmap, mValues);
+            else if (mJSONObject != null)
                 return requestHttpURLConnection.request(mUrl, mJSONObject);
             else if (mValues != null)
                 return requestHttpURLConnection.request(mUrl, mValues);
-            else if (mBitmap != null)
-                return requestHttpURLConnection.upload(mUrl, mBitmap);
             else
                 return null;
         }
