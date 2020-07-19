@@ -1,12 +1,14 @@
 package com.example.madcampserverapp;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -31,9 +33,10 @@ import java.util.Arrays;
 public class LoginActivity extends AppCompatActivity {
     private LoginButton loginButtonfb;
     private Button gotoregButton;
-    private Intent data;
     private Button loginBtn;
     private static final String TAG = "LoginActivity";
+
+    private Context mContext = this;
 
     CallbackManager callbackManager = CallbackManager.Factory.create();
 
@@ -72,34 +75,8 @@ public class LoginActivity extends AppCompatActivity {
         loginButtonfb.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
-                Log.e(TAG, "onSucces LoginResult= " + loginResult.getAccessToken().getUserId());
-
-                GraphRequest request = new GraphRequest().newMeRequest(loginResult.getAccessToken(), new GraphRequest.GraphJSONObjectCallback() {
-
-                    /* Login Successfully. Now we can get email, name, ID, etc. */
-                    @Override
-                    public void onCompleted(JSONObject object, GraphResponse response) {
-                        try {
-                            Log.e(TAG, "onSuccess LoginResult2 = " + object.getString("id"));
-                            Log.e(TAG, "FaceBook onSuccess : " + object.getString("email"));
-                            Log.e(TAG, "FaceBook onSuccess : " + object.getString("name"));
-
-                            String email = object.getString("email");
-                            String name = object.getString("name");
-                            String fbID = object.getString("id");
-
-                            /* Validate access */
-                            login(email, name, fbID);
-                        } catch (Exception e){
-                            e.printStackTrace();
-                        }
-                    }
-                });
-
-                Bundle parameters = new Bundle();
-                parameters.putString("fields", "id,email,name");
-                request.setParameters(parameters);
-                request.executeAsync();
+                Log.e(TAG, "FaceBook 로그인 성공");
+                startLogin(loginResult.getAccessToken());
             }
 
             @Override
@@ -113,12 +90,12 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        /* Build Access Tracker of FB */
+        /* Build Access Tracker of FB : Tracks log out, log in event */
         AccessTokenTracker accessTokenTracker = new AccessTokenTracker() {
             @Override
             protected void onCurrentAccessTokenChanged(AccessToken oldAccessToken, AccessToken currentAccessToken) {
                 if(currentAccessToken == null){
-                    Log.e(TAG, "FaceBook onCurrentAccessTokenChanged currentAccessToken is null"); //로그아웃 시
+                    Log.e(TAG, "FaceBook onCurrentAccessTokenChanged currentAccessToken is null");
                 } else {
                     Log.e(TAG, "FaceBook onCurrentAccessTokenChanged currentAccessToken is not null");
                 }
@@ -134,21 +111,47 @@ public class LoginActivity extends AppCompatActivity {
         if(isLoggedIn){
             Log.e(TAG, "Facebook 로그인 상태 ");
 
-            //로그인상태일 경우 바로 MainActivity로
-            Intent intent_goActive=new Intent(getApplicationContext(), MainActivity.class);
-            startActivity(intent_goActive);
+            /* Start login process */
+            startLogin(accessToken);
         } else {
             Log.e(TAG, "Facebook 비 로그인 상태 " );
         }
     }
 
-    protected void login(final String email, final String name, final String fbID) {
+    /* Get facebook account's info and start login if success */
+    protected void startLogin(AccessToken accessToken) {
+        GraphRequest request = new GraphRequest().newMeRequest(accessToken, new GraphRequest.GraphJSONObjectCallback() {
+
+            /* Login Successfully. Now we can get email, name, ID, etc. */
+            @Override
+            public void onCompleted(JSONObject object, GraphResponse response) {
+                try {
+                    Log.e(TAG, "onSuccess LoginResult : " + object.getString("id"));
+                    Log.e(TAG, "FaceBook onSuccess : " + object.getString("name"));
+
+                    String name = object.getString("name");
+                    String fbID = object.getString("id");
+
+                    /* Validate access */
+                    login(name, fbID);
+                } catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        Bundle parameters = new Bundle();
+        parameters.putString("fields", "id,email,name");
+        request.setParameters(parameters);
+        request.executeAsync();
+    }
+
+    protected void login(final String name, final String fbID) {
         /* Login url */
         String url = "http://192.249.19.242:7380/login";
 
         /* Contain parameters */
         ContentValues contentValues = new ContentValues();
-        contentValues.put("email", email);
         contentValues.put("name", name);
         contentValues.put("fb_id", fbID);
 
@@ -156,20 +159,23 @@ public class LoginActivity extends AppCompatActivity {
         MyResponse loginResponse = new MyResponse() {
             @Override
             public void response(String result) {
-                if (result.equals("success")) {
+                if (result == null) {
+                    /* Maybe cannot access to server */
+                    Log.e(TAG, "Server access error");
+                    Toast.makeText(mContext, "인터넷 연결을 확인해주세요.", Toast.LENGTH_SHORT);
+                }
+                else if (result.equals("success")) {
                     /* Goto MainAcivity -> BeforeActivity*/ //전화번호 존재하면 Mainactivity
                     Intent intent_goActive=new Intent(getApplicationContext(),BeforeActivity.class);
-                    intent_goActive.putExtra("email",email );
                     intent_goActive.putExtra("name",name);
                     intent_goActive.putExtra("fbID", fbID );
                     startActivity(intent_goActive);
-
                 } else if (result.equals("failed")) {
                     /* Start sign up process */
-                    signUp(email, name, fbID);
+                    signUp(name, fbID);
                 } else {
                     /* Error while login process */
-                    Log.e(TAG, "My server login process error occurred");
+                    Log.e(TAG, "Invalid server response");
                 }
             }
         };
@@ -179,13 +185,12 @@ public class LoginActivity extends AppCompatActivity {
         networkTask.execute(null);
     }
 
-    protected void signUp(final String email, final String name, final String fbID) {
+    protected void signUp(final String name, final String fbID) {
         /* Login url */
         String url = "http://192.249.19.242:7380/signup";
 
         /* Contain parameters */
         ContentValues contentValues = new ContentValues();
-        contentValues.put("email", email);
         contentValues.put("name", name);
         contentValues.put("fb_id", fbID);
 
@@ -195,7 +200,7 @@ public class LoginActivity extends AppCompatActivity {
             public void response(String result) {
                 if (result.equals("success")) {
                     /* Start login */
-                    login(email, name, fbID);
+                    login(name, fbID);
                 } else if (result.equals("failed")) {
                     /* Sign up failed */
                     Log.e(TAG, "My server sign up process failed");

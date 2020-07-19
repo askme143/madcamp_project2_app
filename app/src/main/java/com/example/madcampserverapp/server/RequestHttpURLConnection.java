@@ -10,19 +10,29 @@ import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
+import java.net.ProtocolException;
 import java.net.URL;
 import java.util.Map;
 
 public class RequestHttpURLConnection {
+    private static final String TAG = "hello";
+
+    private static final String crlf = "\r\n";
+    private static final String twoHyphens = "--";
+    private static final String boundary =  "----WebKitFormBoundaryQGvWeNAiOE4g2VM5";
+
+    /* application/x-www-form-urlencoded */
     public String request(String pUrl, ContentValues pParams) {
+        Log.e(TAG, "application/x-www-form-urlencoded");
         HttpURLConnection urlConnection = null;
-        StringBuilder subParams = new StringBuilder();
 
         /* Make query sub parameters */
+        StringBuilder subParams = new StringBuilder();
         if (pParams == null)
             subParams.append("");
         else {
@@ -50,10 +60,7 @@ public class RequestHttpURLConnection {
             urlConnection = (HttpURLConnection) url.openConnection();
 
             /* urlConnection setting */
-            urlConnection.setRequestMethod("POST");
-            urlConnection.setRequestProperty("Accept-Charset", "UTF-8");
-            urlConnection.setRequestProperty("Context_Type",
-                    "application/x-www-form-urlencoded;charset=UTF-8");
+            urlConnectionSetting(urlConnection, "application/x-www-form-urlencoded");
 
             /* Parameter passing */
             String strParams = subParams.toString();
@@ -62,29 +69,19 @@ public class RequestHttpURLConnection {
             outputStream.flush();
             outputStream.close();
 
-            /* Check response code */
-            if (urlConnection.getResponseCode() != HttpURLConnection.HTTP_OK) {
-                return null;
-            }
-
-            /* Read and make string value PAGE */
-            BufferedReader reader = new BufferedReader(
-                    new InputStreamReader(urlConnection.getInputStream(), "UTF-8"));
-
-            String line;
-            String page = "";
-            while ((line = reader.readLine()) != null)
-                page += line;
-
-            return page;
+            return getResponse(urlConnection);
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        if (urlConnection != null)
+            urlConnection.disconnect();
 
         return null;
     }
 
     public String request(String pUrl, JSONObject jsonObject) {
+        Log.e(TAG, "application/json");
         HttpURLConnection urlConnection = null;
 
         /* Get data */
@@ -93,15 +90,10 @@ public class RequestHttpURLConnection {
             urlConnection = (HttpURLConnection) url.openConnection();
 
             /* urlConnection setting */
-            urlConnection.setRequestMethod("POST");
-            urlConnection.setRequestProperty("Accept-Charset", "UTF-8");
-            urlConnection.setRequestProperty("Accept", "application/json");
-            urlConnection.setRequestProperty("Content-Type", "application/json");
+            urlConnectionSetting(urlConnection, "application/json");
 
             /* Convert JSON to String*/
             String jsonString = jsonObject.toString();
-
-            System.out.println(jsonString.getBytes("UTF-8"));
 
             /* Parameter passing */
             OutputStream outputStream = urlConnection.getOutputStream();
@@ -109,46 +101,27 @@ public class RequestHttpURLConnection {
             outputStream.flush();
             outputStream.close();
 
-            /* Check response code */
-            if (urlConnection.getResponseCode() != HttpURLConnection.HTTP_OK) {
-                return null;
-            }
-
-            /* Read and make string value PAGE */
-            BufferedReader reader = new BufferedReader(
-                    new InputStreamReader(urlConnection.getInputStream(), "UTF-8"));
-
-            String line;
-            String page = "";
-            while ((line = reader.readLine()) != null)
-                page += line;
-
-            return page;
+            /* Get Response */
+            return getResponse(urlConnection);
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            if (urlConnection != null)
-                urlConnection.disconnect();
         }
+
+        if (urlConnection != null)
+            urlConnection.disconnect();
 
         return null;
     }
 
-    public String upload(String pUrl, Bitmap bitmap, ContentValues contentValues) {
+    public String uploadImage(String pUrl, Bitmap bitmap, ContentValues contentValues) {
+        Log.e(TAG, "multipart");
+        HttpURLConnection urlConnection = null;
+
         /* Get facebook id and file name */
         String fb_id = contentValues.getAsString("fb_id");
         String filename = contentValues.getAsString("file_name");
-
         if (filename.length() == 0)
             filename = "userfile.jpg";
-
-        /* String constants */
-        String name = "userfile";
-        String crlf = "\r\n";
-        String twoHyphens = "--";
-        String boundary =  "----WebKitFormBoundaryQGvWeNAiOE4g2VM5";
-
-        HttpURLConnection urlConnection = null;
 
         /* Get data */
         try {
@@ -158,56 +131,50 @@ public class RequestHttpURLConnection {
             urlConnection.setDoOutput(true);
 
             /* urlConnection setting */
-            urlConnection.setRequestMethod("POST");
-            urlConnection.setRequestProperty("Cache-Control", "no-cache");
-            urlConnection.setRequestProperty(
-                    "Content-Type", "multipart/form-data;boundary=" + boundary);
+            urlConnectionSetting(urlConnection, "multipart/form-data");
 
-            /* Start content wrapper*/
             DataOutputStream request = new DataOutputStream(
                     urlConnection.getOutputStream());
 
+            /* Start writing image */
             request.writeBytes(twoHyphens + boundary + crlf);
             request.writeBytes("Content-Disposition: form-data; name=\"" +
-                    name + "\";filename=\"" +
+                    "image" + "\";filename=\"" +
                     filename + "\"" + crlf +
                     "Content-Type: image/jpg" + crlf);
             request.writeBytes(crlf);
 
-            /* Convert bitmap to byte array, and write */
+            /* Write image */
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             bitmap.compress(Bitmap.CompressFormat.JPEG, 10, stream);
             byte[] pixels = stream.toByteArray();
-
             request.write(pixels);
-
-            /* End content wrapper */
             request.writeBytes(crlf);
+
+            /* Start writing facebook id */
+            request.writeBytes(twoHyphens + boundary + crlf);
+            request.writeBytes("Content-Disposition: form-data; name=\"" +
+                    "fb_id" + "\";filename=\"" +
+                    fb_id + "\"" + crlf +
+                    "Content-Type: text/plain" + crlf);
+            request.writeBytes(crlf);
+
+            /* Write empty file */
+            request.writeBytes(crlf);
+
+            /* End */
             request.writeBytes(twoHyphens + boundary +
                     twoHyphens + crlf);
             request.flush();
             request.close();
 
-            /* Check response code */
-            if (urlConnection.getResponseCode() != HttpURLConnection.HTTP_OK) {
-                return null;
-            }
-
-            /* Read and make string value PAGE */
-            BufferedReader reader = new BufferedReader(
-                    new InputStreamReader(urlConnection.getInputStream(), "UTF-8"));
-
-            String line;
-            String page = "";
-            while ((line = reader.readLine()) != null)
-                page += line;
-
-            return page;
+            return getResponse(urlConnection);
         } catch (Exception e) {
             e.printStackTrace();
-            if (urlConnection != null)
-                urlConnection.disconnect();
         }
+
+        if (urlConnection != null)
+            urlConnection.disconnect();
 
         return null;
     }
@@ -269,5 +236,46 @@ public class RequestHttpURLConnection {
         }
 
         return null;
+    }
+
+    private void urlConnectionSetting(HttpURLConnection urlConnection, String type) throws ProtocolException {
+        switch (type) {
+            case "application/x-www-form-urlencoded":
+                urlConnection.setRequestMethod("POST");
+                urlConnection.setRequestProperty("Accept-Charset", "UTF-8");
+                urlConnection.setRequestProperty("Context_Type",
+                        "application/x-www-form-urlencoded;charset=UTF-8");
+                break;
+            case "application/json":
+                urlConnection.setRequestMethod("POST");
+                urlConnection.setRequestProperty("Accept-Charset", "UTF-8");
+                urlConnection.setRequestProperty("Accept", "application/json");
+                urlConnection.setRequestProperty("Content-Type", "application/json");
+                break;
+            case "multipart/form-data":
+                urlConnection.setRequestMethod("POST");
+                urlConnection.setRequestProperty("Cache-Control", "no-cache");
+                urlConnection.setRequestProperty(
+                        "Content-Type", "multipart/form-data;boundary=" + boundary);
+                break;
+        }
+    }
+
+    private String getResponse(HttpURLConnection urlConnection) throws IOException {
+        /* Check response code */
+        if (urlConnection.getResponseCode() != HttpURLConnection.HTTP_OK) {
+            return null;
+        }
+
+        /* Read and make string value PAGE */
+        BufferedReader reader = new BufferedReader(
+                new InputStreamReader(urlConnection.getInputStream(), "UTF-8"));
+
+        String line;
+        String page = "";
+        while ((line = reader.readLine()) != null)
+            page += line;
+
+        return page;
     }
 }
