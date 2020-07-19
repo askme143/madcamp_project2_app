@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         /* Ignore: Code for testing */
-        boolean test = false;
+        boolean test = true;
         if (test){
             String testUrl = url + "/gallery/upload";
             Bitmap bitmap = ((BitmapDrawable) getResources().getDrawable(R.drawable.contact_icon)).getBitmap();
@@ -73,7 +73,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         checkPermission();
-
 
         /* Get user info */
         Intent intent = getIntent();
@@ -225,8 +224,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
-    /*Image Gallery Code */
+    /* Image Gallery Code */
     public boolean selectingImage = false;
     public String startTimeID;
 
@@ -248,5 +246,4 @@ public class MainActivity extends AppCompatActivity {
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.frame_layout, fragmentWrite).commitAllowingStateLoss();
     }
-
 }

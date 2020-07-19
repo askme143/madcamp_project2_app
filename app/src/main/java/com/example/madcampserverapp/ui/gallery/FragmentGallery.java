@@ -1,6 +1,7 @@
 package com.example.madcampserverapp.ui.gallery;
 
 import android.annotation.SuppressLint;
+import android.content.ContentValues;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -30,7 +31,12 @@ import android.widget.Toast;
 
 import com.example.madcampserverapp.MainActivity;
 import com.example.madcampserverapp.R;
+import com.example.madcampserverapp.ThreadTask;
+import com.example.madcampserverapp.server.MyResponse;
+import com.example.madcampserverapp.server.RequestHttpURLConnection;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -185,7 +191,11 @@ public class FragmentGallery extends Fragment {
         Uri contentUri = Uri.fromFile(f);
         mediaScanIntent.setData(contentUri);
         mContext.sendBroadcast(mediaScanIntent);
-        Toast.makeText(mContext, "Saved", Toast.LENGTH_SHORT).show();
+
+        Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath);
+
+
+        Toast.makeText(mContext, "Uploaded", Toast.LENGTH_SHORT).show();
     }
 
     private void initFragment() {
@@ -298,5 +308,45 @@ public class FragmentGallery extends Fragment {
 
     public ArrayList<Image> getImageArrayList() {
         return mImageArrayList;
+    }
+
+    public static class NetworkTask extends ThreadTask<Void, String> {
+
+        private String mUrl;
+        private MyResponse mMyResponse;
+
+        private Bitmap mBitmap;
+        private ContentValues mValues;
+        private JSONObject mJSONObject;
+
+        public NetworkTask(String url, Bitmap bitmap, ContentValues contentValues, MyResponse myResponse) {
+            mUrl = url;
+            mBitmap = bitmap;
+            mValues = contentValues;
+            mMyResponse = myResponse;
+        }
+
+        @Override
+        protected void onPreExecute() {
+        }
+
+        @Override
+        protected String doInBackground(Void arg) {
+            RequestHttpURLConnection requestHttpURLConnection = new RequestHttpURLConnection();
+
+            if (mBitmap != null)
+                return requestHttpURLConnection.uploadImage(mUrl, mBitmap, mValues);
+            else if (mJSONObject != null)
+                return requestHttpURLConnection.request(mUrl, mJSONObject);
+            else if (mValues != null)
+                return requestHttpURLConnection.request(mUrl, mValues);
+            else
+                return null;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            mMyResponse.response(result);
+        }
     }
 }

@@ -122,7 +122,7 @@ public class RequestHttpURLConnection {
         HttpURLConnection urlConnection = null;
 
         /* Get facebook id and file name */
-        String fb_id = contentValues.getAsString("fb_id");
+        String fbID = contentValues.getAsString("fb_id");
         String filename = contentValues.getAsString("file_name");
         if (filename.length() == 0)
             filename = "userfile.jpg";
@@ -158,12 +158,11 @@ public class RequestHttpURLConnection {
             /* Start writing facebook id */
             request.writeBytes(twoHyphens + boundary + crlf);
             request.writeBytes("Content-Disposition: form-data; name=\"" +
-                    "fb_id" + "\";filename=\"" +
-                    fb_id + "\"" + crlf +
-                    "Content-Type: text/plain" + crlf);
+                    "fb_id" + "\"" + crlf);
             request.writeBytes(crlf);
 
             /* Write empty file */
+            request.writeBytes(fbID);
             request.writeBytes(crlf);
 
             /* End */
