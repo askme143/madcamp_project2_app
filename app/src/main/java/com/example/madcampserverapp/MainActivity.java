@@ -74,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
 
         checkPermission();
 
+
         /* Get user info */
         Intent intent = getIntent();
         mFacebookID = intent.getStringExtra("fbID");

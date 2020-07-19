@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -35,6 +36,7 @@ public class FragmentWrite extends Fragment {
     private EditText ed_goods_price;
     private EditText ed_goods_detail;
     private Button button_post;
+    private ImageView imageView;
     ////////////// image, location 받아오기 //////////////
 
     private ArrayList<Post> postArrayList;
@@ -58,30 +60,30 @@ public class FragmentWrite extends Fragment {
 
             @Override
             public void onClick(View view) {
-                Post temp_post=null;
+            Post temp_post=null;
 
-                /*If name or price is blank*/
-                if (ed_goods_name.getText().toString().length()==0 || ed_goods_price.getText().toString().length()==0) {
-                    Toast myToast = Toast.makeText(getActivity(),"상품이름과 가격을 입력해주세요.", Toast.LENGTH_SHORT);
-                    myToast.show();
-                } else {
-                    goods_name=ed_goods_name.getText().toString();
-                    goods_price = parseInt(ed_goods_price.getText().toString());
-                    goods_detail=ed_goods_detail.getText().toString();
+            /*If name or price is blank*/
+            if (ed_goods_name.getText().toString().length()==0 || ed_goods_price.getText().toString().length()==0) {
+                Toast myToast = Toast.makeText(getActivity(),"상품이름과 가격을 입력해주세요.", Toast.LENGTH_SHORT);
+                myToast.show();
+            } else {
+                goods_name=ed_goods_name.getText().toString();
+                goods_price = parseInt(ed_goods_price.getText().toString());
+                goods_detail=ed_goods_detail.getText().toString();
 // public Post(long goods_photoID, String goods_name, int goods_price, String goods_location, int like_cnt, String name){
-                    temp_post=new Post(goods_photoID, goods_name, goods_price, location,like_cnt, goods_detail );
-                    postArrayList=new ArrayList<>();
-                    postArrayList.add(temp_post);
+                temp_post=new Post(goods_photoID, goods_name, goods_price, location,like_cnt, goods_detail );
+                postArrayList=new ArrayList<>();
+                postArrayList.add(temp_post);
 
-                    //서버에 추가
+                //서버에 추가
 
-                    /*goto FragmentHome*/
-                    Intent intent1;
-                    intent1=new Intent(getActivity(), FragmentHome.class);
-                    startActivity(intent1);
+                /*goto FragmentHome*/
+                Intent intent1;
+                intent1=new Intent(getActivity(), FragmentHome.class);
+                startActivity(intent1);
 
 
-                }
+            }
 
             }
         });

@@ -19,8 +19,6 @@
             android:layout_height="wrap_content"
             android:text="글쓰기"
             android:textSize="30dp"
-
-
             android:layout_centerInParent="true"
             />
        <!-- <Button
@@ -42,6 +40,7 @@
     <!--image 관리-->
 
     <!--제목, 가격 상세 입력-->
+
     <HorizontalScrollView
         android:id="@+id/hscroll"
         android:layout_width="match_parent"
@@ -64,37 +63,39 @@
                 android:src="@drawable/blankpic" />
 
             <ListView
+                android:id="@+id/imageid1"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:layout_gravity="center"
-                android:layout_marginLeft="20dp"
-                android:id="@+id/imageid1"/>
+                android:layout_marginLeft="20dp" />
 
             <ListView
+                android:id="@+id/imageid2"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:layout_gravity="center"
-                android:layout_marginLeft="20dp"
-                android:id="@+id/imageid2"/>
+                android:layout_marginLeft="20dp" />
 
             <ListView
+                android:id="@+id/imageid3"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:layout_gravity="center"
-                android:layout_marginLeft="20dp"
-                android:id="@+id/imageid3"/>
+                android:layout_marginLeft="20dp" />
+
             <ListView
+                android:id="@+id/imageid4"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:layout_gravity="center"
-                android:layout_marginLeft="20dp"
-                android:id="@+id/imageid4"/>
+                android:layout_marginLeft="20dp" />
+
             <ListView
+                android:id="@+id/imageid5"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:layout_gravity="center"
-                android:layout_marginLeft="20dp"
-                android:id="@+id/imageid5"/>
+                android:layout_marginLeft="20dp" />
 
 
         </LinearLayout>
@@ -107,7 +108,7 @@
         android:layout_below="@+id/hscroll">
 
         <EditText
-            android:layout_width="350dp"
+            android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:id="@+id/ed_goods_name"
@@ -116,7 +117,7 @@
             />
 
         <EditText
-            android:layout_width="350dp"
+            android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:id="@+id/ed_goods_price"
             android:layout_below="@+id/ed_goods_name"
@@ -125,17 +126,18 @@
             />
 
         <EditText
-            android:layout_width="350dp"
+            android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:id="@+id/ed_goods_location"
             android:layout_below="@+id/ed_goods_price"
             android:hint="위치(자동저장)"
             android:enabled="false"
             android:layout_centerInParent="true"
+
             />
 
         <EditText
-            android:layout_width="350dp"
+            android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:id="@+id/ed_goods_detail"
             android:layout_centerInParent="true"
