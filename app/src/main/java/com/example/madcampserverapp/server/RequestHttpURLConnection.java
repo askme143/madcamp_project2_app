@@ -2,12 +2,15 @@ package com.example.madcampserverapp.server;
 
 import android.content.ContentValues;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.util.Log;
 
 import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -278,5 +281,28 @@ public class RequestHttpURLConnection {
             page += line;
 
         return page;
+    }
+
+    private Bitmap getBitmap(HttpURLConnection urlConnection) throws IOException {
+        /* Check response code */
+        if (urlConnection.getResponseCode() != HttpURLConnection.HTTP_OK) {
+            return null;
+        }
+
+        /* Read and make string value PAGE */
+        InputStream inputStream = urlConnection.getInputStream();
+
+        byte[] buffer = new byte[8000];
+        int bytesRead = 0;
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        while ((bytesRead = inputStream.read(buffer)) != -1 ) {
+            byteArrayOutputStream.write(buffer, 0, bytesRead);
+        }
+
+        byte[] imageByteArray = byteArrayOutputStream.toByteArray();
+        System.out.println(imageByteArray);
+        Bitmap bitmap = BitmapFactory.decodeByteArray(imageByteArray, 0, imageByteArray.length);
+
+        return bitmap;
     }
 }

@@ -144,7 +144,7 @@ public class FragmentGallery extends Fragment {
                 return;
             }
 
-            Uri photoURI = FileProvider.getUriForFile(mContext, "com.example.practice.fileprovider", photoFile);
+            Uri photoURI = FileProvider.getUriForFile(mContext, "com.example.madcampserverapp.fileprovider", photoFile);
             takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
             startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
         }
