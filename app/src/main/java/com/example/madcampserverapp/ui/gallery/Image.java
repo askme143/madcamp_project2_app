@@ -52,9 +52,13 @@ public class Image {
                     final int halfHeight = imageHeight / 2;
                     final int halfWidth = imageWidth / 2;
 
+                    int test = halfHeight / scaleFactor;
+                    System.out.println(test + " " + scaleFactor);
+
                     while ((halfHeight / scaleFactor) >= mHieght
                             && (halfWidth / scaleFactor) >= mWidth) {
                         scaleFactor *= 2;
+                        System.out.println(scaleFactor);
                     }
                 }
 

@@ -151,12 +151,14 @@ public class BigPostActivity extends AppCompatActivity {
             }
         });
 
+
         /* Big image Viewpager Adapter */
 
         bigImageViewPagerAdapter=new BigImageViewPagerAdapter(this,imageArraylist);
         viewPager.setAdapter(bigImageViewPagerAdapter);
-        viewPager.setCurrentItem(1);
+        viewPager.setCurrentItem(0);
         bigImageViewPagerAdapter.notifyDataSetChanged();
+
 
     }
 }

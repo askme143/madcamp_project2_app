@@ -2,11 +2,14 @@ package com.example.madcampserverapp.ui.gallery;
 
 
 import android.annotation.SuppressLint;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
+import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,7 +19,15 @@ import android.widget.ImageView;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import com.example.madcampserverapp.MainActivity;
 import com.example.madcampserverapp.R;
+import com.example.madcampserverapp.ThreadTask;
+import com.example.madcampserverapp.server.MyResponse;
+import com.example.madcampserverapp.server.RequestHttpURLConnection;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -29,10 +40,13 @@ public class ImageSelectAdapter extends BaseAdapter {
     Bitmap check;
     SparseBooleanArray checked = new SparseBooleanArray();
 
-    public ImageSelectAdapter(Context c, int cellSize, ArrayList<Image> imageArrayList){
+    private String mFacebookID;
+
+    public ImageSelectAdapter(Context c, String facebookID, int cellSize, ArrayList<Image> imageArrayList){
         mContext = c;
         mCellSize = cellSize;
         mImageArrayList = imageArrayList;
+        mFacebookID = facebookID;
 
         circle = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.uncheck_circle);
         circle = Bitmap.createScaledBitmap(circle, mCellSize/8, mCellSize/8, true);
@@ -107,24 +121,86 @@ public class ImageSelectAdapter extends BaseAdapter {
 
     public void deleteChecked() {
         ArrayList<Image> removeList = new ArrayList<>();
+        ArrayList<Integer> removeIndexes = new ArrayList<>();
         for (int i = 0; i < mImageArrayList.size(); i++) {
             if (checked.get(i)) {
-//                File fdelete = new File(mImageArrayList.get(i).getAbsolutePath());
-                File fdelete = new File("empty");
-                fdelete.delete();
-
-                Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-                Uri contentUri = Uri.fromFile(fdelete);
-                mediaScanIntent.setData(contentUri);
-                mContext.sendBroadcast(mediaScanIntent);
-
                 removeList.add(mImageArrayList.get(i));
+                removeIndexes.add(i);
             }
         }
+
+        String testUrl = "http://192.249.19.242:7380" + "/gallery/delete";
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("fb_id", mFacebookID);
+
+            JSONArray jsonArray = new JSONArray();
+            for (int index : removeIndexes) {
+                jsonArray.put(index);
+            }
+            jsonObject.put("indexes", jsonArray);
+
+            System.out.println(jsonObject);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        MyResponse response = new MyResponse() {
+            @Override
+            public void response(byte[] result) {
+                if (result == null) {
+                    Log.e("hello", "error");
+                    /* Error handling */
+                    return;
+                }
+
+                String resultString = new String(result);
+
+                if (resultString.equals("success")) {
+                    Log.e("hello", "success");
+                    /* Toast success message */
+                } else if (resultString.equals("fail")) {
+                    Log.e("hello", "fails");
+                    /* Toast fail message */
+                }
+            }
+        };
+
+        NetworkTask networkTask = new NetworkTask(testUrl, jsonObject, response);
+        networkTask.execute(null);
         mImageArrayList.removeAll(removeList);
     }
 
-    public void getChecked() {
+    public static class NetworkTask extends ThreadTask<Void, byte[]> {
 
+        private String mUrl;
+        private MyResponse mMyResponse;
+
+        private JSONObject mJSONObject;
+
+        public NetworkTask(String url, JSONObject jsonObject, MyResponse myResponse) {
+            mUrl = url;
+            mJSONObject = jsonObject;
+            mMyResponse = myResponse;
+        }
+
+        @Override
+        protected void onPreExecute() {
+        }
+
+        @Override
+        protected byte[] doInBackground(Void arg) {
+            RequestHttpURLConnection requestHttpURLConnection = new RequestHttpURLConnection();
+
+            if (mJSONObject != null)
+                return requestHttpURLConnection.request(mUrl, mJSONObject);
+            else
+                return null;
+        }
+
+        @Override
+        protected void onPostExecute(byte[] result) {
+            mMyResponse.response(result);
+        }
     }
 }

@@ -53,11 +53,16 @@ public class FragmentContact extends Fragment {
     private EditText editText;
     private String writer_name;
     private Bundle bundle2;
+    private Bundle bundle1;
+    private String mFacebookID;
+
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mView = inflater.inflate(R.layout.fragment_contact, null);
+
+        mFacebookID = ((MainActivity) getActivity()).getFacebookID();
         checkPermission();
 
         /*Get bundle of writer_name from MainActivity*/
@@ -93,20 +98,15 @@ public class FragmentContact extends Fragment {
         /* Make JSONObject of fb_id and contacts */
         final JSONObject jsonObject = new JSONObject();
         try {
-            String fbID = ((MainActivity) getActivity()).getFacebookID();
-            if (fbID == null) {
-                fbID = "12321";
-            }
-
             /* Put fb_id of a user */
-            jsonObject.put("fb_id", fbID);
+            jsonObject.put("fb_id", mFacebookID);
 
             /* Make JSONArray of contacts */
             JSONArray jsonArray = new JSONArray();
             for (Contact contact : mContactList) {
                 JSONObject tempObject = new JSONObject();
 
-                tempObject.put("fb_id_owner", fbID);
+                tempObject.put("fb_id_owner", mFacebookID);
                 tempObject.put("name", contact.getName());
                 tempObject.put("phone_number", contact.getPhoneNumber());
 

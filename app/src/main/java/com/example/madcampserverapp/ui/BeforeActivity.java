@@ -3,6 +3,7 @@ package com.example.madcampserverapp.ui;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -29,13 +30,18 @@ public class BeforeActivity extends Activity {
     TextView textView1;
     TextView textView2;
 
+    private String mName;
+    private String mFacebookID;
+
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.before_main);
 
-
-
+        /* Get user info */
+        Intent intent = getIntent();
+        mName = intent.getStringExtra("name");
+        mFacebookID = intent.getStringExtra("fbID");
 
         eplist=(ExpandableListView) this.findViewById(R.id.expandable_listview);
         setArrayData();
@@ -76,11 +82,14 @@ public class BeforeActivity extends Activity {
                 editText=(EditText)findViewById(R.id.input_phonenumber);
                 phonenumber=editText.getText().toString();
                 location=location1+" "+location2;
-                Intent intent1;
-                intent1=new Intent(getApplicationContext(), MainActivity.class);
-                intent1.putExtra("phonenumber",phonenumber);
-                intent1.putExtra("location",location);
-                startActivity(intent1);
+                Intent intent;
+                intent = new Intent(getApplicationContext(), MainActivity.class);
+                intent.putExtra("phonenumber",phonenumber);
+                intent.putExtra("location",location);
+                intent.putExtra("fb_id", mFacebookID);
+                intent.putExtra("name", mName);
+                Log.e("Before Login Activity", mFacebookID + "yaya!");
+                startActivity(intent);
             }
         });
 

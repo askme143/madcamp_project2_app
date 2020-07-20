@@ -6,6 +6,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.graphics.drawable.BitmapDrawable;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
@@ -56,8 +57,10 @@ public class FragmentGallery extends Fragment {
 
     private Context mContext;
     private GridView mGridView;
-    FloatingActionButton mFloatButton;
+    private FloatingActionButton mFloatButton;
+
     private int mCellSize;
+    private String mFacebookID;
 
     private String mCurrentPhotoPath;
     private String mImageDirPath;
@@ -78,15 +81,14 @@ public class FragmentGallery extends Fragment {
 
         mContext = view.getContext();
         mImageDirPath = mContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES).toString() + "/MadCampApp";
+        mFacebookID = ((MainActivity) getActivity()).getFacebookID();
+        System.out.println(mFacebookID);
 
         /* Get GRID_VIEW */
         mGridView = (GridView) view.findViewById(R.id.grid_view);
 
         requestBitmapArrayList();
 
-//        if (mImagePaths == null) {
-//            initFragment();
-//        }
         mGridView.setAdapter(mImageAdapter);
 
         /* Floating camera button */
@@ -178,6 +180,35 @@ public class FragmentGallery extends Fragment {
         }
     }
 
+    private Bitmap rotateImage (Bitmap bitmap, String path) {
+        /* Code below rotates the bitmap to be original direction */
+        try {
+            ExifInterface exif = new ExifInterface(path);
+            int orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_UNDEFINED);
+
+            Matrix matrix = new Matrix();
+            switch (orientation) {
+                case ExifInterface.ORIENTATION_ROTATE_90:
+                    matrix.postRotate(90);
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_180:
+                    matrix.postRotate(180);
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_270:
+                    matrix.postRotate(270);
+                    break;
+                default:
+                    break;
+            }
+
+            return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
     private void galleryAddPic() {
         Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
         File f = new File(mCurrentPhotoPath);
@@ -185,9 +216,36 @@ public class FragmentGallery extends Fragment {
         mediaScanIntent.setData(contentUri);
         mContext.sendBroadcast(mediaScanIntent);
 
-        Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath);
+        Bitmap bitmap = rotateImage(BitmapFactory.decodeFile(mCurrentPhotoPath), mCurrentPhotoPath);
+        /* Add bitmap on array lists */
         mBitmapArrayList.add(0, bitmap);
         mImageArrayList.add(new Image(bitmap, mCellSize));
+
+        /* Upload an image */
+        String testUrl = "http://192.249.19.242:7380" + "/gallery/upload";
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("fb_id", mFacebookID);
+        contentValues.put("file_name", mCurrentPhotoPath);
+
+        final String path = mCurrentPhotoPath;
+
+        MyResponse response = new MyResponse() {
+            @Override
+            public void response(byte[] result) {
+                Log.e("hello", new String(result));
+                /* Delete an image */
+                File fdelete = new File(path);
+                fdelete.delete();
+
+                Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+                Uri contentUri = Uri.fromFile(fdelete);
+                mediaScanIntent.setData(contentUri);
+                mContext.sendBroadcast(mediaScanIntent);
+            }
+        };
+
+        NetworkTask networkTask = new NetworkTask(testUrl, bitmap, contentValues, response);
+        networkTask.execute(null);
 
         Toast.makeText(mContext, "Uploaded", Toast.LENGTH_SHORT).show();
     }
@@ -213,7 +271,7 @@ public class FragmentGallery extends Fragment {
         String url = "http://192.249.19.242:7380";
         String testUrl = url + "/gallery/download";
         ContentValues contentValues = new ContentValues();
-        contentValues.put("fb_id", "12321");
+        contentValues.put("fb_id", mFacebookID);
         contentValues.put("skip_number", "0");
         contentValues.put("require_number", "0");
 
@@ -258,10 +316,9 @@ public class FragmentGallery extends Fragment {
                                     int position, long id) {
                 if (click_enable == 1) {
                     Intent i = new Intent(getActivity(), FullImageActivity.class);
-                    BitmapArrayIndicator bitmapArrayIndicator = new BitmapArrayIndicator(mBitmapArrayList);
 
                     i.putExtra("id", position);
-                    i.putExtra("bitmapIndicator", bitmapArrayIndicator);
+                    i.putExtra("fb_id", mFacebookID);
                     i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
                     startActivity(i);
@@ -274,7 +331,7 @@ public class FragmentGallery extends Fragment {
              @Override
              public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
                  click_enable = 0;
-                 final ImageSelectAdapter deleteAdapter = new ImageSelectAdapter(mContext, mCellSize, mImageArrayList);
+                 final ImageSelectAdapter deleteAdapter = new ImageSelectAdapter(mContext, mFacebookID, mCellSize, mImageArrayList);
                  mGridView.setAdapter(deleteAdapter);
                  mFloatButton.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.trash));
 
@@ -320,10 +377,6 @@ public class FragmentGallery extends Fragment {
              }
          }
     );
-    }
-
-    public ArrayList<Image> getImageArrayList() {
-        return mImageArrayList;
     }
 
     public static class NetworkTask extends ThreadTask<Void, byte[]> {

@@ -47,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
 
     private String url = "http://192.249.19.242:7380";
     private String mFacebookID;
+    private String mName;
     private String phoneNumber;
     private String location;
     private String writer_name;
@@ -60,53 +61,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        /* Ignore: Code for testing */
-        boolean test = false;
-        if (test){
-            String testUrl = url + "/gallery/upload";
-            Bitmap bitmap = ((BitmapDrawable) getResources().getDrawable(R.drawable.contact_icon)).getBitmap();
-            ContentValues contentValues = new ContentValues();
-            contentValues.put("fb_id", "12321");
-            contentValues.put("file_name", "contact_icon.jpg");
-
-            MyResponse response = new MyResponse() {
-                @Override
-                public void response(byte[] result) {
-                    Log.e("hello", new String(result));
-                }
-            };
-
-            NetworkTask networkTask = new NetworkTask(testUrl, bitmap, contentValues, response);
-            networkTask.execute(null);
-
-//            String testUrl = url + "/gallery/download";
-//            ContentValues contentValues = new ContentValues();
-//            contentValues.put("fb_id", "12321");
-//            contentValues.put("skip_number", "0");
-//            contentValues.put("require_number", "2");
-//
-//            MyResponse response = new MyResponse() {
-//                @Override
-//                public void response(byte[] result) {
-//                    try {
-//                        JSONObject jsonObject = new JSONObject(new String(result));
-//                        JSONArray jsonArray = jsonObject.getJSONArray("images");
-//
-//                        for (int i = 0; i < jsonArray.length(); i++) {
-//                            byte[] imageByteArray = Base64.decode(jsonArray.getJSONObject(i).getString("image"), Base64.DEFAULT);
-//                            Bitmap bitmap = BitmapFactory.decodeByteArray(imageByteArray, 0, imageByteArray.length);
-//                        }
-//                    } catch (JSONException e) {
-//                        e.printStackTrace();
-//                    }
-//
-//                }
-//            };
-//
-//            NetworkTask networkTask = new NetworkTask(testUrl, contentValues, response);
-//            networkTask.execute(null);
-        }
 
         checkPermission();
 
@@ -199,14 +153,15 @@ public class MainActivity extends AppCompatActivity {
         fragmentWrite = new FragmentWrite();
         fragmentMyinfo = new FragmentMyinfo2();
 
-        /* Get user info */
-        Intent intent = getIntent();
-        mFacebookID = intent.getStringExtra("fbID");
 
-        /* Get user location & phonenumber */
-        Intent intent2 = getIntent();
-        phoneNumber = intent2.getStringExtra("phonenumber");
-        location = intent2.getStringExtra("location");
+        /* Get user location & phonenumber & user info*/
+        Intent intent = getIntent();
+        phoneNumber=intent.getStringExtra("phonenumber");
+        location=intent.getStringExtra("location");
+        mFacebookID = intent.getStringExtra("fb_id");
+        mName = intent.getStringExtra("name");
+
+        System.out.println(mFacebookID);
 
         /* Send them to FragmentMyinfo2 */
         Bundle bundle = new Bundle(2);
@@ -218,7 +173,6 @@ public class MainActivity extends AppCompatActivity {
         Intent intent4=getIntent();
         writer_name=intent4.getStringExtra("writer_name");
 
-
         /* Send it to FragmentContact */
        // FragmentTransaction transaction = null;
         if (writer_name!=null) {
@@ -228,6 +182,7 @@ public class MainActivity extends AppCompatActivity {
             getSupportFragmentManager().beginTransaction().replace(R.id.frame_layout,fragmentContact).commitAllowingStateLoss();
        //     transaction.commit();
         }
+
         /* Default fragment (home page) */
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.frame_layout, fragmentHome).commitAllowingStateLoss();
