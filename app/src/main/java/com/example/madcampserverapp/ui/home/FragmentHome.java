@@ -50,6 +50,7 @@ public class FragmentHome extends Fragment {
         postArrayList = new ArrayList<>();
         postArrayList.add(examplePost);
 
+        System.out.println("size of imageList in Fragment Home ::: "+imageList.size());
         mAdapter = new HomeRecyclerAdapter(getActivity(), postArrayList, imageList, imageList.get(1));
         recyclerView.setAdapter(mAdapter);// set the Adapter to RecyclerView
 

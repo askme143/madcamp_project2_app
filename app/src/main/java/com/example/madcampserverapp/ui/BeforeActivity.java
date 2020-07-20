@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import com.example.madcampserverapp.MainActivity;
 import com.example.madcampserverapp.R;
+import com.example.madcampserverapp.ui.AdptMain;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -88,7 +89,6 @@ public class BeforeActivity extends Activity {
                 intent.putExtra("location",location);
                 intent.putExtra("fb_id", mFacebookID);
                 intent.putExtra("name", mName);
-                Log.e("Before Login Activity", mFacebookID + "yaya!");
                 startActivity(intent);
             }
         });

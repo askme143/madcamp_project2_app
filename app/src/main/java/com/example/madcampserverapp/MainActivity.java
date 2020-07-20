@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.Manifest;
 import android.content.ContentValues;
@@ -12,7 +13,6 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
-import android.media.Image;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Base64;
@@ -21,6 +21,7 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.example.madcampserverapp.server.MyResponse;
+import com.example.madcampserverapp.ui.gallery.Image;
 import com.example.madcampserverapp.ui.home.FragmentHome;
 import com.example.madcampserverapp.ui.userinfo.FragmentMyinfo2;
 import com.example.madcampserverapp.ui.write.FragmentWrite;
@@ -49,11 +50,20 @@ public class MainActivity extends AppCompatActivity {
     private String mName;
     private String phoneNumber;
     private String location;
+    private String writer_name;
 
+    /* Getter */
     public String getUrl() { return url; }
     public String getFacebookID() { return mFacebookID; }
+    public String getName() { return mName; }
+    public String getLocation() { return location; }
+    public boolean isWriteImageSelection() { return writeImageSelection; }
 
+    /* Number of requiring permissions */
     private int mPermissionCount;
+
+    /* Selection indicator */
+    private boolean writeImageSelection = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,34 +78,37 @@ public class MainActivity extends AppCompatActivity {
                 .OnNavigationItemSelectedListener(){
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem){
-            switch (menuItem.getItemId()){
-                case R.id.contact:{
-                    getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.frame_layout, fragmentContact).commitAllowingStateLoss();
-                    return true;
+                /* Initialize selection indicator */
+                writeImageSelection = false;
+
+                switch (menuItem.getItemId()){
+                    case R.id.contact:{
+                        getSupportFragmentManager().beginTransaction()
+                                .replace(R.id.frame_layout, fragmentContact).commitAllowingStateLoss();
+                        return true;
+                    }
+                    case R.id.gallery:{
+                        getSupportFragmentManager().beginTransaction()
+                                .replace(R.id.frame_layout, fragmentGallery).commitAllowingStateLoss();
+                        return true;
+                    }
+                    case R.id.home:{
+                        getSupportFragmentManager().beginTransaction()
+                                .replace(R.id.frame_layout, fragmentHome).commitAllowingStateLoss();
+                        return true;
+                    }
+                    case R.id.write:{
+                        getSupportFragmentManager().beginTransaction()
+                                .replace(R.id.frame_layout, fragmentWrite).commitAllowingStateLoss();
+                        return true;
+                    }
+                    case R.id.myinfo:{
+                        getSupportFragmentManager().beginTransaction()
+                                .replace(R.id.frame_layout, fragmentMyinfo).commitAllowingStateLoss();
+                        return true;
+                    }
+                    default: return false;
                 }
-                case R.id.gallery:{
-                    getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.frame_layout, fragmentGallery).commitAllowingStateLoss();
-                    return true;
-                }
-                case R.id.home:{
-                    getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.frame_layout, fragmentHome).commitAllowingStateLoss();
-                    return true;
-                }
-                case R.id.write:{
-                    getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.frame_layout, fragmentWrite).commitAllowingStateLoss();
-                    return true;
-                }
-                case R.id.myinfo:{
-                    getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.frame_layout, fragmentMyinfo).commitAllowingStateLoss();
-                    return true;
-                }
-                default: return false;
-            }
             }
         });
     }
@@ -106,12 +119,6 @@ public class MainActivity extends AppCompatActivity {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS)
                 != PackageManager.PERMISSION_GRANTED)
             tmp += Manifest.permission.READ_CONTACTS + " ";
-//        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
-//                != PackageManager.PERMISSION_GRANTED)
-//            tmp += Manifest.permission.READ_EXTERNAL_STORAGE + " ";
-//        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-//                != PackageManager.PERMISSION_GRANTED)
-//            tmp += Manifest.permission.WRITE_EXTERNAL_STORAGE + " ";
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
                 != PackageManager.PERMISSION_GRANTED)
             tmp += Manifest.permission.CAMERA + " ";
@@ -151,76 +158,49 @@ public class MainActivity extends AppCompatActivity {
         fragmentWrite = new FragmentWrite();
         fragmentMyinfo = new FragmentMyinfo2();
 
-        /* Get user location & phonenumber & user info*/
+        /* Get intent */
         Intent intent = getIntent();
-        phoneNumber=intent.getStringExtra("phonenumber");
-        location=intent.getStringExtra("location");
-        mFacebookID = intent.getStringExtra("fb_id");
-        mName = intent.getStringExtra("name");
 
-        System.out.println(mFacebookID);
+        /* Get user location & phoneNumber & user info */
+        if (intent.hasExtra("fb_id")) {
+            phoneNumber = intent.getStringExtra("phonenumber");
+            location = intent.getStringExtra("location");
+            mFacebookID = intent.getStringExtra("fb_id");
+            mName = intent.getStringExtra("name");
+        }
 
-        /* Send them to FragmentMyinfo2 */
+        /* Send user info to FragmentMyinfo2 */
         Bundle bundle = new Bundle(2);
-        bundle.putString("location",location);
-        bundle.putString("phonenumber",phoneNumber);
+        bundle.putString("location", location);
+        bundle.putString("phonenumber", phoneNumber);
         fragmentMyinfo.setArguments(bundle);
 
-        /* Default fragment (home page) */
+        /* TODO: If caller is BIG_POST_ACTIVITY, then move to CONTACT TAB */
+        /* Get writer name from BigPostActivity */
+        if (intent.hasExtra("writer_name")) {
+            writer_name = intent.getStringExtra("writer_name");
+
+            Bundle bundle2 = new Bundle();
+            bundle2.putString("writer_name", writer_name);
+            fragmentContact.setArguments(bundle2);
+            getSupportFragmentManager().beginTransaction().replace(R.id.frame_layout,fragmentContact).commitAllowingStateLoss();
+        }
+
+        /* Default fragment (home tab) */
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.frame_layout, fragmentHome).commitAllowingStateLoss();
     }
 
-    public static class NetworkTask extends ThreadTask<Void, byte[]> {
+    public void startWriteImageSelection() {
+        writeImageSelection = true;
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.frame_layout, fragmentGallery).commitAllowingStateLoss();
+    }
 
-        private String mUrl;
-        private MyResponse mMyResponse;
-
-        private Bitmap mBitmap;
-        private ContentValues mValues;
-        private JSONObject mJSONObject;
-
-        public NetworkTask(String url, ContentValues values, MyResponse myResponse) {
-            mUrl = url;
-            mValues = values;
-            mMyResponse = myResponse;
-        }
-
-        public NetworkTask(String url, JSONObject jsonObject, MyResponse myResponse) {
-            mUrl = url;
-            mJSONObject = jsonObject;
-            mMyResponse = myResponse;
-        }
-
-        public NetworkTask(String url, Bitmap bitmap, ContentValues contentValues, MyResponse myResponse) {
-            mUrl = url;
-            mBitmap = bitmap;
-            mValues = contentValues;
-            mMyResponse = myResponse;
-        }
-
-        @Override
-        protected void onPreExecute() {
-        }
-
-        @Override
-        protected byte[] doInBackground(Void arg) {
-            RequestHttpURLConnection requestHttpURLConnection = new RequestHttpURLConnection();
-
-            if (mBitmap != null)
-                return requestHttpURLConnection.uploadImage(mUrl, mBitmap, mValues);
-            else if (mJSONObject != null)
-                return requestHttpURLConnection.request(mUrl, mJSONObject);
-            else if (mValues != null)
-                return requestHttpURLConnection.request(mUrl, mValues);
-            else
-                return null;
-        }
-
-        @Override
-        protected void onPostExecute(byte[] result) {
-            mMyResponse.response(result);
-        }
+    public void endWriteImageSelection(Bitmap bitmap) {
+        fragmentWrite.addWriteImage(bitmap);
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.frame_layout, fragmentWrite).commitAllowingStateLoss();
     }
 
 //    /* Image Gallery Code */

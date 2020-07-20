@@ -43,6 +43,7 @@ public class HomeRecyclerAdapter extends RecyclerView.Adapter <HomeRecyclerAdapt
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         //inflate item layout
         View v= LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_home_row, parent, false);
+        System.out.println("size of imageList in HomeRecyclerAdapter ::: "+imageList.size());
         return new ViewHolder(v);
     }
 
@@ -69,26 +70,28 @@ public class HomeRecyclerAdapter extends RecyclerView.Adapter <HomeRecyclerAdapt
             if (i!=RecyclerView.NO_POSITION){
                 Intent intent=new Intent(view.getContext(),BigPostActivity.class);
 
-   //   post1.getGoods_images() 이거 받아왔으니까 여기서 byte[] 담은 배열로 변환해서 새로만든 arraylist<byte[]>에 담고 이걸 보냄!
+   //   post1.getGoods_images() 이거 받아왔으니까 여기서 byte[] 담은 배열로 변환해서 새로만든 arraylist<byte[]>에 담고 이걸 보냄
                 byteimagelist=new ArrayList<>();
                 Post post1=postArrayList.get(i);
 
                 imageList=post1.getGoods_images(); // bitmap arrayList
 
                 for (int j=1;j<imageList.size();j++) {
-                    imageList.get(j).compress(Bitmap.CompressFormat.JPEG,100,stream);
+                    imageList.get(j).compress(Bitmap.CompressFormat.JPEG,100,stream); //////////////////
                     byte[] b=stream.toByteArray();
                     byteimagelist.add(b);
                 }
+                System.out.println("size of imageList in HomeRecyclerAdapter at this point-1 ::: "+imageList.size());
+                System.out.println("size of byteimageList in HomeRecyclerAdapter at this point-1 ::: "+byteimagelist.size());
 
-                intent.putExtra("goods_name",post1.getGoods_name());
-                intent.putExtra("goods_price",post1.getGoods_price());
-                intent.putExtra("goods_location",post1.getGoods_location());
-                intent.putExtra("goods_byteimagelist",byteimagelist);
+                intent.putExtra("goods_name", post1.getGoods_name());
+                intent.putExtra("goods_price", post1.getGoods_price());
+                intent.putExtra("goods_location", post1.getGoods_location());
+                intent.putExtra("goods_byteimagelist", byteimagelist);
               // intent.putExtra("goods_imageList",post1.getGoods_images()); //Send bitmap arrayList to BigPostActivity
-                intent.putExtra("like_cnt",post1.getLike_cnt());
-                intent.putExtra("writer",post1.getName());
-                intent.putExtra("goods_detail",post1.getGoods_detail());
+                intent.putExtra("like_cnt", post1.getLike_cnt());
+                intent.putExtra("writer", post1.getName());
+                intent.putExtra("goods_detail", post1.getGoods_detail());
 
                 view.getContext().startActivity(intent);
             }

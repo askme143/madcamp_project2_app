@@ -3,10 +3,8 @@ package com.example.madcampserverapp;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -22,7 +20,6 @@ import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
-import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 
@@ -43,27 +40,27 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.activity_start);
 
         /* Own register button */
-        gotoregButton=(Button) findViewById(R.id.button_signup);
-        gotoregButton.setOnClickListener(new Button.OnClickListener(){
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(),RegisterActivity.class);
-                startActivity(intent);
-            }
-        });
+//        gotoregButton=(Button) findViewById(R.id.button_signup);
+//        gotoregButton.setOnClickListener(new Button.OnClickListener(){
+//            @Override
+//            public void onClick(View view) {
+//                Intent intent = new Intent(getApplicationContext(),RegisterActivity.class);
+//                startActivity(intent);
+//            }
+//        });
 
         /* Own login button */
-        loginBtn=(Button) findViewById(R.id.button_login);
-        loginBtn.setOnClickListener(new Button.OnClickListener(){
-            @Override
-            public void onClick(View view) {
-                Intent intent_login = new Intent(getApplicationContext(),MainActivity.class);
-                startActivity(intent_login);
-            }
-        });
+       // loginBtn=(Button) findViewById(R.id.button_login);
+//        loginBtn.setOnClickListener(new Button.OnClickListener(){
+//            @Override
+//            public void onClick(View view) {
+//                Intent intent_login = new Intent(getApplicationContext(),MainActivity.class);
+//                startActivity(intent_login);
+//            }
+//        });
 
         /* Facebook login button */
         loginButtonfb = (LoginButton) findViewById(R.id.login_button);
@@ -171,7 +168,6 @@ public class LoginActivity extends AppCompatActivity {
                 if (resultString.equals("success")) {
                     /* Goto MainAcivity -> BeforeActivity*/ //전화번호 존재하면 Mainactivity
                     Intent intent_goActive = new Intent(getApplicationContext(), BeforeActivity.class);
-                    Log.e(TAG, fbID + "yaya!");
                     intent_goActive.putExtra("name", name);
                     intent_goActive.putExtra("fbID", fbID );
                     startActivity(intent_goActive);
