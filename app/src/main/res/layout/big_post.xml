@@ -4,22 +4,29 @@
     android:layout_height="match_parent"
     android:id="@+id/fragment_container">
 
-    <ImageView
+<!--    <ImageView-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="300dp"-->
+<!--        android:id="@+id/big_goods_image"-->
+<!--        android:src="@drawable/blankpic"-->
+<!--        android:layout_margin="20dp"-->
+<!--        />-->
+
+    <!--  <ImageView
+          android:id="@+id/big_goods_like"
+          android:layout_width="20dp"
+          android:layout_height="20dp"
+          android:layout_marginLeft="30dp"
+          android:layout_below="@+id/big_goods_image"
+          android:src="@drawable/heart" />-->
+
+
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/postimage_ViewPager"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/big_goods_image"
-        android:src="@drawable/blankpic"
+        android:layout_height="300dp"
         android:layout_margin="20dp"
-        />
-
-  <!--  <ImageView
-        android:id="@+id/big_goods_like"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:layout_marginLeft="30dp"
-        android:layout_below="@+id/big_goods_image"
-        android:src="@drawable/heart" />-->
-
+        android:adjustViewBounds="true" />
 
     <ImageButton
         android:id="@+id/big_goods_like"
@@ -27,32 +34,35 @@
         android:layout_height="20dp"
         android:background="@drawable/heart"
         android:scaleType="fitCenter"
-        android:layout_below="@+id/big_goods_image"
+        android:layout_below="@+id/postimage_ViewPager"
         android:layout_marginLeft="30dp"
          />
+<!--        android:layout_below="@+id/big_goods_image"-->
 
     <TextView
         android:layout_width="50dp"
         android:layout_height="35dp"
         android:layout_toRightOf="@+id/big_goods_like"
-        android:layout_below="@+id/big_goods_image"
+        android:layout_below="@+id/postimage_ViewPager"
         android:text="0"
         android:textSize="25dp"
         android:layout_marginTop="-8dp"
         android:layout_marginLeft="5dp"
         android:id="@+id/big_like_cnt"
         />
+<!--        android:layout_below="@+id/big_goods_image"-->
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/big_goods_image"
+        android:layout_below="@+id/postimage_ViewPager"
         android:text="작성자"
         android:textSize="20dp"
         android:layout_alignParentRight="true"
         android:id="@+id/big_writer"
         android:paddingRight="30dp"
         />
+<!--        android:layout_below="@+id/big_goods_image"-->
 
     <TextView
         android:layout_width="match_parent"

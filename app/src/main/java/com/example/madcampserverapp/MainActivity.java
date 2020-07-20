@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.Manifest;
 import android.content.ContentValues;
@@ -48,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
     private String mFacebookID;
     private String phoneNumber;
     private String location;
+    private String writer_name;
 
     public String getUrl() { return url; }
     public String getFacebookID() { return mFacebookID; }
@@ -107,28 +109,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         checkPermission();
-
-        /* Get user info */
-        Intent intent = getIntent();
-        mFacebookID = intent.getStringExtra("fbID");
-
-        /*Get user location & phonenumber*/
-        Intent intent2=getIntent();
-        phoneNumber=intent2.getStringExtra("phonenumber");
-        location=intent2.getStringExtra("location");
-
-        /*Send them to FragmentMyinfo2*/
-//        Intent intent3=new Intent(getApplicationContext(),FragmentMyinfo2.class);
-//        intent3.putExtra("phonenumber",phoneNumber);
-//        intent3.putExtra("location",location);
-        Bundle bundle=new Bundle(2);
-        bundle.putString("location",location);
-        bundle.putString("phonenumber",phoneNumber);
-        fragmentMyinfo.setArguments(bundle);
-
-        // Bundle bundle=new Bundle(1);
-        //                bundle.putString("writer_name",writer);
-        //                fragmentContact.setArguments(bundle);
 
         /* bottom navigation view click listener */
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation_view);
@@ -219,6 +199,35 @@ public class MainActivity extends AppCompatActivity {
         fragmentWrite = new FragmentWrite();
         fragmentMyinfo = new FragmentMyinfo2();
 
+        /* Get user info */
+        Intent intent = getIntent();
+        mFacebookID = intent.getStringExtra("fbID");
+
+        /* Get user location & phonenumber */
+        Intent intent2 = getIntent();
+        phoneNumber = intent2.getStringExtra("phonenumber");
+        location = intent2.getStringExtra("location");
+
+        /* Send them to FragmentMyinfo2 */
+        Bundle bundle = new Bundle(2);
+        bundle.putString("location",location);
+        bundle.putString("phonenumber",phoneNumber);
+        fragmentMyinfo.setArguments(bundle);
+
+        /* Get writer name from BigPostActivity */
+        Intent intent4=getIntent();
+        writer_name=intent4.getStringExtra("writer_name");
+
+
+        /* Send it to FragmentContact */
+       // FragmentTransaction transaction = null;
+        if (writer_name!=null) {
+            Bundle bundle2 = new Bundle();
+            bundle2.putString("writer_name", writer_name);
+            fragmentContact.setArguments(bundle2);
+            getSupportFragmentManager().beginTransaction().replace(R.id.frame_layout,fragmentContact).commitAllowingStateLoss();
+       //     transaction.commit();
+        }
         /* Default fragment (home page) */
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.frame_layout, fragmentHome).commitAllowingStateLoss();

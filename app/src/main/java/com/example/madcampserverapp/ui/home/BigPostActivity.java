@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -16,11 +17,14 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.viewpager.widget.ViewPager;
 
+import com.example.madcampserverapp.MainActivity;
 import com.example.madcampserverapp.R;
 import com.example.madcampserverapp.ui.contact.FragmentContact;
 
 import java.util.ArrayList;
+import java.util.zip.Inflater;
 
 public class BigPostActivity extends AppCompatActivity {
     private ArrayList<Bitmap> imageArraylist;
@@ -35,6 +39,10 @@ public class BigPostActivity extends AppCompatActivity {
     private Bitmap bitmap;
     private boolean click_heart;
     private int is_click;
+    private ImageView new_images;
+
+    private ViewPager viewPager;
+    private BigImageViewPagerAdapter bigImageViewPagerAdapter;
 
     ImageView imageView;
     TextView textgoodsname, textgoodsprice, textgoodslocation, textlikecnt,textgoodsdetail;
@@ -45,6 +53,19 @@ public class BigPostActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.big_post);
+        ////inflate item layout
+        //        View v= LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_home_row, parent, false);
+        //        System.out.println("size of imageList in HomeRecyclerAdapter ::: "+imageList.size());
+        //        return new ViewHolder(v);
+        //    }
+      //  new_images=(ImageView) findViewById(R.id.postimage_ViewPager);
+//        LayoutInflater inflater = null;
+//
+//        View layout = inflater.inflate(R.layout.postimage_viewpager, null);
+        View view = (View) getLayoutInflater().
+                inflate(R.layout.postimage_viewpager, null);
+
+
         Intent intent=getIntent();
         click_heart=false;
         is_click=0;
@@ -59,17 +80,19 @@ public class BigPostActivity extends AppCompatActivity {
         writer=intent.getExtras().getString("writer");
         goods_detail=intent.getExtras().getString("goods_detail");
         imagebyteArraylist= (ArrayList<byte[]>) intent.getSerializableExtra("goods_byteimagelist");
-        //imagebyteArraylist 얘는 intent로 arratList<byte[]>받아온거.
-        //그래서 iamgeArraylist에 byte[]->bitmap으로 변환해야함!
+        System.out.println("size of byteimageList in BigPostActivity at this point-1 ::: "+imagebyteArraylist.size());
 
-        for (int j=1;j<imagebyteArraylist.size();j++){
+        //imagebyteArraylist 얘는 intent로 arratList<byte[]>받아온거.
+        //그래서 iamgeArraylist에 byte[]->bitmap으로 변환해야함
+        for (int j=0;j<imagebyteArraylist.size();j++){
             b=imagebyteArraylist.get(j);
             bitmap= BitmapFactory.decodeByteArray(b,0,b.length);
             imageArraylist.add(bitmap);
         }
-        System.out.println("-----------imageArraylist : "+imageArraylist.size());
-        /*View 불러오기*/
-        imageView=(ImageView) findViewById(R.id.big_goods_image);
+
+        /* Get Views */
+        viewPager=(ViewPager) findViewById(R.id.postimage_ViewPager);
+        imageView=(ImageView) view.findViewById(R.id.goods_images);
         textgoodsname=(TextView) findViewById(R.id.big_goods_name);
         textgoodsprice=(TextView) findViewById(R.id.big_goods_price);
         textgoodslocation=(TextView) findViewById(R.id.big_goods_location);
@@ -79,7 +102,8 @@ public class BigPostActivity extends AppCompatActivity {
         imageButton=(ImageButton) findViewById(R.id.big_goods_like);
 
         /*Set texts and image*/
-        imageView.setImageBitmap(imageArraylist.get(0));
+        imageView.setImageBitmap(imageArraylist.get(0));////////////////////////////////
+        System.out.println("--+++++++++++----"+imageView);
         textgoodsname.setText(goods_name);
         textgoodsprice.setText(goods_price+"");
         textgoodslocation.setText(goods_location);
@@ -89,11 +113,9 @@ public class BigPostActivity extends AppCompatActivity {
 
         /*Heart Click event : like_cnt +1 */
         imageButton.setOnClickListener(new View.OnClickListener(){
-
             @Override
             public void onClick(View view) {
                 click_heart=true;
-
                 if (click_heart && is_click==0){
                     like_cnt++;
                     textlikecnt.setText(like_cnt+"");
@@ -118,24 +140,23 @@ public class BigPostActivity extends AppCompatActivity {
 
         /*Writer name Click Event : goto Contacts*/
         textwriter.setOnClickListener(new View.OnClickListener(){
-            FragmentContact fragmentContact=new FragmentContact();
-             FragmentManager fragmentManager = getSupportFragmentManager();
-             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+//            FragmentContact fragmentContact=new FragmentContact();
+//             FragmentManager fragmentManager = getSupportFragmentManager();
+//             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             @Override
             public void onClick(View view) {
-                Bundle bundle=new Bundle(1);
-                bundle.putString("writer_name",writer);
-                fragmentContact.setArguments(bundle);
-                fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                fragmentTransaction.replace(R.id.fragment_container,fragmentContact);
-                fragmentTransaction.addToBackStack(null);
-                fragmentTransaction.commit();
-
-
-
+                Intent intent2= new Intent(view.getContext(), MainActivity.class);
+                intent2.putExtra("writer_name",writer);
+                startActivity(intent2);
             }
         });
 
+        /* Big image Viewpager Adapter */
+
+        bigImageViewPagerAdapter=new BigImageViewPagerAdapter(this,imageArraylist);
+        viewPager.setAdapter(bigImageViewPagerAdapter);
+        viewPager.setCurrentItem(1);
+        bigImageViewPagerAdapter.notifyDataSetChanged();
 
     }
 }

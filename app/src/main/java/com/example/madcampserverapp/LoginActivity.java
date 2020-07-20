@@ -43,27 +43,27 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.activity_start);
 
         /* Own register button */
-        gotoregButton=(Button) findViewById(R.id.button_signup);
-        gotoregButton.setOnClickListener(new Button.OnClickListener(){
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(),RegisterActivity.class);
-                startActivity(intent);
-            }
-        });
+//        gotoregButton=(Button) findViewById(R.id.button_signup);
+//        gotoregButton.setOnClickListener(new Button.OnClickListener(){
+//            @Override
+//            public void onClick(View view) {
+//                Intent intent = new Intent(getApplicationContext(),RegisterActivity.class);
+//                startActivity(intent);
+//            }
+//        });
 
         /* Own login button */
-        loginBtn=(Button) findViewById(R.id.button_login);
-        loginBtn.setOnClickListener(new Button.OnClickListener(){
-            @Override
-            public void onClick(View view) {
-                Intent intent_login = new Intent(getApplicationContext(),MainActivity.class);
-                startActivity(intent_login);
-            }
-        });
+       // loginBtn=(Button) findViewById(R.id.button_login);
+//        loginBtn.setOnClickListener(new Button.OnClickListener(){
+//            @Override
+//            public void onClick(View view) {
+//                Intent intent_login = new Intent(getApplicationContext(),MainActivity.class);
+//                startActivity(intent_login);
+//            }
+//        });
 
         /* Facebook login button */
         loginButtonfb = (LoginButton) findViewById(R.id.login_button);

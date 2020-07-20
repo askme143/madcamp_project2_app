@@ -52,7 +52,7 @@ public class FragmentContact extends Fragment {
 
     private EditText editText;
     private String writer_name;
-    private Bundle bundle1;
+    private Bundle bundle2;
 
     @Nullable
     @Override
@@ -60,11 +60,13 @@ public class FragmentContact extends Fragment {
         mView = inflater.inflate(R.layout.fragment_contact, null);
         checkPermission();
 
-        /*Get bundle of writer_name from BigPostActivity*/
+        /*Get bundle of writer_name from MainActivity*/
+        bundle2=null;
         editText=(EditText) mView.findViewById(R.id.search_bar);
-        bundle1=getArguments();
-        if(bundle1!=null){
-            writer_name=bundle1.getString("writer_name");
+        bundle2=getArguments();
+        System.out.println("--------------------"+bundle2);
+        if(bundle2!=null){
+            writer_name=bundle2.getString("writer_name");
             editText.setText(writer_name);
         }
 
