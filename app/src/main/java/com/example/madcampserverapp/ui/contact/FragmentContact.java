@@ -109,15 +109,19 @@ public class FragmentContact extends Fragment {
         MyResponse response = new MyResponse() {
             @RequiresApi(api = Build.VERSION_CODES.KITKAT)
             @Override
-            public void response(String result) {
+            public void response(byte[] result) {
                 if (result == null) {
                     Log.e(TAG, "Error on updateContacts");
-                } else if (result.equals("failed")) {
+                }
+
+                String resultString = new String(result);
+
+                if (resultString.equals("failed")) {
                     Log.e(TAG, "Failed on updateContacts");
                 } else {
                     try {
                         /* Make contact list */
-                        JSONObject jsonObject = new JSONObject(result);
+                        JSONObject jsonObject = new JSONObject(resultString);
                         JSONArray jsonArray = jsonObject.getJSONArray("contacts");
                         mContactList = new ArrayList<>();
 
@@ -215,7 +219,7 @@ public class FragmentContact extends Fragment {
         updateContacts();
     }
 
-    public static class NetworkTask extends ThreadTask<Void, String> {
+    public static class NetworkTask extends ThreadTask<Void, byte[]> {
 
         private String mUrl;
         private ContentValues mValues;
@@ -239,7 +243,7 @@ public class FragmentContact extends Fragment {
         }
 
         @Override
-        protected String doInBackground(Void arg) {
+        protected byte[] doInBackground(Void arg) {
             RequestHttpURLConnection requestHttpURLConnection = new RequestHttpURLConnection();
 
             if (mValues == null)
@@ -249,7 +253,7 @@ public class FragmentContact extends Fragment {
         }
 
         @Override
-        protected void onPostExecute(String result) {
+        protected void onPostExecute(byte[] result) {
             mMyResponse.response(result);
         }
     }

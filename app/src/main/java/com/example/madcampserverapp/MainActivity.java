@@ -15,6 +15,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.media.Image;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Base64;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -30,7 +31,11 @@ import com.example.madcampserverapp.server.RequestHttpURLConnection;
 import com.example.madcampserverapp.ui.contact.FragmentContact;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
     private FragmentHome fragmentHome;
@@ -55,20 +60,47 @@ public class MainActivity extends AppCompatActivity {
         /* Ignore: Code for testing */
         boolean test = true;
         if (test){
-            String testUrl = url + "/gallery/upload";
-            Bitmap bitmap = ((BitmapDrawable) getResources().getDrawable(R.drawable.contact_icon)).getBitmap();
+//            String testUrl = url + "/gallery/upload";
+//            Bitmap bitmap = ((BitmapDrawable) getResources().getDrawable(R.drawable.contact_icon)).getBitmap();
+//            ContentValues contentValues = new ContentValues();
+//            contentValues.put("fb_id", "12321");
+//            contentValues.put("file_name", "contact_icon.jpg");
+//
+//            MyResponse response = new MyResponse() {
+//                @Override
+//                public void response(byte[] result) {
+//                    Log.e("hello", new String(result));
+//                }
+//            };
+//
+//            NetworkTask networkTask = new NetworkTask(testUrl, bitmap, contentValues, response);
+//            networkTask.execute(null);
+
+            String testUrl = url + "/gallery/download";
             ContentValues contentValues = new ContentValues();
             contentValues.put("fb_id", "12321");
-            contentValues.put("file_name", "contact_icon.jpg");
+            contentValues.put("skip_number", "0");
+            contentValues.put("require_number", "2");
 
             MyResponse response = new MyResponse() {
                 @Override
-                public void response(String result) {
-                    Log.e("hello", result);
+                public void response(byte[] result) {
+                    try {
+                        JSONObject jsonObject = new JSONObject(new String(result));
+                        JSONArray jsonArray = jsonObject.getJSONArray("images");
+
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            byte[] imageByteArray = Base64.decode(jsonArray.getJSONObject(i).getString("image"), Base64.DEFAULT);
+                            Bitmap bitmap = BitmapFactory.decodeByteArray(imageByteArray, 0, imageByteArray.length);
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
                 }
             };
 
-            NetworkTask networkTask = new NetworkTask(testUrl, bitmap, contentValues, response);
+            NetworkTask networkTask = new NetworkTask(testUrl, contentValues, response);
             networkTask.execute(null);
         }
 
@@ -172,7 +204,7 @@ public class MainActivity extends AppCompatActivity {
                 .replace(R.id.frame_layout, fragmentHome).commitAllowingStateLoss();
     }
 
-    public static class NetworkTask extends ThreadTask<Void, String> {
+    public static class NetworkTask extends ThreadTask<Void, byte[]> {
 
         private String mUrl;
         private MyResponse mMyResponse;
@@ -205,7 +237,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
-        protected String doInBackground(Void arg) {
+        protected byte[] doInBackground(Void arg) {
             RequestHttpURLConnection requestHttpURLConnection = new RequestHttpURLConnection();
 
             if (mBitmap != null)
@@ -219,7 +251,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
-        protected void onPostExecute(String result) {
+        protected void onPostExecute(byte[] result) {
             mMyResponse.response(result);
         }
     }

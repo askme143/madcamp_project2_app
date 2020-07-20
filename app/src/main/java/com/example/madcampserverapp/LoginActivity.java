@@ -159,19 +159,22 @@ public class LoginActivity extends AppCompatActivity {
         /* Build response */
         MyResponse loginResponse = new MyResponse() {
             @Override
-            public void response(String result) {
+            public void response(byte[] result) {
                 if (result == null) {
                     /* Maybe cannot access to server */
                     Log.e(TAG, "Server access error");
                     Toast.makeText(mContext, "인터넷 연결을 확인해주세요.", Toast.LENGTH_SHORT);
                 }
-                else if (result.equals("success")) {
+
+                String resultString = new String(result);
+
+                if (resultString.equals("success")) {
                     /* Goto MainAcivity -> BeforeActivity*/ //전화번호 존재하면 Mainactivity
                     Intent intent_goActive=new Intent(getApplicationContext(),BeforeActivity.class);
                     intent_goActive.putExtra("name",name);
                     intent_goActive.putExtra("fbID", fbID );
                     startActivity(intent_goActive);
-                } else if (result.equals("failed")) {
+                } else if (resultString.equals("failed")) {
                     /* Start sign up process */
                     signUp(name, fbID);
                 } else {
@@ -199,11 +202,15 @@ public class LoginActivity extends AppCompatActivity {
         /* Build response */
         MyResponse signUpResponse = new MyResponse() {
             @Override
-            public void response(String result) {
+            public void response(byte[] result) {
                 if (result.equals("success")) {
                     /* Start login */
                     login(name, fbID);
-                } else if (result.equals("failed")) {
+                }
+
+                String resultString = new String(result);
+
+                if (result.equals("failed")) {
                     /* Sign up failed */
                     Log.e(TAG, "My server sign up process failed");
                 } else {
@@ -225,7 +232,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    public static class NetworkTask extends ThreadTask<Void, String> {
+    public static class NetworkTask extends ThreadTask<Void, byte[]> {
 
         private String mUrl;
         private ContentValues mValues;
@@ -242,14 +249,14 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         @Override
-        protected String doInBackground(Void arg) {
+        protected byte[] doInBackground(Void arg) {
             RequestHttpURLConnection requestHttpURLConnection = new RequestHttpURLConnection();
 
             return requestHttpURLConnection.request(mUrl, mValues);
         }
 
         @Override
-        protected void onPostExecute(String result) {
+        protected void onPostExecute(byte[] result) {
             mMyResponse.response(result);
         }
     }

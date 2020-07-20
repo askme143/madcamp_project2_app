@@ -310,7 +310,7 @@ public class FragmentGallery extends Fragment {
         return mImageArrayList;
     }
 
-    public static class NetworkTask extends ThreadTask<Void, String> {
+    public static class NetworkTask extends ThreadTask<Void, byte[]> {
 
         private String mUrl;
         private MyResponse mMyResponse;
@@ -331,7 +331,7 @@ public class FragmentGallery extends Fragment {
         }
 
         @Override
-        protected String doInBackground(Void arg) {
+        protected byte[] doInBackground(Void arg) {
             RequestHttpURLConnection requestHttpURLConnection = new RequestHttpURLConnection();
 
             if (mBitmap != null)
@@ -345,7 +345,7 @@ public class FragmentGallery extends Fragment {
         }
 
         @Override
-        protected void onPostExecute(String result) {
+        protected void onPostExecute(byte[] result) {
             mMyResponse.response(result);
         }
     }
