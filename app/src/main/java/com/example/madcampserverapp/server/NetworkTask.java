@@ -4,7 +4,7 @@ import android.content.ContentValues;
 
 import com.example.madcampserverapp.ThreadTask;
 
-public class NetworkTask extends ThreadTask<Void, String> {
+public class NetworkTask extends ThreadTask<Void, byte[]> {
 
     private String mUrl;
     private ContentValues mValues;
@@ -20,16 +20,14 @@ public class NetworkTask extends ThreadTask<Void, String> {
     }
 
     @Override
-    protected String doInBackground(Void arg) {
-        String result;
+    protected byte[] doInBackground(Void arg) {
         RequestHttpURLConnection requestHttpURLConnection = new RequestHttpURLConnection();
 
-        result = requestHttpURLConnection.request(mUrl, mValues);
-        return result;
+        return requestHttpURLConnection.request(mUrl, mValues);
     }
 
     @Override
-    protected void onPostExecute(String result) {
+    protected void onPostExecute(byte[] result) {
         System.out.println(result);
     }
 }

@@ -30,7 +30,7 @@ public class RequestHttpURLConnection {
     private static final String boundary =  "----WebKitFormBoundaryQGvWeNAiOE4g2VM5";
 
     /* application/x-www-form-urlencoded */
-    public String request(String pUrl, ContentValues pParams) {
+    public byte[] request(String pUrl, ContentValues pParams) {
         Log.e(TAG, "application/x-www-form-urlencoded");
         HttpURLConnection urlConnection = null;
 
@@ -59,7 +59,6 @@ public class RequestHttpURLConnection {
 
         /* Get data */
         try {
-            Log.e("hello", pUrl+ " " + subParams.toString());
             URL url = new URL(pUrl);
             urlConnection = (HttpURLConnection) url.openConnection();
 
@@ -84,7 +83,7 @@ public class RequestHttpURLConnection {
         return null;
     }
 
-    public String request(String pUrl, JSONObject jsonObject) {
+    public byte[] request(String pUrl, JSONObject jsonObject) {
         Log.e(TAG, "application/json");
         HttpURLConnection urlConnection = null;
 
@@ -117,15 +116,15 @@ public class RequestHttpURLConnection {
         return null;
     }
 
-    public String uploadImage(String pUrl, Bitmap bitmap, ContentValues contentValues) {
+    public byte[] uploadImage(String pUrl, Bitmap bitmap, ContentValues contentValues) {
         Log.e(TAG, "multipart");
         HttpURLConnection urlConnection = null;
 
         /* Get facebook id and file name */
-        String fb_id = contentValues.getAsString("fb_id");
+        String fbID = contentValues.getAsString("fb_id");
         String filename = contentValues.getAsString("file_name");
         if (filename.length() == 0)
-            filename = "userfile.jpg";
+            filename = "userfile.png";
 
         /* Get data */
         try {
@@ -145,25 +144,26 @@ public class RequestHttpURLConnection {
             request.writeBytes("Content-Disposition: form-data; name=\"" +
                     "image" + "\";filename=\"" +
                     filename + "\"" + crlf +
-                    "Content-Type: image/jpg" + crlf);
+                    "Content-Type: image/png" + crlf);
             request.writeBytes(crlf);
 
             /* Write image */
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 10, stream);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 10, stream);
             byte[] pixels = stream.toByteArray();
             request.write(pixels);
             request.writeBytes(crlf);
 
+            System.out.println(new String(pixels));
+
             /* Start writing facebook id */
             request.writeBytes(twoHyphens + boundary + crlf);
             request.writeBytes("Content-Disposition: form-data; name=\"" +
-                    "fb_id" + "\";filename=\"" +
-                    fb_id + "\"" + crlf +
-                    "Content-Type: text/plain" + crlf);
+                    "fb_id" + "\"" + crlf);
             request.writeBytes(crlf);
 
             /* Write empty file */
+            request.writeBytes(fbID);
             request.writeBytes(crlf);
 
             /* End */
@@ -265,31 +265,13 @@ public class RequestHttpURLConnection {
         }
     }
 
-    private String getResponse(HttpURLConnection urlConnection) throws IOException {
+    private byte[] getResponse(HttpURLConnection urlConnection) throws IOException {
         /* Check response code */
         if (urlConnection.getResponseCode() != HttpURLConnection.HTTP_OK) {
             return null;
         }
 
-        /* Read and make string value PAGE */
-        BufferedReader reader = new BufferedReader(
-                new InputStreamReader(urlConnection.getInputStream(), "UTF-8"));
-
-        String line;
-        String page = "";
-        while ((line = reader.readLine()) != null)
-            page += line;
-
-        return page;
-    }
-
-    private Bitmap getBitmap(HttpURLConnection urlConnection) throws IOException {
-        /* Check response code */
-        if (urlConnection.getResponseCode() != HttpURLConnection.HTTP_OK) {
-            return null;
-        }
-
-        /* Read and make string value PAGE */
+        /* Read and make bitmap array PAGE */
         InputStream inputStream = urlConnection.getInputStream();
 
         byte[] buffer = new byte[8000];
@@ -299,10 +281,6 @@ public class RequestHttpURLConnection {
             byteArrayOutputStream.write(buffer, 0, bytesRead);
         }
 
-        byte[] imageByteArray = byteArrayOutputStream.toByteArray();
-        System.out.println(imageByteArray);
-        Bitmap bitmap = BitmapFactory.decodeByteArray(imageByteArray, 0, imageByteArray.length);
-
-        return bitmap;
+        return byteArrayOutputStream.toByteArray();
     }
 }

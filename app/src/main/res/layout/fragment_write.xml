@@ -21,11 +21,6 @@
             android:textSize="30dp"
             android:layout_centerInParent="true"
             />
-       <!-- <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="지역선택"
-            android:id="@+id/location_btn"/>-->
 
         <Button
             android:id="@+id/write_btn"
@@ -33,88 +28,24 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:text="완료"/>
-
-
     </RelativeLayout>
 
-    <!--image 관리-->
-
-    <!--제목, 가격 상세 입력-->
-
-    <HorizontalScrollView
-        android:id="@+id/hscroll"
+    <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
-        android:layout_height="150dp"
-        android:layout_marginTop="45dp"
-        android:background="@color/color_lightgray">
-
-        <LinearLayout
-            android:id="@+id/line5"
-            android:layout_width="match_parent"
-            android:layout_height="150dp"
-            android:layout_below="@+id/line4"
-            android:background="@color/color_lightgray">
-
-          <!--  <ImageView
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_gravity="center"
-                android:layout_margin="20dp"
-                android:src="@drawable/blankpic" />-->
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:paddingHorizontal="5dp"
-                android:id="@+id/img_recycler"
-                android:orientation="horizontal"
-                android:scrollbars="none"
-                />
-
-       <!--     <ListView
-                android:id="@+id/imageid1"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_gravity="center"
-                android:layout_marginLeft="20dp" />
-
-            <ListView
-                android:id="@+id/imageid2"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_gravity="center"
-                android:layout_marginLeft="20dp" />
-
-            <ListView
-                android:id="@+id/imageid3"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_gravity="center"
-                android:layout_marginLeft="20dp" />
-
-            <ListView
-                android:id="@+id/imageid4"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_gravity="center"
-                android:layout_marginLeft="20dp" />
-
-            <ListView
-                android:id="@+id/imageid5"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_gravity="center"
-                android:layout_marginLeft="20dp" />-->
-
-
-        </LinearLayout>
-    </HorizontalScrollView>
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="5dp"
+        android:id="@+id/img_recycler"
+        android:orientation="horizontal"
+        android:scrollbars="none"
+        android:layout_below="@id/line4"
+        android:background="@color/color_gray"
+        />
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
-        android:layout_below="@+id/hscroll">
+        android:layout_below="@+id/img_recycler">
 
         <EditText
             android:layout_width="300dp"

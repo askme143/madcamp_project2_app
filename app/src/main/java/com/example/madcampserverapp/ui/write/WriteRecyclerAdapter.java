@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -37,23 +38,28 @@ public class WriteRecyclerAdapter  extends RecyclerView.Adapter <WriteRecyclerAd
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         /*Image bitmap data binding*/
-        Bitmap bitmap=bitmapArrayList.get(position);
-        holder.iamgeView.setImageBitmap(bitmap);
+        if (position != 0) {
+            Bitmap bitmap = bitmapArrayList.get(position - 1);
+            holder.iamgeView.setImageBitmap(bitmap);
+        } else {
+            holder.addText.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
     public int getItemCount() {
-        return bitmapArrayList.size();
+        return bitmapArrayList.size() + 1;
     }
 
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         ImageView iamgeView;
+        TextView addText;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            iamgeView=(ImageView) itemView.findViewById(R.id.image05);
-
+            iamgeView = (ImageView) itemView.findViewById(R.id.image05);
+            addText = itemView.findViewById(R.id.add);
         }
     }
 }

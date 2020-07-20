@@ -109,7 +109,8 @@ public class ImageSelectAdapter extends BaseAdapter {
         ArrayList<Image> removeList = new ArrayList<>();
         for (int i = 0; i < mImageArrayList.size(); i++) {
             if (checked.get(i)) {
-                File fdelete = new File(mImageArrayList.get(i).getAbsolutePath());
+//                File fdelete = new File(mImageArrayList.get(i).getAbsolutePath());
+                File fdelete = new File("empty");
                 fdelete.delete();
 
                 Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);

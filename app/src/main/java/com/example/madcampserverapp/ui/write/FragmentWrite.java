@@ -58,12 +58,13 @@ public class FragmentWrite extends Fragment {
         View view = inflater.inflate(R.layout.fragment_write, null);
 
         RecyclerView imgRecyclerView=(RecyclerView) view.findViewById(R.id.img_recycler);
-        LinearLayoutManager linearLayoutManager=new LinearLayoutManager(getActivity(),LinearLayoutManager.HORIZONTAL, false);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(),
+                LinearLayoutManager.HORIZONTAL, false);
         imgRecyclerView.setLayoutManager(linearLayoutManager);
 
         /*imageList add*/
         imageList = new ArrayList<>();
-        imageList.add(((BitmapDrawable) getResources().getDrawable(R.drawable.blankpic)).getBitmap());
+//        imageList.add(((BitmapDrawable) getResources().getDrawable(R.drawable.blankpic)).getBitmap());
         imageList.add(((BitmapDrawable) getResources().getDrawable(R.drawable.mail)).getBitmap());
         imageList.add(((BitmapDrawable) getResources().getDrawable(R.drawable.mail)).getBitmap());
 
