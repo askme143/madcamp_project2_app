@@ -54,7 +54,7 @@ public class FragmentContact extends Fragment {
     private String writer_name;
     private Bundle bundle1;
     private String mFacebookID;
-
+//
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

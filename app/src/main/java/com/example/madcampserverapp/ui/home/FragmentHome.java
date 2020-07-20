@@ -1,5 +1,6 @@
 package com.example.madcampserverapp.ui.home;
 
+import android.content.ContentValues;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
@@ -15,6 +16,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.madcampserverapp.R;
+import com.example.madcampserverapp.ThreadTask;
+import com.example.madcampserverapp.server.MyResponse;
+import com.example.madcampserverapp.server.RequestHttpURLConnection;
+
+import org.json.JSONObject;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -48,5 +54,48 @@ public class FragmentHome extends Fragment {
         recyclerView.setAdapter(mAdapter);// set the Adapter to RecyclerView
 
         return view;
+    }
+
+    public static class NetworkTask extends ThreadTask<Void, byte[]> {
+
+        private String mUrl;
+        private MyResponse mMyResponse;
+
+        private Bitmap mBitmap;
+        private ContentValues mValues;
+
+        public NetworkTask(String url, Bitmap bitmap, ContentValues contentValues, MyResponse myResponse) {
+            mUrl = url;
+            mBitmap = bitmap;
+            mValues = contentValues;
+            mMyResponse = myResponse;
+        }
+
+        public NetworkTask(String url, ContentValues values, MyResponse myResponse) {
+            mUrl = url;
+            mValues = values;
+            mMyResponse = myResponse;
+        }
+
+        @Override
+        protected void onPreExecute() {
+        }
+
+        @Override
+        protected byte[] doInBackground(Void arg) {////
+            RequestHttpURLConnection requestHttpURLConnection = new RequestHttpURLConnection();
+
+            if (mBitmap != null)
+                return requestHttpURLConnection.uploadImage(mUrl, mBitmap, mValues);
+            else if (mValues != null)
+                return requestHttpURLConnection.request(mUrl, mValues);
+            else
+                return null;
+        }
+
+        @Override
+        protected void onPostExecute(byte[] result) {
+            mMyResponse.response(result);
+        }
     }
 }

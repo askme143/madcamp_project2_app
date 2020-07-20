@@ -70,7 +70,7 @@ public class FragmentGallery extends Fragment {
     private ArrayList<Image> mImageArrayList;
 
     private int click_enable;
-    //////////////////////////////////////////
+    ////////////////////////////////////////////
     private ArrayList<Bitmap> mBitmapArrayList;
 
     @Nullable
