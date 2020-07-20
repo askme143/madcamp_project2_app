@@ -26,6 +26,7 @@ import com.example.madcampserverapp.ui.home.FragmentHome;
 import com.example.madcampserverapp.ui.home.HomeRecyclerAdapter;
 import com.example.madcampserverapp.ui.home.Post;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 import static java.lang.Integer.parseInt;
@@ -34,9 +35,9 @@ public class FragmentWrite extends Fragment {
     private String goods_name;
     private int goods_price;
     private String goods_detail;
-    private String location;
-    private long goods_photoID;
-
+    private String goods_location;
+    private ArrayList<Bitmap> goods_images;
+    private String name;
     private int like_cnt;
 
     private EditText ed_goods_name;
@@ -63,7 +64,6 @@ public class FragmentWrite extends Fragment {
         imgRecyclerView.setLayoutManager(linearLayoutManager);
 
         /*imageList add*/
-      //  imageList.add(0, BitmapFactory.decodeResource(getResources().getIdentifier("num"+1,"drawable",)));
         imageList = new ArrayList<>();
 //        imageList.add(((BitmapDrawable) getResources().getDrawable(R.drawable.blankpic)).getBitmap());
         imageList.add(((BitmapDrawable) getResources().getDrawable(R.drawable.mail)).getBitmap());
@@ -97,12 +97,13 @@ public class FragmentWrite extends Fragment {
                 goods_name=ed_goods_name.getText().toString();
                 goods_price = parseInt(ed_goods_price.getText().toString());
                 goods_detail=ed_goods_detail.getText().toString();
-                // public Post(long goods_photoID, String goods_name, int goods_price, String goods_location, int like_cnt, String name){
-                temp_post=new Post(goods_photoID, goods_name, goods_price, location,like_cnt, goods_detail );
+
+                temp_post=new Post(goods_images, goods_name, goods_price, goods_location,goods_detail,like_cnt, name);
+
                 postArrayList=new ArrayList<>();
                 postArrayList.add(temp_post);
 
-                //서버에 추가
+                //////서버에 추가
 
                 /*goto FragmentHome*/
                 Intent intent1;

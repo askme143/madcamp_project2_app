@@ -1,55 +1,85 @@
 package com.example.madcampserverapp.ui.home;
 
+import android.graphics.Bitmap;
+
+import java.util.ArrayList;
+
 public class Post {
     /*image, goods name, goods location, goods price*/
     private String goods_name;
     private int goods_price;
     private String goods_location;
-    private long goods_photoID;
-    /*person info*/
-    private int fb_id;
-    private String email;
+    private ArrayList<Bitmap> goods_images;
+    private String goods_detail;
+
     private String name;
     /*like count*/
     private int like_cnt;
 
-    public Post(long goods_photoID, String goods_name, int goods_price, String goods_location, int like_cnt, String name){
-        this.goods_location=goods_location;
-        this.goods_name=goods_name;
-        this.goods_price=goods_price;
-        this.goods_photoID=goods_photoID;
-        this.like_cnt=like_cnt;
-        this.name=name;
+    public Post(ArrayList<Bitmap> goods_images, String goods_name, int goods_price, String goods_location, String goods_detail, int like_cnt, String name){
+        this.goods_name = goods_name;
+        this.goods_price = goods_price;
+        this.goods_location = goods_location;
+        this.goods_images = goods_images;
+        this.goods_detail = goods_detail;
+        this.name = name;
+        this.like_cnt = like_cnt;
     }
 
-    public String getGoods_name() { return goods_name; }
+    public String getGoods_name() {
+        return goods_name;
+    }
 
-    public void setGoods_name(String goods_name) { this.goods_name = goods_name; }
+    public void setGoods_name(String goods_name) {
+        this.goods_name = goods_name;
+    }
 
-    public int getGoods_price() { return goods_price; }
+    public int getGoods_price() {
+        return goods_price;
+    }
 
-    public void setGoods_price(int goods_price) { this.goods_price = goods_price; }
+    public void setGoods_price(int goods_price) {
+        this.goods_price = goods_price;
+    }
 
-    public String getGoods_location() { return goods_location; }
+    public String getGoods_location() {
+        return goods_location;
+    }
 
-    public void setGoods_location(String goods_location) { this.goods_location = goods_location; }
+    public void setGoods_location(String goods_location) {
+        this.goods_location = goods_location;
+    }
 
-    public long getGoods_photoID() { return goods_photoID; }
+    public ArrayList<Bitmap> getGoods_images() {
+        return goods_images;
+    }
 
-    public void setGoods_photoID(long goods_photoID) { this.goods_photoID = goods_photoID; }
+    public void setGoods_images(ArrayList<Bitmap> goods_images) {
+        this.goods_images = goods_images;
+    }
 
-    public String getEmail() { return email; }
+    public String getGoods_detail() {
+        return goods_detail;
+    }
 
-    public void setEmail(String email) { this.email = email; }
+    public void setGoods_detail(String goods_detail) {
+        this.goods_detail = goods_detail;
+    }
 
-    public String getName() { return name; }
+    public String getName() {
+        return name;
+    }
 
-    public void setName(String email) { this.name=name; }
+    public void setName(String name) {
+        this.name = name;
+    }
 
-    public int getLike_cnt() {return like_cnt;}
+    public int getLike_cnt() {
+        return like_cnt;
+    }
 
-    public void setLike_cnt(int like_cnt) { this.like_cnt=like_cnt;}
-
-
+    public void setLike_cnt(int like_cnt) {
+        this.like_cnt = like_cnt;
+    }
 
 }
