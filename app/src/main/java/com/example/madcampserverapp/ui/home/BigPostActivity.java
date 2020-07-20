@@ -111,7 +111,7 @@ public class BigPostActivity extends AppCompatActivity {
         textwriter.setText(writer);
         textgoodsdetail.setText(goods_detail);
 
-        /*Heart Click event : like_cnt +1 */
+        /* Heart Click event : like_cnt +1 */
         imageButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
@@ -138,27 +138,24 @@ public class BigPostActivity extends AppCompatActivity {
 //            }
 //        });
 
-        /*Writer name Click Event : goto Contacts*/
+        /* Writer name Click Event : goto Contacts */
         textwriter.setOnClickListener(new View.OnClickListener(){
 //            FragmentContact fragmentContact=new FragmentContact();
 //             FragmentManager fragmentManager = getSupportFragmentManager();
 //             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             @Override
             public void onClick(View view) {
-                Intent intent2= new Intent(view.getContext(), MainActivity.class);
-                intent2.putExtra("writer_name",writer);
-                startActivity(intent2);
+                Intent intent = new Intent(view.getContext(), MainActivity.class);
+                intent.putExtra("writer_name", writer);
+                startActivity(intent);
             }
         });
 
 
         /* Big image Viewpager Adapter */
-
         bigImageViewPagerAdapter=new BigImageViewPagerAdapter(this,imageArraylist);
         viewPager.setAdapter(bigImageViewPagerAdapter);
         viewPager.setCurrentItem(0);
         bigImageViewPagerAdapter.notifyDataSetChanged();
-
-
     }
 }

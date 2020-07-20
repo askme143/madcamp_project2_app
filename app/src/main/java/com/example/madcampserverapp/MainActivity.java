@@ -158,26 +158,28 @@ public class MainActivity extends AppCompatActivity {
         fragmentWrite = new FragmentWrite();
         fragmentMyinfo = new FragmentMyinfo2();
 
-        /* Get user location & phoneNumber & user info */
+        /* Get intent */
         Intent intent = getIntent();
-        phoneNumber=intent.getStringExtra("phonenumber");
-        location=intent.getStringExtra("location");
-        mFacebookID = intent.getStringExtra("fb_id");
-        mName = intent.getStringExtra("name");
+
+        /* Get user location & phoneNumber & user info */
+        if (intent.hasExtra("fb_id")) {
+            phoneNumber = intent.getStringExtra("phonenumber");
+            location = intent.getStringExtra("location");
+            mFacebookID = intent.getStringExtra("fb_id");
+            mName = intent.getStringExtra("name");
+        }
 
         /* Send user info to FragmentMyinfo2 */
         Bundle bundle = new Bundle(2);
-        bundle.putString("location",location);
-        bundle.putString("phonenumber",phoneNumber);
+        bundle.putString("location", location);
+        bundle.putString("phonenumber", phoneNumber);
         fragmentMyinfo.setArguments(bundle);
 
         /* TODO: If caller is BIG_POST_ACTIVITY, then move to CONTACT TAB */
         /* Get writer name from BigPostActivity */
-        Intent intent4=getIntent();
-        writer_name=intent4.getStringExtra("writer_name");
+        if (intent.hasExtra("writer_name")) {
+            writer_name = intent.getStringExtra("writer_name");
 
-        /* Send it to FragmentContact */
-        if (writer_name!=null) {
             Bundle bundle2 = new Bundle();
             bundle2.putString("writer_name", writer_name);
             fragmentContact.setArguments(bundle2);

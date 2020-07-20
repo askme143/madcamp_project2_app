@@ -55,7 +55,6 @@ public class Image {
                     while ((halfHeight / scaleFactor) >= mHieght
                             && (halfWidth / scaleFactor) >= mWidth) {
                         scaleFactor *= 2;
-                        System.out.println(scaleFactor);
                     }
                 }
 
