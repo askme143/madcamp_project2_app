@@ -1,5 +1,7 @@
 package com.example.madcampserverapp.ui.home;
 
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +22,7 @@ import java.util.ArrayList;
 public class FragmentHome extends Fragment {
     private ArrayList<Post> postArrayList;
     private HomeRecyclerAdapter mAdapter;
+    private ArrayList<Bitmap> imageList;
 
     @Nullable
     @Override
@@ -31,11 +34,17 @@ public class FragmentHome extends Fragment {
         recyclerView.setLayoutManager(linearLayoutManager);
 
         /*example code : post add*/
-        Post examplePost = new Post(1, "신발", 10000, "대전", 3, "전우정");
+        imageList = new ArrayList<>();
+        imageList.add(((BitmapDrawable) getResources().getDrawable(R.drawable.blankpic)).getBitmap());
+        imageList.add(((BitmapDrawable) getResources().getDrawable(R.drawable.mail)).getBitmap());
+        imageList.add(((BitmapDrawable) getResources().getDrawable(R.drawable.mail)).getBitmap());
+        imageList.add(((BitmapDrawable) getResources().getDrawable(R.drawable.mail)).getBitmap());
+        Post examplePost = new Post(imageList, "신발", 10000, "대전", "어쩌고저쩌고", 0,"전우정");
+
         postArrayList = new ArrayList<>();
         postArrayList.add(examplePost);
 
-        mAdapter = new HomeRecyclerAdapter(getActivity(), postArrayList);
+        mAdapter = new HomeRecyclerAdapter(getActivity(), postArrayList, imageList, imageList.get(1));
         recyclerView.setAdapter(mAdapter);// set the Adapter to RecyclerView
 
         return view;

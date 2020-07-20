@@ -41,6 +41,8 @@ public class MainActivity extends AppCompatActivity {
 
     private String url = "http://192.249.19.242:7380";
     private String mFacebookID;
+    private String phoneNumber;
+    private String location;
 
     public String getUrl() { return url; }
     public String getFacebookID() { return mFacebookID; }
@@ -79,40 +81,58 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = getIntent();
         mFacebookID = intent.getStringExtra("fbID");
 
+        /*Get user location & phonenumber*/
+        Intent intent2=getIntent();
+        phoneNumber=intent2.getStringExtra("phonenumber");
+        location=intent2.getStringExtra("location");
+
+        /*Send them to FragmentMyinfo2*/
+//        Intent intent3=new Intent(getApplicationContext(),FragmentMyinfo2.class);
+//        intent3.putExtra("phonenumber",phoneNumber);
+//        intent3.putExtra("location",location);
+        Bundle bundle=new Bundle(2);
+        bundle.putString("location",location);
+        bundle.putString("phonenumber",phoneNumber);
+        fragmentMyinfo.setArguments(bundle);
+
+        // Bundle bundle=new Bundle(1);
+        //                bundle.putString("writer_name",writer);
+        //                fragmentContact.setArguments(bundle);
+
         /* bottom navigation view click listener */
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation_view);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView
                 .OnNavigationItemSelectedListener(){
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem){
-                switch (menuItem.getItemId()){
-                    case R.id.contact:{
-                        getSupportFragmentManager().beginTransaction()
-                                .replace(R.id.frame_layout, fragmentContact).commitAllowingStateLoss();
-                        return true;
-                    }
-                    case R.id.gallery:{
-                        getSupportFragmentManager().beginTransaction()
-                                .replace(R.id.frame_layout, fragmentGallery).commitAllowingStateLoss();
-                        return true;
-                    }
-                    case R.id.home:{
-                        getSupportFragmentManager().beginTransaction()
-                                .replace(R.id.frame_layout, fragmentHome).commitAllowingStateLoss();
-                        return true;
-                    }
-                    case R.id.write:{
-                        getSupportFragmentManager().beginTransaction()
-                                .replace(R.id.frame_layout, fragmentWrite).commitAllowingStateLoss();
-                        return true;
-                    }
-                    case R.id.myinfo:{
-                        getSupportFragmentManager().beginTransaction()
-                                .replace(R.id.frame_layout, fragmentMyinfo).commitAllowingStateLoss();
-                        return true;
-                    }
-                    default: return false;
+            switch (menuItem.getItemId()){
+                case R.id.contact:{
+                    getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.frame_layout, fragmentContact).commitAllowingStateLoss();
+                    return true;
                 }
+                case R.id.gallery:{
+                    getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.frame_layout, fragmentGallery).commitAllowingStateLoss();
+                    return true;
+                }
+                case R.id.home:{
+                    getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.frame_layout, fragmentHome).commitAllowingStateLoss();
+                    return true;
+                }
+                case R.id.write:{
+                    getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.frame_layout, fragmentWrite).commitAllowingStateLoss();
+                    return true;
+                }
+                case R.id.myinfo:{
+                    getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.frame_layout, fragmentMyinfo).commitAllowingStateLoss();
+                    return true;
+                }
+                default: return false;
+            }
             }
         });
     }

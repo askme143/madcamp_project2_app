@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.madcampserverapp.MainActivity;
@@ -23,33 +24,34 @@ public class BeforeActivity extends Activity {
     private HashMap<String,ArrayList<String>> arrayChild = new HashMap<>();
     Button button;
     private String location;
+    private String location1;
+    private String location2;
+    TextView textView1;
+    TextView textView2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.before_main);
 
-        /*phonenumber에 editText값 전달*/
-        editText=(EditText)findViewById(R.id.input_phonenumber);
-        editText.getText().toString();
-        phonenumber=location;
+
+
 
         eplist=(ExpandableListView) this.findViewById(R.id.expandable_listview);
         setArrayData();
         eplist.setAdapter(new AdptMain(this,arrayLocation,arrayChild));
 
+        textView1=(TextView) findViewById(R.id.location_result);
+        textView2=(TextView) findViewById(R.id.location_result2);
+
         /*Group click event*/
         eplist.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
             @Override
             public boolean onGroupClick(ExpandableListView expandableListView, View view, int i, long l) {
-                Toast.makeText(getApplicationContext(), "선택:" + arrayLocation.get(i), Toast.LENGTH_SHORT).show();
                 int groupCount=(int) expandableListView.getExpandableListAdapter().getGroupCount();
                 int childCount = (int) expandableListView.getExpandableListAdapter().getChildrenCount(i);
-                // 한 그룹을 클릭하면 나머지 그룹들은 닫힌다.
-//                for (int t = 0; t < groupCount; t++) {
-//                    if (!(t == i))
-//                        eplist.collapseGroup(t);
-//                }
+                textView1.setText(arrayLocation.get(i));
+                location1=arrayLocation.get(i);
                 return false;
             }
         });
@@ -58,11 +60,11 @@ public class BeforeActivity extends Activity {
         eplist.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
             public boolean onChildClick(ExpandableListView expandableListView, View view, int i, int i1, long l) {
-                Toast.makeText(getApplicationContext(), "선택 = " + arrayChild.get(arrayLocation.get(i)).get(i1), Toast.LENGTH_SHORT).show();
+                textView2.setText(arrayChild.get(arrayLocation.get(i)).get(i1));
+                location2=arrayChild.get(arrayLocation.get(i)).get(i1);
                 return false;
             }
         });
-
 
         button=(Button) findViewById(R.id.before_btn);
         button.setOnClickListener(new Button.OnClickListener(){
@@ -70,6 +72,10 @@ public class BeforeActivity extends Activity {
             /*intent로 phonenumber, location 넘김*/
             @Override
             public void onClick(View view) {
+                /*phonenumber에 editText값 전달*/
+                editText=(EditText)findViewById(R.id.input_phonenumber);
+                phonenumber=editText.getText().toString();
+                location=location1+" "+location2;
                 Intent intent1;
                 intent1=new Intent(getApplicationContext(), MainActivity.class);
                 intent1.putExtra("phonenumber",phonenumber);

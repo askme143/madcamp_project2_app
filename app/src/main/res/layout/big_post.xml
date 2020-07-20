@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:id="@+id/fragment_container">
 
     <ImageView
         android:layout_width="match_parent"
@@ -11,21 +12,33 @@
         android:layout_margin="20dp"
         />
 
-    <ImageView
+  <!--  <ImageView
         android:id="@+id/big_goods_like"
         android:layout_width="20dp"
         android:layout_height="20dp"
         android:layout_marginLeft="30dp"
         android:layout_below="@+id/big_goods_image"
-        android:src="@drawable/heart" />
+        android:src="@drawable/heart" />-->
+
+
+    <ImageButton
+        android:id="@+id/big_goods_like"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:background="@drawable/heart"
+        android:scaleType="fitCenter"
+        android:layout_below="@+id/big_goods_image"
+        android:layout_marginLeft="30dp"
+         />
+
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="18dp"
+        android:layout_width="50dp"
+        android:layout_height="35dp"
         android:layout_toRightOf="@+id/big_goods_like"
         android:layout_below="@+id/big_goods_image"
         android:text="0"
-        android:textSize="20dp"
-
+        android:textSize="25dp"
+        android:layout_marginTop="-8dp"
         android:layout_marginLeft="5dp"
         android:id="@+id/big_like_cnt"
         />
@@ -82,5 +95,13 @@
         android:id="@+id/big_goods_detail"
         />
 
+  <!--  <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/heart"
+        android:id="@+id/big_heart"
+        />-->
+
 
 </RelativeLayout>
+

@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 
@@ -22,6 +23,10 @@ import com.facebook.login.widget.LoginButton;
 
 public class FragmentMyinfo2 extends Fragment {
     private static final String TAG = "FragmentMyinfo2";
+    private String location;
+    private String phonenumber;
+    private TextView tv1;
+    private TextView tv2;
 
     AccessTokenTracker accessTokenTracker;
     CallbackManager callbackManager = CallbackManager.Factory.create();
@@ -31,6 +36,20 @@ public class FragmentMyinfo2 extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_myinfo, container, false);
+
+        tv1=(TextView) view.findViewById(R.id.location_person);
+        tv2=(TextView) view.findViewById(R.id.phonenumber_person);
+
+        //Bundle
+        Bundle bundle=getArguments();
+        if (bundle!=null){
+            location=bundle.getString("location");
+            phonenumber=bundle.getString("phonenumber");
+        }
+        //tv setText
+        tv1.setText(location);
+        tv2.setText(phonenumber);
+
 
         loginButtonfb2 = (LoginButton) view.findViewById(R.id.login_button2);
 

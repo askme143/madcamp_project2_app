@@ -47,7 +47,6 @@ public class FragmentWrite extends Fragment {
     private ImageView imageView;
     ////////////// image, location 받아오기 //////////////
     private ArrayList<Bitmap> imageList;
-
     private ArrayList<Post> postArrayList;
 
     private WriteRecyclerAdapter mAdapter;
@@ -68,16 +67,13 @@ public class FragmentWrite extends Fragment {
         imageList.add(((BitmapDrawable) getResources().getDrawable(R.drawable.mail)).getBitmap());
         imageList.add(((BitmapDrawable) getResources().getDrawable(R.drawable.mail)).getBitmap());
 
-
         mAdapter=new WriteRecyclerAdapter(getActivity(),imageList);
         imgRecyclerView.setAdapter(mAdapter);
-
 
         ed_goods_name= (EditText) view.findViewById(R.id.ed_goods_name);
         ed_goods_price= (EditText) view.findViewById(R.id.ed_goods_price);
         ed_goods_detail= (EditText) view.findViewById(R.id.ed_goods_detail);
         //add code : 임의 지정 photo id & location
-
 
         //글쓰기 저장 버튼 클릭시 post에 추가
         button_post=(Button) view.findViewById(R.id.write_btn);
@@ -108,7 +104,6 @@ public class FragmentWrite extends Fragment {
                 Intent intent1;
                 intent1=new Intent(getActivity(), FragmentHome.class);
                 startActivity(intent1);
-
 
             }
 

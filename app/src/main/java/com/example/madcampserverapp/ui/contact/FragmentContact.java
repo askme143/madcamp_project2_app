@@ -50,11 +50,23 @@ public class FragmentContact extends Fragment {
     private View mView;
     private ContactAdapter mAdapter;
 
+    private EditText editText;
+    private String writer_name;
+    private Bundle bundle1;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mView = inflater.inflate(R.layout.fragment_contact, null);
         checkPermission();
+
+        /*Get bundle of writer_name from BigPostActivity*/
+        editText=(EditText) mView.findViewById(R.id.search_bar);
+        bundle1=getArguments();
+        if(bundle1!=null){
+            writer_name=bundle1.getString("writer_name");
+            editText.setText(writer_name);
+        }
 
         return mView;
     }
