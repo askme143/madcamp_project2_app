@@ -135,7 +135,5 @@ public class BigPostActivity extends AppCompatActivity {
 
             }
         });
-
-
     }
 }

@@ -170,8 +170,9 @@ public class LoginActivity extends AppCompatActivity {
 
                 if (resultString.equals("success")) {
                     /* Goto MainAcivity -> BeforeActivity*/ //전화번호 존재하면 Mainactivity
-                    Intent intent_goActive=new Intent(getApplicationContext(),BeforeActivity.class);
-                    intent_goActive.putExtra("name",name);
+                    Intent intent_goActive = new Intent(getApplicationContext(), BeforeActivity.class);
+                    Log.e(TAG, fbID + "yaya!");
+                    intent_goActive.putExtra("name", name);
                     intent_goActive.putExtra("fbID", fbID );
                     startActivity(intent_goActive);
                 } else if (resultString.equals("failed")) {
@@ -203,18 +204,18 @@ public class LoginActivity extends AppCompatActivity {
         MyResponse signUpResponse = new MyResponse() {
             @Override
             public void response(byte[] result) {
-                if (result.equals("success")) {
-                    /* Start login */
-                    login(name, fbID);
+                if (result == null) {
+                    Log.e(TAG, "My server sign up process error occurred");
                 }
 
                 String resultString = new String(result);
 
-                if (result.equals("failed")) {
+                if (resultString.equals("success")) {
+                    /* Start login */
+                    login(name, fbID);
+                } else if (resultString.equals("failed")) {
                     /* Sign up failed */
                     Log.e(TAG, "My server sign up process failed");
-                } else {
-                    Log.e(TAG, "My server sign up process error occurred");
                 }
             }
         };

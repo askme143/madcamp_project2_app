@@ -46,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
 
     private String url = "http://192.249.19.242:7380";
     private String mFacebookID;
+    private String mName;
     private String phoneNumber;
     private String location;
 
@@ -59,76 +60,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        /* Ignore: Code for testing */
-        boolean test = false;
-        if (test){
-            String testUrl = url + "/gallery/upload";
-            Bitmap bitmap = ((BitmapDrawable) getResources().getDrawable(R.drawable.contact_icon)).getBitmap();
-            ContentValues contentValues = new ContentValues();
-            contentValues.put("fb_id", "12321");
-            contentValues.put("file_name", "contact_icon.jpg");
-
-            MyResponse response = new MyResponse() {
-                @Override
-                public void response(byte[] result) {
-                    Log.e("hello", new String(result));
-                }
-            };
-
-            NetworkTask networkTask = new NetworkTask(testUrl, bitmap, contentValues, response);
-            networkTask.execute(null);
-
-//            String testUrl = url + "/gallery/download";
-//            ContentValues contentValues = new ContentValues();
-//            contentValues.put("fb_id", "12321");
-//            contentValues.put("skip_number", "0");
-//            contentValues.put("require_number", "2");
-//
-//            MyResponse response = new MyResponse() {
-//                @Override
-//                public void response(byte[] result) {
-//                    try {
-//                        JSONObject jsonObject = new JSONObject(new String(result));
-//                        JSONArray jsonArray = jsonObject.getJSONArray("images");
-//
-//                        for (int i = 0; i < jsonArray.length(); i++) {
-//                            byte[] imageByteArray = Base64.decode(jsonArray.getJSONObject(i).getString("image"), Base64.DEFAULT);
-//                            Bitmap bitmap = BitmapFactory.decodeByteArray(imageByteArray, 0, imageByteArray.length);
-//                        }
-//                    } catch (JSONException e) {
-//                        e.printStackTrace();
-//                    }
-//
-//                }
-//            };
-//
-//            NetworkTask networkTask = new NetworkTask(testUrl, contentValues, response);
-//            networkTask.execute(null);
-        }
-
         checkPermission();
-
-        /* Get user info */
-        Intent intent = getIntent();
-        mFacebookID = intent.getStringExtra("fbID");
-
-        /*Get user location & phonenumber*/
-        Intent intent2=getIntent();
-        phoneNumber=intent2.getStringExtra("phonenumber");
-        location=intent2.getStringExtra("location");
-
-        /*Send them to FragmentMyinfo2*/
-//        Intent intent3=new Intent(getApplicationContext(),FragmentMyinfo2.class);
-//        intent3.putExtra("phonenumber",phoneNumber);
-//        intent3.putExtra("location",location);
-        Bundle bundle=new Bundle(2);
-        bundle.putString("location",location);
-        bundle.putString("phonenumber",phoneNumber);
-        fragmentMyinfo.setArguments(bundle);
-
-        // Bundle bundle=new Bundle(1);
-        //                bundle.putString("writer_name",writer);
-        //                fragmentContact.setArguments(bundle);
 
         /* bottom navigation view click listener */
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation_view);
@@ -218,6 +150,21 @@ public class MainActivity extends AppCompatActivity {
         fragmentHome = new FragmentHome();
         fragmentWrite = new FragmentWrite();
         fragmentMyinfo = new FragmentMyinfo2();
+
+        /* Get user location & phonenumber & user info*/
+        Intent intent = getIntent();
+        phoneNumber=intent.getStringExtra("phonenumber");
+        location=intent.getStringExtra("location");
+        mFacebookID = intent.getStringExtra("fb_id");
+        mName = intent.getStringExtra("name");
+
+        System.out.println(mFacebookID);
+
+        /* Send them to FragmentMyinfo2 */
+        Bundle bundle = new Bundle(2);
+        bundle.putString("location",location);
+        bundle.putString("phonenumber",phoneNumber);
+        fragmentMyinfo.setArguments(bundle);
 
         /* Default fragment (home page) */
         getSupportFragmentManager().beginTransaction()
