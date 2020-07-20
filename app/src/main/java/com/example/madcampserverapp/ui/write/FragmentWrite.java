@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.madcampserverapp.MainActivity;
 import com.example.madcampserverapp.R;
+import com.example.madcampserverapp.ui.gallery.Image;
 import com.example.madcampserverapp.ui.home.FragmentHome;
 import com.example.madcampserverapp.ui.home.HomeRecyclerAdapter;
 import com.example.madcampserverapp.ui.home.Post;
@@ -32,86 +33,78 @@ import java.util.ArrayList;
 import static java.lang.Integer.parseInt;
 
 public class FragmentWrite extends Fragment {
-    private String goods_name;
-    private int goods_price;
-    private String goods_detail;
-    private String goods_location;
-    private ArrayList<Bitmap> goods_images;
+    private String goodsName;
+    private int goodsPrice;
+    private String goodsDetail;
+    private String goodsLocation;
+    private ArrayList<Bitmap> goodsImageList = new ArrayList<>();
     private String name;
-    private int like_cnt;
 
-    private EditText ed_goods_name;
-    private EditText ed_goods_price;
-    private EditText ed_goods_detail;
-    private Button button_post;
-    private ImageView imageView;
-    ////////////// image, location 받아오기 //////////////
-    private ArrayList<Bitmap> imageList;
-    private ArrayList<Post> postArrayList;
+    private EditText editGoodsName;
+    private EditText editGoodsPrice;
+    private EditText editGoodsDetail;
+    private Button postButton;
 
     private WriteRecyclerAdapter mAdapter;
-
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_write, null);
 
+        /* Set linear layout manager of the recycler view */
         RecyclerView imgRecyclerView=(RecyclerView) view.findViewById(R.id.img_recycler);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(),
                 LinearLayoutManager.HORIZONTAL, false);
         imgRecyclerView.setLayoutManager(linearLayoutManager);
 
-        /*imageList add*/
-        imageList = new ArrayList<>();
-//        imageList.add(((BitmapDrawable) getResources().getDrawable(R.drawable.blankpic)).getBitmap());
-        imageList.add(((BitmapDrawable) getResources().getDrawable(R.drawable.mail)).getBitmap());
-        imageList.add(((BitmapDrawable) getResources().getDrawable(R.drawable.mail)).getBitmap());
-
-        mAdapter=new WriteRecyclerAdapter(getActivity(),imageList);
+        /* Make adapter of the recycler view */
+        mAdapter = new WriteRecyclerAdapter(getActivity(), goodsImageList);
         imgRecyclerView.setAdapter(mAdapter);
 
-        ed_goods_name= (EditText) view.findViewById(R.id.ed_goods_name);
-        ed_goods_price= (EditText) view.findViewById(R.id.ed_goods_price);
-        ed_goods_detail= (EditText) view.findViewById(R.id.ed_goods_detail);
-        //add code : 임의 지정 photo id & location
+        /* Edit views */
+        editGoodsName= (EditText) view.findViewById(R.id.ed_goods_name);
+        editGoodsPrice= (EditText) view.findViewById(R.id.ed_goods_price);
+        editGoodsDetail= (EditText) view.findViewById(R.id.ed_goods_detail);
 
-        //글쓰기 저장 버튼 클릭시 post에 추가
-        button_post=(Button) view.findViewById(R.id.write_btn);
-        button_post.setOnClickListener(new Button.OnClickListener(){
-
-
+        /* Post button */
+        postButton = (Button) view.findViewById(R.id.write_btn);
+        postButton.setOnClickListener(new Button.OnClickListener(){
             @Override
             public void onClick(View view) {
-            Post temp_post=null;
+                Post temp_post = null;
 
-            /*If name or price is blank*/
-            if (ed_goods_name.getText().toString().length()==0 || ed_goods_price.getText().toString().length()==0) {
-                Toast myToast = Toast.makeText(getActivity(),"상품이름과 가격을 입력해주세요.", Toast.LENGTH_SHORT);
-                myToast.show();
-            } else {
-                goods_name=ed_goods_name.getText().toString();
-                goods_price = parseInt(ed_goods_price.getText().toString());
-                goods_detail=ed_goods_detail.getText().toString();
+                /* If name or price is blank */
+                if ((editGoodsName.getText().toString().length() == 0) || (editGoodsPrice.getText().toString().length()) == 0) {
+                    Toast myToast = Toast.makeText(getActivity(),"상품이름과 가격을 입력해주세요.", Toast.LENGTH_SHORT);
+                    myToast.show();
+                } else {
+                    goodsName = editGoodsName.getText().toString();
+                    goodsPrice = parseInt(editGoodsPrice.getText().toString());
+                    goodsDetail = editGoodsDetail.getText().toString();
 
-                temp_post=new Post(goods_images, goods_name, goods_price, goods_location,goods_detail,like_cnt, name);
+                    goodsLocation = ((MainActivity) getActivity()).getLocation();
+                    if (goodsLocation == null) {
+                        goodsLocation = "";
+                    }
+                    name = ((MainActivity) getActivity()).getName();
 
-                postArrayList=new ArrayList<>();
-                postArrayList.add(temp_post);
+                    temp_post = new Post(goodsImageList, goodsName, goodsPrice, goodsLocation, goodsDetail, 0, name);
 
-                //////서버에 추가
+                    /* TODO: Upload the post */
 
-                /*goto FragmentHome*/
-                Intent intent1;
-                intent1=new Intent(getActivity(), FragmentHome.class);
-                startActivity(intent1);
+                    /* Flush all selected images */
+                    goodsImageList = new ArrayList<>();
 
-            }
-
+                    /* TODO: Change to home fragment */
+                }
             }
         });
 
-
         return view;
+    }
+
+    public void addWriteImage(Bitmap bitmap) {
+        goodsImageList.add(bitmap);
     }
 }

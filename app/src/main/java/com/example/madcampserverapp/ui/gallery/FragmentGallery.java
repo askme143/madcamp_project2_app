@@ -52,26 +52,28 @@ import java.util.ArrayList;
 import static android.app.Activity.RESULT_OK;
 
 public class FragmentGallery extends Fragment {
-    private FragmentGallery mFragment = this;
+    /* Constants */
+    private static final String TAG = "FragmentGallery";
     private static final int REQUEST_TAKE_PHOTO = 1;
-
     private Context mContext;
-    private GridView mGridView;
-    private FloatingActionButton mFloatButton;
-
+    private FragmentGallery mFragment;
     private int mCellSize;
     private String mFacebookID;
-
-    private String mCurrentPhotoPath;
     private String mImageDirPath;
 
-    private String[] mImagePaths;
+    /* Path string for camera action */
+    private String mCurrentPhotoPath;
+
+    /* Variables for Grid View */
+    private GridView mGridView;
     private ImageAdapter mImageAdapter;
+    private ArrayList<Bitmap> mBitmapArrayList;
     private ArrayList<Image> mImageArrayList;
 
-    private int click_enable;
-    //////////////////////////////////////////
-    private ArrayList<Bitmap> mBitmapArrayList;
+    private FloatingActionButton mFloatButton;
+
+    /* if long clicked before, disable short click action */
+    private boolean longClicked;
 
     @Nullable
     @Override
@@ -79,83 +81,197 @@ public class FragmentGallery extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         View view = (View) inflater.inflate(R.layout.fragment_gallery, container, false);
 
+        /* Get views */
+        mGridView = (GridView) view.findViewById(R.id.grid_view);
+        mFloatButton = view.findViewById(R.id.cameraIcon);
+
+        /* Build constants */
         mContext = view.getContext();
+        mFragment = this;
+        mCellSize = (getResources().getDisplayMetrics().widthPixels - mGridView.getRequestedHorizontalSpacing()) / 3;
         mImageDirPath = mContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES).toString() + "/MadCampApp";
         mFacebookID = ((MainActivity) getActivity()).getFacebookID();
-        System.out.println(mFacebookID);
 
-        /* Get GRID_VIEW */
-        mGridView = (GridView) view.findViewById(R.id.grid_view);
-
-        requestBitmapArrayList();
-
+        /* Set image adapter and floating button */
+        if (mImageAdapter == null) {
+            mImageArrayList = new ArrayList<>();
+            mImageAdapter = new ImageAdapter(mContext, mCellSize, mImageArrayList);
+        }
         mGridView.setAdapter(mImageAdapter);
-
-        /* Floating camera button */
-        mFloatButton = view.findViewById(R.id.cameraIcon);
         mFloatButton.setVisibility(View.VISIBLE);
 
-//        if (((MainActivity) getActivity()).isSelection()) {
-//            mFloatButton.setVisibility(View.GONE);
-//            mGridView.setOnItemClickListener(new OnItemClickListener() {
-//                @Override
-//                public void onItemClick(AdapterView<?> parent, View v,
-//                                        int position, long id) {
-//                    mGridView.setOnItemClickListener(new OnItemClickListener() {
-//                        @Override
-//                        public void onItemClick(AdapterView<?> parent, View v,
-//                                                int position, long id) {
-//                            if (click_enable == 1) {
-//                                Intent i = new Intent(getActivity(), FullImageActivity.class);
-//                                i.putExtra("id", position);
-//                                i.putExtra("imagePaths", mImagePaths);
-//                                i.putExtra("imageDirPath", mImageDirPath);
-//                                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//                                startActivity(i);
-//                            }
-//                        }
-//                    });
-//
-//                    ((MainActivity) mContext).finishSelectImage(mImageArrayList.get(position));
-//                }
-//            });
-//
-//            return view;
-//        }
+        /* Draw grid view */
+        initFragment();
 
+        /* If writeImageSelection */
+        if (((MainActivity) getActivity()).isWriteImageSelection()) {
+            mFloatButton.setVisibility(View.GONE);
+            mGridView.setOnItemClickListener(new OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View v,
+                                        int position, long id) {
+                    ((MainActivity) mContext).endWriteImageSelection(mImageArrayList.get(position).getOriginalImage());
+                }
+            });
+
+            return view;
+        }
+
+        /* Set button listeners */
         setListener();
 
         return view;
     }
 
-    private File createImageFile() throws IOException {
-        @SuppressLint("SimpleDateFormat") String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss")
-                .format(new Timestamp(System.currentTimeMillis()));
-        String imageFileName = "JPEG_" + timeStamp + "_";
-        File storageDir = new File(mImageDirPath);
+    private void initFragment() {
+        String url = "http://192.249.19.242:7380";
+        String testUrl = url + "/gallery/download";
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("fb_id", mFacebookID);
+        contentValues.put("skip_number", "0");
+        contentValues.put("require_number", "0");
 
-        if (!storageDir.exists()) {
-            storageDir.mkdirs();
-        }
+        MyResponse response = new MyResponse() {
+            @Override
+            public void response(byte[] result) {
+                try {
+                    /* Build bitmap array list */
+                    JSONObject jsonObject = new JSONObject(new String(result));
+                    JSONArray jsonArray = jsonObject.getJSONArray("images");
+                    mBitmapArrayList = new ArrayList<>();
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        byte[] imageByteArray = Base64.decode(jsonArray.getJSONObject(i).getString("image"), Base64.DEFAULT);
+                        Bitmap bitmap = BitmapFactory.decodeByteArray(imageByteArray, 0, imageByteArray.length);
+                        mBitmapArrayList.add(bitmap);
+                    }
 
-        File image = File.createTempFile(
-                imageFileName, ".jpg", storageDir
-        );
+                    /* Add IMAGEs */
+                    mImageArrayList.clear();
+                    for (int i = 0; i < mBitmapArrayList.size(); i++) {
+                        mImageArrayList.add(new Image(mBitmapArrayList.get(i), mCellSize));
+                    }
 
-        mCurrentPhotoPath = image.getAbsolutePath();
+                    mImageAdapter.notifyDataSetChanged();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
 
-        return image;
+        NetworkTask networkTask = new NetworkTask(testUrl, contentValues, response);
+        networkTask.execute(null);
     }
 
+    private void setListener() {
+        /* Initialize long click indicator */
+        longClicked = false;
+
+        /* Floating button */
+        mFloatButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) { dispatchTakePictureIntent(); }
+        });
+
+        /* Item click, then full image activity starts on POSITION */
+        mGridView.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View v,
+                                    int position, long id) {
+                if (!longClicked) {
+                    Intent i = new Intent(getActivity(), FullImageActivity.class);
+
+                    i.putExtra("id", position);
+                    i.putExtra("fb_id", mFacebookID);
+                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+                    startActivity(i);
+                }
+            }
+        });
+
+        /* If long clicked, enter to selection mode */
+        mGridView.setOnItemLongClickListener(
+                new AdapterView.OnItemLongClickListener() {
+                    @SuppressLint("FragmentBackPressedCallback")
+                    @Override
+                    public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+                        longClicked = true;
+
+                        /* Change adapter */
+                        final ImageSelectAdapter deleteAdapter = new ImageSelectAdapter(mContext, mFacebookID, mCellSize, mImageArrayList);
+                        mGridView.setAdapter(deleteAdapter);
+
+                        /* Change callback button action */
+                        final OnBackPressedCallback callback = new OnBackPressedCallback(true) {
+                            @Override
+                            public void handleOnBackPressed() {
+                                mGridView.setAdapter(mImageAdapter);
+                                mFloatButton.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.camera));
+
+                                longClicked = false;
+                                mFloatButton.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        dispatchTakePictureIntent();
+                                    }
+                                });
+
+                                this.remove();
+                            }
+                        };
+                        requireActivity().getOnBackPressedDispatcher().addCallback(mFragment, callback);
+
+
+                        /* Change floating button */
+                        mFloatButton.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.trash));
+                        mFloatButton.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                longClicked = false;
+
+                                /* Delete selected images */
+                                deleteAdapter.deleteChecked();
+
+                                /* Recover the image adapter */
+                                mGridView.setAdapter(mImageAdapter);
+
+                                /* Recover floating button */
+                                mFloatButton.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.camera));
+                                mFloatButton.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        dispatchTakePictureIntent();
+                                    }
+                                });
+
+                                /* Recover callback button action */
+                                callback.remove();
+                            }
+                        });
+                        return false;
+                    }
+                }
+        );
+    }
+
+    /* Camera action */
     private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
         if (takePictureIntent.resolveActivity(mContext.getPackageManager()) != null) {
             File photoFile = null;
             try {
-                photoFile = createImageFile();
+                File storageDir = new File(mImageDirPath);
+                if (!storageDir.exists()) { storageDir.mkdirs(); }
+
+                @SuppressLint("SimpleDateFormat")
+                String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss")
+                        .format(new Timestamp(System.currentTimeMillis()));
+                photoFile = File.createTempFile("JPEG_" + timeStamp + "_", ".jpg", storageDir);
+
+                mCurrentPhotoPath = photoFile.getAbsolutePath();
             } catch (IOException ex) {
-                Log.e("captureCamera Error", ex.toString());
+                Log.e(TAG, ex.toString());
                 return;
             }
 
@@ -165,15 +281,54 @@ public class FragmentGallery extends Fragment {
         }
     }
 
+    /* After camera action */
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_TAKE_PHOTO && resultCode == RESULT_OK) {
             try {
-                galleryAddPic();
+                /* Get file and add to the file system */
+                File f = new File(mCurrentPhotoPath);
+                Uri contentUri = Uri.fromFile(f);
+
+                Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+                mediaScanIntent.setData(contentUri);
+                mContext.sendBroadcast(mediaScanIntent);
+
+                /* Add a bitmap on array lists */
+                Bitmap bitmap = rotateImage(BitmapFactory.decodeFile(mCurrentPhotoPath), mCurrentPhotoPath);
+                mBitmapArrayList.add(0, bitmap);
+                mImageArrayList.add(new Image(bitmap, mCellSize));
+
+                /* Upload an image */
+                String testUrl = "http://192.249.19.242:7380" + "/gallery/upload";
+                ContentValues contentValues = new ContentValues();
+                contentValues.put("fb_id", mFacebookID);
+                contentValues.put("file_name", mCurrentPhotoPath);
+
+                /* After Uploaded, delete an image file */
+                final String path = mCurrentPhotoPath;
+                MyResponse response = new MyResponse() {
+                    @Override
+                    public void response(byte[] result) {
+                        /* TODO: Handle exceptions (null result) */
+                        File fdelete = new File(path);
+                        fdelete.delete();
+
+                        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+                        Uri contentUri = Uri.fromFile(fdelete);
+                        mediaScanIntent.setData(contentUri);
+                        mContext.sendBroadcast(mediaScanIntent);
+                    }
+                };
+
+                NetworkTask networkTask = new NetworkTask(testUrl, bitmap, contentValues, response);
+                networkTask.execute(null);
 
                 /* Update View */
                 mImageAdapter.notifyDataSetChanged();
+
+                Toast.makeText(mContext, "Uploaded", Toast.LENGTH_SHORT).show();
             } catch (Exception e) {
                 Log.e("Request Take Photo", e.toString());
             }
@@ -207,176 +362,6 @@ public class FragmentGallery extends Fragment {
         }
 
         return null;
-    }
-
-    private void galleryAddPic() {
-        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-        File f = new File(mCurrentPhotoPath);
-        Uri contentUri = Uri.fromFile(f);
-        mediaScanIntent.setData(contentUri);
-        mContext.sendBroadcast(mediaScanIntent);
-
-        Bitmap bitmap = rotateImage(BitmapFactory.decodeFile(mCurrentPhotoPath), mCurrentPhotoPath);
-        /* Add bitmap on array lists */
-        mBitmapArrayList.add(0, bitmap);
-        mImageArrayList.add(new Image(bitmap, mCellSize));
-
-        /* Upload an image */
-        String testUrl = "http://192.249.19.242:7380" + "/gallery/upload";
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("fb_id", mFacebookID);
-        contentValues.put("file_name", mCurrentPhotoPath);
-
-        final String path = mCurrentPhotoPath;
-
-        MyResponse response = new MyResponse() {
-            @Override
-            public void response(byte[] result) {
-                Log.e("hello", new String(result));
-                /* Delete an image */
-                File fdelete = new File(path);
-                fdelete.delete();
-
-                Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-                Uri contentUri = Uri.fromFile(fdelete);
-                mediaScanIntent.setData(contentUri);
-                mContext.sendBroadcast(mediaScanIntent);
-            }
-        };
-
-        NetworkTask networkTask = new NetworkTask(testUrl, bitmap, contentValues, response);
-        networkTask.execute(null);
-
-        Toast.makeText(mContext, "Uploaded", Toast.LENGTH_SHORT).show();
-    }
-
-    private void initFragment() {
-        /* Make an array of image paths */
-        /* Get proper CELL_SIZE which is (width pixels - space between cells) / 3 */
-        mCellSize = (getResources().getDisplayMetrics().widthPixels - mGridView.getRequestedHorizontalSpacing()) / 3;
-
-        /* Make an array list of IMAGEs */
-        mImageArrayList = new ArrayList<>();
-        for (int i = 0; i < mBitmapArrayList.size(); i++) {
-            mImageArrayList.add(new Image(mBitmapArrayList.get(i), mCellSize));
-        }
-
-        /* Set new image adapter to GRIDVIEW */
-        mImageAdapter = new ImageAdapter(getActivity(), mCellSize, mImageArrayList);
-
-        click_enable = 1;
-    }
-
-    private void requestBitmapArrayList() {
-        String url = "http://192.249.19.242:7380";
-        String testUrl = url + "/gallery/download";
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("fb_id", mFacebookID);
-        contentValues.put("skip_number", "0");
-        contentValues.put("require_number", "0");
-
-        MyResponse response = new MyResponse() {
-            @Override
-            public void response(byte[] result) {
-                try {
-                    JSONObject jsonObject = new JSONObject(new String(result));
-                    JSONArray jsonArray = jsonObject.getJSONArray("images");
-
-                    mBitmapArrayList = new ArrayList<>();
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        byte[] imageByteArray = Base64.decode(jsonArray.getJSONObject(i).getString("image"), Base64.DEFAULT);
-                        Bitmap bitmap = BitmapFactory.decodeByteArray(imageByteArray, 0, imageByteArray.length);
-                        mBitmapArrayList.add(bitmap);
-                    }
-
-                    initFragment();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        };
-
-        NetworkTask networkTask = new NetworkTask(testUrl, contentValues, response);
-        networkTask.execute(null);
-    }
-
-    private void setListener() {
-        mFloatButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dispatchTakePictureIntent();
-            }
-        });
-
-        /* Set click listener. Start FULL_IMAGE_ACTIVITY with POSITION which
-            indicates an clicked image */
-        mGridView.setOnItemClickListener(new OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View v,
-                                    int position, long id) {
-                if (click_enable == 1) {
-                    Intent i = new Intent(getActivity(), FullImageActivity.class);
-
-                    i.putExtra("id", position);
-                    i.putExtra("fb_id", mFacebookID);
-                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
-                    startActivity(i);
-                }
-            }
-        });
-
-        mGridView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-             @SuppressLint("FragmentBackPressedCallback")
-             @Override
-             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-                 click_enable = 0;
-                 final ImageSelectAdapter deleteAdapter = new ImageSelectAdapter(mContext, mFacebookID, mCellSize, mImageArrayList);
-                 mGridView.setAdapter(deleteAdapter);
-                 mFloatButton.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.trash));
-
-                 final OnBackPressedCallback callback = new OnBackPressedCallback(true) {
-                     @Override
-                     public void handleOnBackPressed() {
-                         mGridView.setAdapter(mImageAdapter);
-                         mFloatButton.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.camera));
-
-                         click_enable = 1;
-                         mFloatButton.setOnClickListener(new View.OnClickListener() {
-                             @Override
-                             public void onClick(View view) {
-                                 dispatchTakePictureIntent();
-                             }
-                         });
-
-                         this.remove();
-                     }
-                 };
-                 requireActivity().getOnBackPressedDispatcher().addCallback(mFragment, callback);
-
-                 mFloatButton.setOnClickListener(new View.OnClickListener() {
-                     @Override
-                     public void onClick(View view) {
-                         deleteAdapter.deleteChecked();
-                         mGridView.setAdapter(mImageAdapter);
-                         mFloatButton.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.camera));
-
-
-                         click_enable = 1;
-                         mFloatButton.setOnClickListener(new View.OnClickListener() {
-                             @Override
-                             public void onClick(View view) {
-                                 dispatchTakePictureIntent();
-                             }
-                         });
-
-                         callback.remove();
-                     }
-                 });
-                 return false;
-             }
-         }
-    );
     }
 
     public static class NetworkTask extends ThreadTask<Void, byte[]> {
