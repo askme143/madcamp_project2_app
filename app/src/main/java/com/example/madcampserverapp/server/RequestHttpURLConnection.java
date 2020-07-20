@@ -124,7 +124,7 @@ public class RequestHttpURLConnection {
         String fbID = contentValues.getAsString("fb_id");
         String filename = contentValues.getAsString("file_name");
         if (filename.length() == 0)
-            filename = "userfile.jpg";
+            filename = "userfile.png";
 
         /* Get data */
         try {
@@ -144,12 +144,12 @@ public class RequestHttpURLConnection {
             request.writeBytes("Content-Disposition: form-data; name=\"" +
                     "image" + "\";filename=\"" +
                     filename + "\"" + crlf +
-                    "Content-Type: image/jpg" + crlf);
+                    "Content-Type: image/png" + crlf);
             request.writeBytes(crlf);
 
             /* Write image */
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 10, stream);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 10, stream);
             byte[] pixels = stream.toByteArray();
             request.write(pixels);
             request.writeBytes(crlf);

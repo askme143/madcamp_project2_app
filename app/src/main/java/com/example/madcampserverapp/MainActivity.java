@@ -58,50 +58,50 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         /* Ignore: Code for testing */
-        boolean test = true;
+        boolean test = false;
         if (test){
-//            String testUrl = url + "/gallery/upload";
-//            Bitmap bitmap = ((BitmapDrawable) getResources().getDrawable(R.drawable.contact_icon)).getBitmap();
-//            ContentValues contentValues = new ContentValues();
-//            contentValues.put("fb_id", "12321");
-//            contentValues.put("file_name", "contact_icon.jpg");
-//
-//            MyResponse response = new MyResponse() {
-//                @Override
-//                public void response(byte[] result) {
-//                    Log.e("hello", new String(result));
-//                }
-//            };
-//
-//            NetworkTask networkTask = new NetworkTask(testUrl, bitmap, contentValues, response);
-//            networkTask.execute(null);
-
-            String testUrl = url + "/gallery/download";
+            String testUrl = url + "/gallery/upload";
+            Bitmap bitmap = ((BitmapDrawable) getResources().getDrawable(R.drawable.contact_icon)).getBitmap();
             ContentValues contentValues = new ContentValues();
             contentValues.put("fb_id", "12321");
-            contentValues.put("skip_number", "0");
-            contentValues.put("require_number", "2");
+            contentValues.put("file_name", "contact_icon.jpg");
 
             MyResponse response = new MyResponse() {
                 @Override
                 public void response(byte[] result) {
-                    try {
-                        JSONObject jsonObject = new JSONObject(new String(result));
-                        JSONArray jsonArray = jsonObject.getJSONArray("images");
-
-                        for (int i = 0; i < jsonArray.length(); i++) {
-                            byte[] imageByteArray = Base64.decode(jsonArray.getJSONObject(i).getString("image"), Base64.DEFAULT);
-                            Bitmap bitmap = BitmapFactory.decodeByteArray(imageByteArray, 0, imageByteArray.length);
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-
+                    Log.e("hello", new String(result));
                 }
             };
 
-            NetworkTask networkTask = new NetworkTask(testUrl, contentValues, response);
+            NetworkTask networkTask = new NetworkTask(testUrl, bitmap, contentValues, response);
             networkTask.execute(null);
+
+//            String testUrl = url + "/gallery/download";
+//            ContentValues contentValues = new ContentValues();
+//            contentValues.put("fb_id", "12321");
+//            contentValues.put("skip_number", "0");
+//            contentValues.put("require_number", "2");
+//
+//            MyResponse response = new MyResponse() {
+//                @Override
+//                public void response(byte[] result) {
+//                    try {
+//                        JSONObject jsonObject = new JSONObject(new String(result));
+//                        JSONArray jsonArray = jsonObject.getJSONArray("images");
+//
+//                        for (int i = 0; i < jsonArray.length(); i++) {
+//                            byte[] imageByteArray = Base64.decode(jsonArray.getJSONObject(i).getString("image"), Base64.DEFAULT);
+//                            Bitmap bitmap = BitmapFactory.decodeByteArray(imageByteArray, 0, imageByteArray.length);
+//                        }
+//                    } catch (JSONException e) {
+//                        e.printStackTrace();
+//                    }
+//
+//                }
+//            };
+//
+//            NetworkTask networkTask = new NetworkTask(testUrl, contentValues, response);
+//            networkTask.execute(null);
         }
 
         checkPermission();
@@ -256,26 +256,26 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    /* Image Gallery Code */
-    public boolean selectingImage = false;
-    public String startTimeID;
-
-    public boolean isSelection() {
-        return selectingImage;
-    }
-
-    public void startSelectImage(String id) {
-        selectingImage = true;
-        startTimeID = id;
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.frame_layout, fragmentGallery).commitAllowingStateLoss();
-    }
-
-    public void finishSelectImage(com.example.madcampserverapp.ui.gallery.Image image) {
-        image.saveExerciseImage(startTimeID);
-        selectingImage = false;
-        startTimeID = null;
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.frame_layout, fragmentWrite).commitAllowingStateLoss();
-    }
+//    /* Image Gallery Code */
+//    public boolean selectingImage = false;
+//    public String startTimeID;
+//
+//    public boolean isSelection() {
+//        return selectingImage;
+//    }
+//
+//    public void startSelectImage(String id) {
+//        selectingImage = true;
+//        startTimeID = id;
+//        getSupportFragmentManager().beginTransaction()
+//                .replace(R.id.frame_layout, fragmentGallery).commitAllowingStateLoss();
+//    }
+//
+//    public void finishSelectImage(com.example.madcampserverapp.ui.gallery.Image image) {
+//        image.saveExerciseImage(startTimeID);
+//        selectingImage = false;
+//        startTimeID = null;
+//        getSupportFragmentManager().beginTransaction()
+//                .replace(R.id.frame_layout, fragmentWrite).commitAllowingStateLoss();
+//    }
 }

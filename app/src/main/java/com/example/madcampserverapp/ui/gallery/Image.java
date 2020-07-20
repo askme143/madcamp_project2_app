@@ -17,52 +17,33 @@ import java.io.OutputStream;
 import java.io.Serializable;
 
 public class Image {
-    private String mAbsolutePath;
     private int mHieght;
     private int mWidth;
 
-    private String mImageDirPath;
-    private String mImageName;
-
     private Bitmap mScaledImage;
     private Bitmap mOriginalImage = null;
-    private Bitmap mExerciseImage = null;
 
-    public Image(String path, int cellSize) {
-        mAbsolutePath = path;
+    public Image(Bitmap bitmap, int cellSize) {
         mHieght = cellSize;
         mWidth = cellSize;
-
-        mImageDirPath = getImageDirPath();
-        mImageName = getImageName();
+        mOriginalImage = bitmap;
     }
 
-    public Image(String path, int height, int width) {
-        mAbsolutePath = path;
-        mHieght = height;
+    public Image (Bitmap bitmap, int hieght, int width) {
+        mHieght = hieght;
         mWidth = width;
+        mOriginalImage = bitmap;
     }
 
     public Bitmap getOriginalImage() {
-        if (mOriginalImage == null)
-            try {
-                mOriginalImage = rotateImage(BitmapFactory.decodeFile(mAbsolutePath, new BitmapFactory.Options()));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
         return mOriginalImage;
     }
 
     public Bitmap getScaledImage() {
         if (mScaledImage == null)
             try {
-                BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-                bmOptions.inJustDecodeBounds = true;
-
-                /* Get the dimensions of the bitmap */
-                BitmapFactory.decodeFile(mAbsolutePath, bmOptions);
-                int imageHeight = bmOptions.outHeight;
-                int imageWidth = bmOptions.outWidth;
+                int imageHeight = mOriginalImage.getHeight();
+                int imageWidth = mOriginalImage.getWidth();
 
                 /* Get the SCALE_FACTOR that is a power of 2 and
                     keeps both height and width larger than CELL_SIZE. */
@@ -77,68 +58,11 @@ public class Image {
                     }
                 }
 
-                /* Decode the image file into a Bitmap sized to fill the View */
-                bmOptions.inJustDecodeBounds = false;
-                bmOptions.inSampleSize = scaleFactor;
-
-                mScaledImage = rotateImage(BitmapFactory.decodeFile(mAbsolutePath, bmOptions));
+                mScaledImage = Bitmap.createScaledBitmap(mOriginalImage, imageWidth/scaleFactor,
+                        imageHeight/scaleFactor, true);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         return mScaledImage;
-    }
-
-    public void saveExerciseImage (String startTimeId) {
-        File dir = new File(mImageDirPath);
-        if(!dir.exists())
-            dir.mkdirs();
-
-        try {
-            File image = new File(mImageDirPath + "/Exercise/" + startTimeId + mImageName);
-            if (!image.exists()) {
-                image.createNewFile();
-            }
-            OutputStream out = new FileOutputStream(image);
-
-            getScaledImage().compress(Bitmap.CompressFormat.JPEG, 100, out);
-            mExerciseImage = mScaledImage;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public String getAbsolutePath() {
-        return mAbsolutePath;
-    }
-
-    private Bitmap rotateImage (Bitmap bitmap) throws IOException {
-        /* Code below rotates the bitmap to be original direction */
-        ExifInterface exif = new ExifInterface(mAbsolutePath);
-        int orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_UNDEFINED);
-
-        Matrix matrix = new Matrix();
-        switch (orientation) {
-            case ExifInterface.ORIENTATION_ROTATE_90:
-                matrix.postRotate(90);
-                break;
-            case ExifInterface.ORIENTATION_ROTATE_180:
-                matrix.postRotate(180);
-                break;
-            case ExifInterface.ORIENTATION_ROTATE_270:
-                matrix.postRotate(270);
-                break;
-            default:
-                break;
-        }
-
-        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
-    }
-
-    private String getImageDirPath() {
-        return mAbsolutePath.substring(0, mAbsolutePath.lastIndexOf('/'));
-    }
-
-    private String getImageName() {
-        return mAbsolutePath.substring(mAbsolutePath.lastIndexOf('/') + 1);
     }
 }

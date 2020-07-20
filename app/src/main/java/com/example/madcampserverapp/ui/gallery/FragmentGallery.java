@@ -11,6 +11,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.Base64;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -36,6 +37,8 @@ import com.example.madcampserverapp.server.MyResponse;
 import com.example.madcampserverapp.server.RequestHttpURLConnection;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
@@ -64,6 +67,8 @@ public class FragmentGallery extends Fragment {
     private ArrayList<Image> mImageArrayList;
 
     private int click_enable;
+    //////////////////////////////////////////
+    private ArrayList<Bitmap> mBitmapArrayList;
 
     @Nullable
     @Override
@@ -77,42 +82,44 @@ public class FragmentGallery extends Fragment {
         /* Get GRID_VIEW */
         mGridView = (GridView) view.findViewById(R.id.grid_view);
 
-        if (mImagePaths == null) {
-            initFragment();
-        }
+        requestBitmapArrayList();
+
+//        if (mImagePaths == null) {
+//            initFragment();
+//        }
         mGridView.setAdapter(mImageAdapter);
 
         /* Floating camera button */
         mFloatButton = view.findViewById(R.id.cameraIcon);
         mFloatButton.setVisibility(View.VISIBLE);
 
-        if (((MainActivity) getActivity()).isSelection()) {
-            mFloatButton.setVisibility(View.GONE);
-            mGridView.setOnItemClickListener(new OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View v,
-                                        int position, long id) {
-                    mGridView.setOnItemClickListener(new OnItemClickListener() {
-                        @Override
-                        public void onItemClick(AdapterView<?> parent, View v,
-                                                int position, long id) {
-                            if (click_enable == 1) {
-                                Intent i = new Intent(getActivity(), FullImageActivity.class);
-                                i.putExtra("id", position);
-                                i.putExtra("imagePaths", mImagePaths);
-                                i.putExtra("imageDirPath", mImageDirPath);
-                                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                startActivity(i);
-                            }
-                        }
-                    });
-
-                    ((MainActivity) mContext).finishSelectImage(mImageArrayList.get(position));
-                }
-            });
-
-            return view;
-        }
+//        if (((MainActivity) getActivity()).isSelection()) {
+//            mFloatButton.setVisibility(View.GONE);
+//            mGridView.setOnItemClickListener(new OnItemClickListener() {
+//                @Override
+//                public void onItemClick(AdapterView<?> parent, View v,
+//                                        int position, long id) {
+//                    mGridView.setOnItemClickListener(new OnItemClickListener() {
+//                        @Override
+//                        public void onItemClick(AdapterView<?> parent, View v,
+//                                                int position, long id) {
+//                            if (click_enable == 1) {
+//                                Intent i = new Intent(getActivity(), FullImageActivity.class);
+//                                i.putExtra("id", position);
+//                                i.putExtra("imagePaths", mImagePaths);
+//                                i.putExtra("imageDirPath", mImageDirPath);
+//                                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//                                startActivity(i);
+//                            }
+//                        }
+//                    });
+//
+//                    ((MainActivity) mContext).finishSelectImage(mImageArrayList.get(position));
+//                }
+//            });
+//
+//            return view;
+//        }
 
         setListener();
 
@@ -162,20 +169,6 @@ public class FragmentGallery extends Fragment {
         if (requestCode == REQUEST_TAKE_PHOTO && resultCode == RESULT_OK) {
             try {
                 galleryAddPic();
-                /* Update an array of image paths */
-                File dir = new File(mImageDirPath);
-                mImagePaths = dir.list(new FilenameFilter() {
-                    @Override
-                    public boolean accept(File file, String s) {
-                        boolean bOK = false;
-                        if(s.toLowerCase().endsWith(".jpg")) bOK = true;
-
-                        return bOK;
-                    }
-                });
-
-                /* Insert new image */
-                mImageArrayList.add(new Image(mCurrentPhotoPath, mCellSize));
 
                 /* Update View */
                 mImageAdapter.notifyDataSetChanged();
@@ -193,39 +186,60 @@ public class FragmentGallery extends Fragment {
         mContext.sendBroadcast(mediaScanIntent);
 
         Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath);
-
+        mBitmapArrayList.add(0, bitmap);
+        mImageArrayList.add(new Image(bitmap, mCellSize));
 
         Toast.makeText(mContext, "Uploaded", Toast.LENGTH_SHORT).show();
     }
 
     private void initFragment() {
         /* Make an array of image paths */
-        File dir = new File(mImageDirPath);
-        mImagePaths = dir.list(new FilenameFilter() {
-            @Override
-            public boolean accept(File file, String s) {
-                boolean bOK = false;
-                if(s.toLowerCase().endsWith(".jpg")) bOK = true;
-
-                return bOK;
-            }
-        });
-
         /* Get proper CELL_SIZE which is (width pixels - space between cells) / 3 */
         mCellSize = (getResources().getDisplayMetrics().widthPixels - mGridView.getRequestedHorizontalSpacing()) / 3;
 
         /* Make an array list of IMAGEs */
         mImageArrayList = new ArrayList<>();
-        if (mImagePaths != null) {
-            for (String path : mImagePaths) {
-                mImageArrayList.add(new Image(mImageDirPath + "/" + path, mCellSize));
-            }
+        for (int i = 0; i < mBitmapArrayList.size(); i++) {
+            mImageArrayList.add(new Image(mBitmapArrayList.get(i), mCellSize));
         }
 
         /* Set new image adapter to GRIDVIEW */
         mImageAdapter = new ImageAdapter(getActivity(), mCellSize, mImageArrayList);
 
         click_enable = 1;
+    }
+
+    private void requestBitmapArrayList() {
+        String url = "http://192.249.19.242:7380";
+        String testUrl = url + "/gallery/download";
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("fb_id", "12321");
+        contentValues.put("skip_number", "0");
+        contentValues.put("require_number", "0");
+
+        MyResponse response = new MyResponse() {
+            @Override
+            public void response(byte[] result) {
+                try {
+                    JSONObject jsonObject = new JSONObject(new String(result));
+                    JSONArray jsonArray = jsonObject.getJSONArray("images");
+
+                    mBitmapArrayList = new ArrayList<>();
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        byte[] imageByteArray = Base64.decode(jsonArray.getJSONObject(i).getString("image"), Base64.DEFAULT);
+                        Bitmap bitmap = BitmapFactory.decodeByteArray(imageByteArray, 0, imageByteArray.length);
+                        mBitmapArrayList.add(bitmap);
+                    }
+
+                    initFragment();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+
+        NetworkTask networkTask = new NetworkTask(testUrl, contentValues, response);
+        networkTask.execute(null);
     }
 
     private void setListener() {
@@ -244,10 +258,12 @@ public class FragmentGallery extends Fragment {
                                     int position, long id) {
                 if (click_enable == 1) {
                     Intent i = new Intent(getActivity(), FullImageActivity.class);
+                    BitmapArrayIndicator bitmapArrayIndicator = new BitmapArrayIndicator(mBitmapArrayList);
+
                     i.putExtra("id", position);
-                    i.putExtra("imagePaths", mImagePaths);
-                    i.putExtra("imageDirPath", mImageDirPath);
+                    i.putExtra("bitmapIndicator", bitmapArrayIndicator);
                     i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
                     startActivity(i);
                 }
             }
@@ -326,6 +342,12 @@ public class FragmentGallery extends Fragment {
             mMyResponse = myResponse;
         }
 
+        public NetworkTask(String url, ContentValues values, MyResponse myResponse) {
+            mUrl = url;
+            mValues = values;
+            mMyResponse = myResponse;
+        }
+
         @Override
         protected void onPreExecute() {
         }
@@ -336,8 +358,6 @@ public class FragmentGallery extends Fragment {
 
             if (mBitmap != null)
                 return requestHttpURLConnection.uploadImage(mUrl, mBitmap, mValues);
-            else if (mJSONObject != null)
-                return requestHttpURLConnection.request(mUrl, mJSONObject);
             else if (mValues != null)
                 return requestHttpURLConnection.request(mUrl, mValues);
             else
