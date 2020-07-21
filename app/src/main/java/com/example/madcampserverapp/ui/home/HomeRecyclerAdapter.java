@@ -48,21 +48,24 @@ public class HomeRecyclerAdapter extends RecyclerView.Adapter <HomeRecyclerAdapt
 
         holder.writer.setText(post.getName());
 
-        /* On item click, go to Bit Post Activity */
+        /* On item click, go to Big Post Activity */
         holder.itemView.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
                 if (position != RecyclerView.NO_POSITION){
                     /* Get facebook id and post id. Put them in the intent as extra data */
-                    String fbID = ((MainActivity) context).getFacebookID();
+//                    String fbID = ((MainActivity) context).getFacebookID();
                     String postID = post.getPostID();
 
-                    Intent intent = new Intent(view.getContext(),BigPostActivity.class);
+//                    Intent intent = new Intent(view.getContext(),BigPostActivity.class);
+//
+//                    /* Must put all user info for back up */
+//                    intent.putExtra("fb_id", fbID);
+//                    intent.putExtra("post_id", postID);
+//
+//                    view.getContext().startActivity(intent);
 
-                    intent.putExtra("fb_id", fbID);
-                    intent.putExtra("post_id", postID);
-
-                    view.getContext().startActivity(intent);
+                    ((MainActivity) context).showBigPost(postID);
                 }
             }
         });

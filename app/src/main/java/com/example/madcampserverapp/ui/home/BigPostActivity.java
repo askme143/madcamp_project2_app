@@ -157,7 +157,7 @@ public class BigPostActivity extends AppCompatActivity {
         likeButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                /* TODO: Notify to the server */
+                /* Notify to the server */
                 String url = "http://192.249.19.242:7380" + "/post/like";
 
                 ContentValues contentValues = new ContentValues();
@@ -176,11 +176,12 @@ public class BigPostActivity extends AppCompatActivity {
                 Intent intent = new Intent(view.getContext(), MainActivity.class);
 
                 intent.putExtra("writer_name", post.getName());
+                setResult(RESULT_OK, intent);
 
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-                startActivity(intent);
+                finish();
             }
         });
     }
