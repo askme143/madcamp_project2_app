@@ -94,7 +94,7 @@ public class FragmentWrite extends Fragment {
                     }
                     name = ((MainActivity) getActivity()).getName();
 
-                    tempPost = new Post(goodsImageList, goodsName, goodsPrice, goodsLocation, goodsDetail, 0, name);
+                    tempPost = new Post(goodsImageList, goodsName, goodsPrice, goodsLocation, goodsDetail, 0, name, "");
 
                     /* TODO: Upload the post / Testing */
                     String url = "http://192.249.19.242:7380" + "/post/upload";

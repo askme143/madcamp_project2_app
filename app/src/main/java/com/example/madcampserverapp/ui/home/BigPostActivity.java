@@ -66,12 +66,13 @@ public class BigPostActivity extends AppCompatActivity {
 
         /* TODO: Request and a get post object */
         /* TODO: Make more specific queries ("location or skip or limit, ..") */
-        String url = "http://192.249.19.242:7380" + "/post/download/list";
+        String url = "http://192.249.19.242:7380" + "/post/download/detail";
 
         ContentValues contentValues = new ContentValues();
         contentValues.put("fb_id", mFbID);
         contentValues.put("photo_id", mPhotoID);
 
+        Log.e(TAG, "Hello!");
         NetworkTask networkTask = new NetworkTask(url, contentValues, responsePost);
         networkTask.execute(null);
     }
@@ -105,7 +106,9 @@ public class BigPostActivity extends AppCompatActivity {
 
                 String writer = postDoc.getString("writer");
 
-                post = new Post(goodsImages, goodsName, goodsPrice, goodsLocation, goodsDetail, lickCount, writer);
+                String postID = postDoc.getString("_id");
+
+                post = new Post(goodsImages, goodsName, goodsPrice, goodsLocation, goodsDetail, lickCount, writer, postID);
                 liked = Boolean.parseBoolean(postDoc.getString("liked"));
             } catch (JSONException e) {
                 e.printStackTrace();

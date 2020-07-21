@@ -12,11 +12,13 @@ public class Post {
     private String goods_location;
     private String goods_detail;
 
+    private String post_id;
+
     private String name;
     /*like count*/
     private int like_cnt;
 
-    public Post(ArrayList<Bitmap> goods_images, String goods_name, int goods_price, String goods_location, String goods_detail, int like_cnt, String name){
+    public Post(ArrayList<Bitmap> goods_images, String goods_name, int goods_price, String goods_location, String goods_detail, int like_cnt, String name, String post_id){
         this.goods_name = goods_name;
         this.goods_price = goods_price;
         this.goods_location = goods_location;
@@ -24,6 +26,7 @@ public class Post {
         this.goods_detail = goods_detail;
         this.name = name;
         this.like_cnt = like_cnt;
+        this.post_id = post_id;
     }
 
     public String getGoods_name() {

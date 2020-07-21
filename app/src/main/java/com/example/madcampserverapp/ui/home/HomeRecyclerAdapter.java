@@ -36,8 +36,9 @@ public class HomeRecyclerAdapter extends RecyclerView.Adapter <HomeRecyclerAdapt
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
         final Post post=postArrayList.get(position);
 
-        holder.goodsFirstImage.setImageBitmap(post.getGoods_images().get(0));
-
+        if (post.getGoods_images().size() != 0) {
+            holder.goodsFirstImage.setImageBitmap(post.getGoods_images().get(0));
+        }
         holder.goodsName.setText(post.getGoods_name());
         holder.goodsPrice.setText(post.getGoods_price()+"");
         holder.goodsLocation.setText(post.getGoods_location());
