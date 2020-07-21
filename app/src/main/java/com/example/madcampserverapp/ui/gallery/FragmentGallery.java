@@ -311,7 +311,7 @@ public class FragmentGallery extends Fragment {
                 /* Add a bitmap on array lists */
                 Bitmap bitmap = rotateImage(BitmapFactory.decodeFile(mCurrentPhotoPath), mCurrentPhotoPath);
                 mBitmapArrayList.add(0, bitmap);
-                mImageArrayList.add(new Image(bitmap, mCellSize));
+                mImageArrayList.add(0, new Image(bitmap, mCellSize));
 
                 /* Upload an image */
                 String testUrl = "http://192.249.19.242:7380" + "/gallery/upload";
