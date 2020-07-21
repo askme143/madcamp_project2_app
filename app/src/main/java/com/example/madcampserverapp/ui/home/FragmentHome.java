@@ -44,6 +44,7 @@ public class FragmentHome extends Fragment {
     private EditText editText;
     private ImageButton refreshImageButton;
     private RecyclerView mRecyclerView;
+    private ImageButton xButton;
 
     @Nullable
     @Override
@@ -80,6 +81,15 @@ public class FragmentHome extends Fragment {
                     public void afterTextChanged(Editable editable) { }
                 }
         );
+
+        /* X image button : delete all edittext */
+        xButton = (ImageButton) view.findViewById(R.id.x_btn);
+        xButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                editText.setText("");
+            }
+        });
 
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
