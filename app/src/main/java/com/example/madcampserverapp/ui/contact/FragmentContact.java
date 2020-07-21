@@ -49,7 +49,8 @@ public class FragmentContact extends Fragment {
     private ArrayList<Contact> mContactList;
 
     private View mView;
-    private ContactAdapter mAdapter;
+    private RecyclerView mRecyclerView;
+    private ContactAdapter mAdapter = null;
 
     private EditText editText;
     private String writer_name;
@@ -62,19 +63,59 @@ public class FragmentContact extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mView = inflater.inflate(R.layout.fragment_contact, null);
+        mRecyclerView = mView.findViewById(R.id.recycler_view);
+        editText = (EditText) mView.findViewById(R.id.search_bar);
 
         mFacebookID = ((MainActivity) getActivity()).getFacebookID();
-        checkPermission();
+        if (mAdapter == null) {
+            /* Init mAdapter */
+            mContactList = new ArrayList<>();
+            mAdapter = new ContactAdapter(getActivity(), mContactList);
 
-        /*Get bundle of writer_name from MainActivity*/
-        editText = (EditText) mView.findViewById(R.id.search_bar);
+            checkPermission();
+        }
+
+        mRecyclerView.setAdapter(mAdapter);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
+        mRecyclerView.setLayoutManager(linearLayoutManager);
+
+        /* Get bundle of writer_name from MainActivity */
         bundle2=null;
         bundle2=getArguments();
-        System.out.println("--------------------"+bundle2);
+
         if(bundle2!=null){
             writer_name=bundle2.getString("writer_name");
             editText.setText(writer_name);
         }
+
+        editText.addTextChangedListener(
+                new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence charSequence, int i_, int i1, int i2) { }
+
+                    @Override
+                    public void onTextChanged(CharSequence charSequence, int i_, int i1, int i2) {
+                        ArrayList<Contact> contactList_retrieve = new ArrayList<>();
+
+                        final String searchContent = editText.getText().toString();
+
+                        for (int i = 0; i < mContactList.size(); i++) {
+                            if (mContactList.get(i).getName().contains(searchContent) ) {
+                                contactList_retrieve.add(mContactList.get(i));
+                            } else if (mContactList.get(i).getPhoneNumber().contains(searchContent)) {
+                                contactList_retrieve.add(mContactList.get(i));
+                            }
+                        }
+                        ContactAdapter customAdapter_retrieve = new ContactAdapter(getActivity(), contactList_retrieve);
+                        mRecyclerView.setAdapter(customAdapter_retrieve);
+                        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
+                        mRecyclerView.setLayoutManager(linearLayoutManager);
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable editable) { }
+                }
+        );
 
         /* 새로고침 image button */
         imageButton = (ImageButton) mView.findViewById(R.id.new_btn);
@@ -82,19 +123,8 @@ public class FragmentContact extends Fragment {
         return mView;
     }
 
-    public void draw() {
-        RecyclerView recyclerView = mView.findViewById(R.id.recycler_view);
-
-        /* Create and set ContactAdapter and LinearLayoutManager */
-        ContactAdapter contactAdapter = new ContactAdapter(getActivity(), mContactList);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
-
-        recyclerView.setAdapter(contactAdapter);
-        recyclerView.setLayoutManager(linearLayoutManager);
-    }
-
     public void updateContacts() {
-        mContactList = getContactList();
+        ArrayList<Contact> contacts = getContactList();
 
         /* Make url */
         String url = ((MainActivity) getActivity()).getUrl() + "/contact_put";
@@ -107,7 +137,7 @@ public class FragmentContact extends Fragment {
 
             /* Make JSONArray of contacts */
             JSONArray jsonArray = new JSONArray();
-            for (Contact contact : mContactList) {
+            for (Contact contact : contacts) {
                 JSONObject tempObject = new JSONObject();
 
                 tempObject.put("fb_id_owner", mFacebookID);
@@ -137,12 +167,13 @@ public class FragmentContact extends Fragment {
                 if (resultString.equals("failed")) {
                     Log.e(TAG, "Failed on updateContacts");
                 } else {
+                    Log.e(TAG, resultString);
                     try {
                         /* Make contact list */
                         JSONObject jsonObject = new JSONObject(resultString);
                         JSONArray jsonArray = jsonObject.getJSONArray("contacts");
-                        mContactList = new ArrayList<>();
 
+                        mContactList.clear();
                         for (int i = 0; i < jsonArray.length(); i++) {
                             Contact contact = new Contact(jsonArray.getJSONObject(i).getString("name"),
                                     jsonArray.getJSONObject(i).getString("phone_number"));
@@ -150,7 +181,8 @@ public class FragmentContact extends Fragment {
                             mContactList.add(contact);
                         }
 
-                        draw();
+                        /* Notify data changed */
+                        mAdapter.notifyDataSetChanged();
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }

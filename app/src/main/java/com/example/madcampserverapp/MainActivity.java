@@ -1,6 +1,7 @@
 package com.example.madcampserverapp;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -22,6 +23,7 @@ import android.widget.Toast;
 
 import com.example.madcampserverapp.server.MyResponse;
 import com.example.madcampserverapp.ui.gallery.Image;
+import com.example.madcampserverapp.ui.home.BigPostActivity;
 import com.example.madcampserverapp.ui.home.FragmentHome;
 import com.example.madcampserverapp.ui.userinfo.FragmentMyinfo2;
 import com.example.madcampserverapp.ui.write.FragmentWrite;
@@ -39,6 +41,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
+    private static final int BIG_POST_CODE = 1;
+
     private BottomNavigationView bottomNavigationView;
 
     private FragmentHome fragmentHome;
@@ -47,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
     private FragmentGallery fragmentGallery;
     private FragmentMyinfo2 fragmentMyinfo;
 
-    private String url = "http://192.249.19.244:1780";
+    private String url = "http://192.249.19.242:7380";
     private String mFacebookID;
     private String mName;
     private String phoneNumber;
@@ -183,23 +187,9 @@ public class MainActivity extends AppCompatActivity {
         bundle3.putString("location",location);
         fragmentWrite.setArguments(bundle3);
 
-        /* View selecting point */
-        if (intent.hasExtra("writer_name")) {
-            /* If caller is BIG_POST_ACTIVITY, then move to CONTACT TAB */
-
-            /* Send writer name to contact tab */
-            Bundle bundle2 = new Bundle();
-            writer_name = intent.getStringExtra("writer_name");
-            bundle2.putString("writer_name", writer_name);
-            fragmentContact.setArguments(bundle2);
-
-            bottomNavigationView.setSelectedItemId(R.id.contact);
-            getSupportFragmentManager().beginTransaction().replace(R.id.frame_layout,fragmentContact).commitAllowingStateLoss();
-        } else {
-            /* Default fragment (home tab) */
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.frame_layout, fragmentHome).commitAllowingStateLoss();
-        }
+        /* Default fragment (home tab) */
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.frame_layout, fragmentHome).commitAllowingStateLoss();
     }
 
     public void startWriteImageSelection() {
@@ -220,5 +210,34 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigationView.setSelectedItemId(R.id.home);
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.frame_layout, fragmentHome).commitAllowingStateLoss();
+    }
+
+    public void showBigPost(String postID) {
+        Intent intent = new Intent(this, BigPostActivity.class);
+
+        /* Must put all user info for back up */
+        intent.putExtra("fb_id", mFacebookID);
+        intent.putExtra("post_id", postID);
+
+        startActivityForResult (intent, BIG_POST_CODE);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        Log.e("Main", "Hello???");
+        if (requestCode == BIG_POST_CODE) {
+            Log.e("Main", "Hello??");
+            if (resultCode == RESULT_OK) {
+                Log.e("Main", "Hello?");
+                Bundle bundle = new Bundle();
+                bundle.putString("writer_name", data.getStringExtra("writer_name"));
+                fragmentContact.setArguments(bundle);
+
+                bottomNavigationView.setSelectedItemId(R.id.contact);
+                getSupportFragmentManager().beginTransaction().replace(R.id.frame_layout,fragmentContact).commitAllowingStateLoss();
+            }
+        }
     }
 }

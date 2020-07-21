@@ -30,9 +30,8 @@ public class BigPostActivity extends AppCompatActivity {
     private static final String TAG = "BitPostActivity";
 
     private String mFbID;
-    private String mPhotoID;
+    private String mPostID;
 
-    private boolean liked;
     private Post post = null;
 
     private ViewPager viewPager;
@@ -50,7 +49,7 @@ public class BigPostActivity extends AppCompatActivity {
         /* Get facebook id and photo id */
         Intent intent = getIntent();
         mFbID = intent.getStringExtra("fb_id");
-        mPhotoID = intent.getStringExtra("photo_id");
+        mPostID = intent.getStringExtra("post_id");
 
         /* Get views */
         viewPager = (ViewPager) findViewById(R.id.post_view_pager);
@@ -64,13 +63,22 @@ public class BigPostActivity extends AppCompatActivity {
         textWriter = (TextView) findViewById(R.id.big_writer);
         likeButton = (ImageButton) findViewById(R.id.big_goods_like);
 
-        /* TODO: Request and a get post object */
+        /* Init post */
+        post = new Post(new ArrayList<Bitmap>(), "", 0, "", "",
+                0, "", "");
+
+        /* Set viewpager Adapter */
+        bigImageViewPagerAdapter = new BigImageViewPagerAdapter(this, post.getGoods_images());
+        viewPager.setAdapter(bigImageViewPagerAdapter);
+        viewPager.setCurrentItem(0);
+
+        /* Request and a get post object */
         /* TODO: Make more specific queries ("location or skip or limit, ..") */
-        String url = "http://192.249.19.242:7380" + "/post/download/list";
+        String url = "http://192.249.19.242:7380" + "/post/download/detail";
 
         ContentValues contentValues = new ContentValues();
         contentValues.put("fb_id", mFbID);
-        contentValues.put("photo_id", mPhotoID);
+        contentValues.put("post_id", mPostID);
 
         Log.e(TAG, "Request!!");
         NetworkTask networkTask = new NetworkTask(url, contentValues, responsePost);
@@ -90,24 +98,34 @@ public class BigPostActivity extends AppCompatActivity {
                 JSONObject postDoc = new JSONObject(new String(result));
 
                 ArrayList<Bitmap> goodsImages = new ArrayList<>();
-                JSONArray postImageArray = postDoc.getJSONArray("goods_images");
+                JSONArray postImageArray = postDoc.getJSONArray("images");
                 for (int j = 0; j < postImageArray.length(); j++) {
                     byte[] imageByteArray = Base64.decode(postImageArray.getString(j), Base64.DEFAULT);
                     Bitmap bitmap = BitmapFactory.decodeByteArray(imageByteArray, 0, imageByteArray.length);
                     goodsImages.add(bitmap);
                 }
 
-                String goodsName = postDoc.getString("goods_name");
-                int goodsPrice = Integer.parseInt(postDoc.getString("goods_price"));
-                String goodsLocation = postDoc.getString("goods_location");
-                String goodsDetail = postDoc.getString("goods_detail");
+                String goodsName = postDoc.getString("name");
+                int goodsPrice = Integer.parseInt(postDoc.getString("price"));
+                String goodsLocation = postDoc.getString("location");
+                String goodsDetail = postDoc.getString("detail");
 
                 int lickCount = Integer.parseInt(postDoc.getString("like_count"));
 
                 String writer = postDoc.getString("writer");
 
-                post = new Post(goodsImages, goodsName, goodsPrice, goodsLocation, goodsDetail, lickCount, writer);
-                liked = Boolean.parseBoolean(postDoc.getString("liked"));
+                String postID = postDoc.getString("_id");
+
+                post.getGoods_images().addAll(goodsImages);
+                post.setGoods_name(goodsName);
+                post.setGoods_price(goodsPrice);
+                post.setGoods_location(goodsLocation);
+                post.setGoods_detail(goodsDetail);
+                post.setLike_cnt(lickCount);
+                post.setName(writer);
+                post.setPostID(postID);
+
+                bigImageViewPagerAdapter.notifyDataSetChanged();
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -139,13 +157,15 @@ public class BigPostActivity extends AppCompatActivity {
         likeButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                if (!liked){
-                    post.increaseLikeCnt();
-                    textLikeCnt.setText(post.getLike_cnt() + "");
-                    liked = true;
+                /* Notify to the server */
+                String url = "http://192.249.19.242:7380" + "/post/like";
 
-                    /* TODO: Notify to the server */
-                }
+                ContentValues contentValues = new ContentValues();
+                contentValues.put("fb_id", mFbID);
+                contentValues.put("post_id", mPostID);
+
+                NetworkTask networkTask = new NetworkTask(url, contentValues, responseLike);
+                networkTask.execute(null);
             }
         });
 
@@ -156,14 +176,39 @@ public class BigPostActivity extends AppCompatActivity {
                 Intent intent = new Intent(view.getContext(), MainActivity.class);
 
                 intent.putExtra("writer_name", post.getName());
+                setResult(RESULT_OK, intent);
 
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-                startActivity(intent);
+                finish();
             }
         });
     }
+
+    private MyResponse responseLike = new MyResponse() {
+        @Override
+        public void response(byte[] result) {
+            if (result == null) {
+                Log.e(TAG, "Fail to get response");
+                return;
+            }
+
+            String resultString = new String(result);
+            Log.e(TAG, resultString);
+            if (resultString.equals("increase")) {
+                post.increaseLikeCnt();
+            } else if (resultString.equals("decrease")) {
+                post.decreaseLikeCnt();
+            } else {
+                Log.e(TAG, "Fails to change like count on server");
+                return;
+            }
+
+            Log.e(TAG, post.getLike_cnt() + "");
+            textLikeCnt.setText(post.getLike_cnt() + "");
+        }
+    };
 
     public static class NetworkTask extends ThreadTask<Void, byte[]> {
         private String mUrl;

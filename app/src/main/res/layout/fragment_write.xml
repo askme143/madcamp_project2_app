@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<androidx.core.widget.NestedScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+<RelativeLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -42,19 +47,20 @@
         android:background="@color/color_gray"
         />
 
-    <ScrollView
+   <!-- <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="500dp"
+        android:layout_height="700dp"
         android:layout_below="@+id/img_recycler"
         android:layout_alignParentBottom="true"
 
-        android:fillViewport="true">
+        android:fillViewport="true">-->
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
             android:orientation="vertical"
+            android:layout_below="@+id/img_recycler"
             android:paddingTop="0dp">
 
             <EditText
@@ -94,6 +100,8 @@
                 android:hint="세부사항" />
 
         </RelativeLayout>
-    </ScrollView>
+  <!--  </ScrollView> -->
+
 
 </RelativeLayout>
+    </androidx.core.widget.NestedScrollView>

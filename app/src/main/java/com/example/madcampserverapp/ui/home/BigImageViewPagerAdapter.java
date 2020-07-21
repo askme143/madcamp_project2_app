@@ -34,6 +34,7 @@ public class BigImageViewPagerAdapter extends PagerAdapter {
             view=inflater.inflate(R.layout.postimage_viewpager,container,false);
 
             ImageView imageView=view.findViewById(R.id.goods_images);
+
             imageView.setImageBitmap(imageArrayList.get(position));
         }
         container.addView(view) ;

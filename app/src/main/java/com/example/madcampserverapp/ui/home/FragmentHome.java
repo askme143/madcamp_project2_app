@@ -26,6 +26,8 @@ import com.example.madcampserverapp.R;
 import com.example.madcampserverapp.ThreadTask;
 import com.example.madcampserverapp.server.MyResponse;
 import com.example.madcampserverapp.server.RequestHttpURLConnection;
+import com.example.madcampserverapp.ui.contact.Contact;
+import com.example.madcampserverapp.ui.contact.ContactAdapter;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -41,11 +43,43 @@ public class FragmentHome extends Fragment {
     private ArrayList<Bitmap> imageList;
     private EditText editText;
     private ImageButton refreshImageButton;
+    private RecyclerView mRecyclerView;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, null);
+
+        /* Set EditText View */
+        editText = (EditText) view.findViewById(R.id.search_bar);
+
+        mRecyclerView= view.findViewById(R.id.recyclerView);
+        editText.addTextChangedListener(
+                new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence charSequence, int i_, int i1, int i2) { }
+
+                    @Override
+                    public void onTextChanged(CharSequence charSequence, int i_, int i1, int i2) {
+                        ArrayList<Post> postList_retrieve = new ArrayList<>();
+
+                        final String searchContent = editText.getText().toString();
+
+                        for (int i = 0; i < postArrayList.size(); i++) {
+                            if (postArrayList.get(i).getGoods_location().contains(searchContent) ) {
+                                postList_retrieve.add(postArrayList.get(i));
+                            }
+                        }
+                        HomeRecyclerAdapter postAdapter_retrieve = new HomeRecyclerAdapter(getActivity(), postList_retrieve);
+                        mRecyclerView.setAdapter(postAdapter_retrieve);
+                        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
+                        mRecyclerView.setLayoutManager(linearLayoutManager);
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable editable) { }
+                }
+        );
 
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
@@ -54,6 +88,10 @@ public class FragmentHome extends Fragment {
         /* Initialize postArrayList */
         postArrayList = new ArrayList<>();
 
+        /* Set adapter */
+        mAdapter = new HomeRecyclerAdapter(getActivity(), postArrayList);
+        recyclerView.setAdapter(mAdapter);
+
         /* TODO: Request and make postArrayList */
         /* TODO: Make more specific queries ("location or skip or limit, ..") */
         String url = "http://192.249.19.242:7380" + "/post/download/list";
@@ -61,6 +99,7 @@ public class FragmentHome extends Fragment {
         ContentValues contentValues = new ContentValues();
         contentValues.put("fb_id", ((MainActivity) getActivity()).getFacebookID());
 
+        Log.e(TAG, "Hello");
         NetworkTask networkTask = new NetworkTask(url, contentValues, responsePostList);
         networkTask.execute(null);
 
@@ -81,17 +120,13 @@ public class FragmentHome extends Fragment {
 
 
         /* FIXME: Example post and post list. Erase below in future. */
-        imageList = new ArrayList<>();
-        imageList.add(((BitmapDrawable) getResources().getDrawable(R.drawable.blankpic)).getBitmap());
-        imageList.add(((BitmapDrawable) getResources().getDrawable(R.drawable.mail)).getBitmap());
-        imageList.add(((BitmapDrawable) getResources().getDrawable(R.drawable.mail)).getBitmap());
-        imageList.add(((BitmapDrawable) getResources().getDrawable(R.drawable.mail)).getBitmap());
-        Post examplePost = new Post(imageList, "신발", 10000, "대전", "어쩌고저쩌고", 0,"전우정");
-        postArrayList.add(examplePost);
-
-        /* Set adapter */
-        mAdapter = new HomeRecyclerAdapter(getActivity(), postArrayList);
-        recyclerView.setAdapter(mAdapter);
+//        imageList = new ArrayList<>();
+//        imageList.add(((BitmapDrawable) getResources().getDrawable(R.drawable.blankpic)).getBitmap());
+//        imageList.add(((BitmapDrawable) getResources().getDrawable(R.drawable.mail)).getBitmap());
+//        imageList.add(((BitmapDrawable) getResources().getDrawable(R.drawable.mail)).getBitmap());
+//        imageList.add(((BitmapDrawable) getResources().getDrawable(R.drawable.mail)).getBitmap());
+//        Post examplePost = new Post(imageList, "신발", 10000, "대전", "어쩌고저쩌고", 0,"전우정");
+//        postArrayList.add(examplePost);
 
         return view;
     }
@@ -104,6 +139,7 @@ public class FragmentHome extends Fragment {
                 return;
             }
             try {
+                Log.e(TAG, new String(result));
                 JSONObject jsonObject = new JSONObject(new String(result));
                 JSONArray postArray = jsonObject.getJSONArray("posts");
 
@@ -111,23 +147,25 @@ public class FragmentHome extends Fragment {
                     JSONObject postDoc = postArray.getJSONObject(i);
 
                     ArrayList<Bitmap> goodsImages = new ArrayList<>();
-                    JSONArray postImageArray = postDoc.getJSONArray("");
+                    JSONArray postImageArray = postDoc.getJSONArray("images");
                     for (int j = 0; j < postImageArray.length(); j++) {
                         byte[] imageByteArray = Base64.decode(postImageArray.getString(j), Base64.DEFAULT);
                         Bitmap bitmap = BitmapFactory.decodeByteArray(imageByteArray, 0, imageByteArray.length);
                         goodsImages.add(bitmap);
                     }
 
-                    String goodsName = postDoc.getString("");
-                    int goodsPrice = Integer.parseInt(postDoc.getString(""));
-                    String goodsLocation = postDoc.getString("");
-                    String goodsDetail = postDoc.getString("");
+                    String goodsName = postDoc.getString("name");
+                    int goodsPrice = Integer.parseInt(postDoc.getString("price"));
+                    String goodsLocation = postDoc.getString("location");
+                    String goodsDetail = postDoc.getString("detail");
 
-                    int lickCount = Integer.parseInt(postDoc.getString(""));
+                    int lickCount = Integer.parseInt(postDoc.getString("like_count"));
 
-                    String writer = postDoc.getString("");
+                    String writer = postDoc.getString("writer");
 
-                    Post post = new Post(goodsImages, goodsName, goodsPrice, goodsLocation, goodsDetail, lickCount, writer);
+                    String postID = postDoc.getString("_id");
+
+                    Post post = new Post(goodsImages, goodsName, goodsPrice, goodsLocation, goodsDetail, lickCount, writer, postID);
                     postArrayList.add(post);
                 }
 
