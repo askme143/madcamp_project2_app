@@ -96,7 +96,7 @@ public class FragmentWrite extends Fragment {
 
                     tempPost = new Post(goodsImageList, goodsName, goodsPrice, goodsLocation, goodsDetail, 0, name, "");
 
-                    /* TODO: Upload the post / Testing */
+                    /* Upload the post */
                     String url = "http://192.249.19.242:7380" + "/post/upload";
                     String fbID = ((MainActivity) getActivity()).getFacebookID();
 
@@ -110,8 +110,11 @@ public class FragmentWrite extends Fragment {
                     NetworkTask networkTask = new NetworkTask(url, tempPost, fbID, myResponse);
                     networkTask.execute(null);
 
-                    /* Flush all selected images */
+                    /* Flush all selected images and texts */
                     goodsImageList = new ArrayList<>();
+                    editGoodsName.setText(null);
+                    editGoodsPrice.setText(null);
+                    editGoodsDetail.setText(null);
 
                     /* Change to home fragment */
                     ((MainActivity) getActivity()).endWritePost();

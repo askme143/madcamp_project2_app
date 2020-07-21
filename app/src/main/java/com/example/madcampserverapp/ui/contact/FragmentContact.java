@@ -132,6 +132,7 @@ public class FragmentContact extends Fragment {
                 if (resultString.equals("failed")) {
                     Log.e(TAG, "Failed on updateContacts");
                 } else {
+                    Log.e(TAG, resultString);
                     try {
                         /* Make contact list */
                         JSONObject jsonObject = new JSONObject(resultString);

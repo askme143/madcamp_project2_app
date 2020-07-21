@@ -85,5 +85,11 @@ public class Post {
         this.like_cnt = like_cnt;
     }
 
-    public void increaseLikeCnt() {this.like_cnt++;}
+    public String getPostID() { return post_id; }
+
+    public void setPostID(String postID) { this.post_id = postID; }
+
+    public void increaseLikeCnt() { this.like_cnt++; }
+
+    public void decreaseLikeCnt() { this.like_cnt--; }
 }

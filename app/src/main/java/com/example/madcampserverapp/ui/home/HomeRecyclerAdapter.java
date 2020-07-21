@@ -53,14 +53,14 @@ public class HomeRecyclerAdapter extends RecyclerView.Adapter <HomeRecyclerAdapt
             @Override
             public void onClick(View view) {
                 if (position != RecyclerView.NO_POSITION){
-                    /* TODO: Get facebook id and post id. Put them in the intent as extra data */
+                    /* Get facebook id and post id. Put them in the intent as extra data */
                     String fbID = ((MainActivity) context).getFacebookID();
-                    // String postID = post.getPostID;
+                    String postID = post.getPostID();
 
                     Intent intent = new Intent(view.getContext(),BigPostActivity.class);
 
                     intent.putExtra("fb_id", fbID);
-                    // intent.putExtra("post_id", postID);
+                    intent.putExtra("post_id", postID);
 
                     view.getContext().startActivity(intent);
                 }
