@@ -33,8 +33,10 @@ public class FragmentMyinfo2 extends Fragment {
     private static final String TAG = "FragmentMyinfo2";
     private String location;
     private String phonenumber;
+    private String name;
     private TextView tv1;
     private TextView tv2;
+    private TextView tv3;
     private ArrayList<Post> postArrayList;
 
     AccessTokenTracker accessTokenTracker;
@@ -48,16 +50,19 @@ public class FragmentMyinfo2 extends Fragment {
 
         tv1=(TextView) view.findViewById(R.id.location_person);
         tv2=(TextView) view.findViewById(R.id.phonenumber_person);
+        tv3=(TextView) view.findViewById(R.id.name_person);
 
         /* Get location and phonenumber from BeforeActivity */
         Bundle bundle=getArguments();
         if (bundle!=null){
             location=bundle.getString("location");
             phonenumber=bundle.getString("phonenumber");
+            name=bundle.getString("name");
         }
 
         tv1.setText(location);
         tv2.setText(phonenumber);
+        tv3.setText(name);
 
         loginButtonfb2 = (LoginButton) view.findViewById(R.id.login_button2);
 

@@ -19,6 +19,7 @@
             android:layout_height="wrap_content"
             android:text="글쓰기"
             android:textSize="30dp"
+            android:fontFamily="@font/nanumb"
             android:layout_centerInParent="true"
             />
         <Button
@@ -41,53 +42,58 @@
         android:background="@color/color_gray"
         />
 
-    <RelativeLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:layout_below="@+id/img_recycler">
+        android:layout_height="500dp"
+        android:layout_below="@+id/img_recycler"
+        android:layout_alignParentBottom="true"
 
-        <EditText
-            android:layout_width="320dp"
+        android:fillViewport="true">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:id="@+id/ed_goods_name"
-            android:layout_centerHorizontal="true"
-            android:hint="상품이름"
-            />
+            android:layout_marginTop="30dp"
+            android:orientation="vertical"
+            android:paddingTop="0dp">
 
-        <EditText
-            android:layout_width="320dp"
-            android:layout_height="wrap_content"
-            android:id="@+id/ed_goods_price"
-            android:layout_below="@+id/ed_goods_name"
-            android:hint="가격"
-            android:layout_centerInParent="true"
-            />
+            <EditText
+                android:id="@+id/ed_goods_name"
+                android:layout_width="320dp"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_gravity="center"
+                android:hint="상품이름" />
 
-        <EditText
-            android:layout_width="320dp"
-            android:layout_height="wrap_content"
-            android:id="@+id/ed_goods_location"
-            android:layout_below="@+id/ed_goods_price"
-            android:hint="위치(자동저장)"
-            android:enabled="false"
-            android:layout_centerInParent="true"
+            <EditText
+                android:id="@+id/ed_goods_price"
+                android:layout_width="320dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/ed_goods_name"
+                android:layout_centerInParent="true"
+                android:hint="가격" />
 
-            />
+            <EditText
+                android:id="@+id/ed_goods_location"
+                android:layout_width="320dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/ed_goods_price"
+                android:layout_centerInParent="true"
+                android:enabled="false"
+                android:hint="위치(자동저장)"
 
-        <EditText
-            android:layout_width="320dp"
-            android:layout_height="wrap_content"
-            android:id="@+id/ed_goods_detail"
-            android:layout_centerInParent="true"
-            android:layout_below="@+id/ed_goods_location"
-            android:hint="세부사항"
-            android:background="@null"
-            />
+                />
 
-    </RelativeLayout>
+            <EditText
+                android:id="@+id/ed_goods_detail"
+                android:layout_width="320dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/ed_goods_location"
+                android:layout_centerInParent="true"
+                android:background="@null"
+                android:hint="세부사항" />
 
-
+        </RelativeLayout>
+    </ScrollView>
 
 </RelativeLayout>

@@ -1,5 +1,6 @@
 package com.example.madcampserverapp;
 
+import android.app.Fragment;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -13,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.madcampserverapp.server.MyResponse;
 import com.example.madcampserverapp.server.RequestHttpURLConnection;
 import com.example.madcampserverapp.ui.BeforeActivity;
+import com.example.madcampserverapp.ui.userinfo.FragmentMyinfo2;
 import com.facebook.AccessToken;
 import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
@@ -176,6 +178,8 @@ public class LoginActivity extends AppCompatActivity {
                     intent_goActive.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
                     startActivity(intent_goActive);
+
+
                 } else if (resultString.equals("failed")) {
                     /* Start sign up process */
                     signUp(name, fbID);

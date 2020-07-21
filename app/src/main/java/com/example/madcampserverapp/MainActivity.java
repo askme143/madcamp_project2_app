@@ -172,9 +172,10 @@ public class MainActivity extends AppCompatActivity {
         }
 
         /* Send user info to FragmentMyinfo2 */
-        Bundle bundle = new Bundle(2);
+        Bundle bundle = new Bundle(3);
         bundle.putString("location", location);
         bundle.putString("phonenumber", phoneNumber);
+        bundle.putString("name", mName);
         fragmentMyinfo.setArguments(bundle);
 
         /* Send user info to FragmentWrite */

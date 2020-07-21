@@ -38,9 +38,10 @@
             <ImageButton
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:src="@drawable/newpost"
+                android:src="@drawable/refresh"
                 android:layout_weight="1"
                 android:scaleType="fitCenter"
+                android:adjustViewBounds="true"
                 android:id="@+id/download_post"/>
         </LinearLayout>-
 

@@ -54,7 +54,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="20dp"
-        android:text="전우정"
+        android:text=""
         android:layout_gravity=""
         android:id="@+id/name_person"
         android:layout_below="@+id/linear"
@@ -76,7 +76,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="20dp"
-            android:text="서울 서초구"
+            android:text=""
             android:paddingTop="10dp"
             android:id="@+id/location_person"
             />

@@ -31,16 +31,6 @@ public class RegisterActivity extends AppCompatActivity {
                 String userName = reg_name.getText().toString();
                 String userEmail = reg_email.getText().toString();
 
-                //서버에 전달-email, name, passwd
-                //정상적으로 가입 안된 경우
-                    //이미 가입되어있을 때
-                    //email 형식이 맞지 않을 때
-
-                //정상적으로 가입됐을 경우. 서버db랑 비교
-                    //로그인창으로 넘어감.
-                    //+로그인창에 email써있도록
-
-
             }
 
         });

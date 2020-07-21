@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageButton;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -39,6 +40,7 @@ public class FragmentHome extends Fragment {
     private HomeRecyclerAdapter mAdapter;
     private ArrayList<Bitmap> imageList;
     private EditText editText;
+    private ImageButton refreshImageButton;
 
     @Nullable
     @Override
@@ -61,6 +63,22 @@ public class FragmentHome extends Fragment {
 
         NetworkTask networkTask = new NetworkTask(url, contentValues, responsePostList);
         networkTask.execute(null);
+
+        /* Refresh Image Button */
+//        refreshImageButton = (ImageButton) view.findViewById(R.id.download_post);
+//        refreshImageButton.setOnClickListener(new View.OnClickListener(){
+//            @Override
+//            public void onClick(View v) {
+//                String url = "http://192.249.19.242:7380" + "/post/download/list";
+//
+//                ContentValues contentValues = new ContentValues();
+//                contentValues.put("fb_id", ((MainActivity) getActivity()).getFacebookID());
+//
+//                NetworkTask networkTask = new NetworkTask(url, contentValues, responsePostList);
+//                networkTask.execute(null);
+//            }
+//        });
+
 
         /* FIXME: Example post and post list. Erase below in future. */
         imageList = new ArrayList<>();
@@ -85,7 +103,6 @@ public class FragmentHome extends Fragment {
                 Log.e(TAG, "Fail to receive a response");
                 return;
             }
-
             try {
                 JSONObject jsonObject = new JSONObject(new String(result));
                 JSONArray postArray = jsonObject.getJSONArray("posts");
