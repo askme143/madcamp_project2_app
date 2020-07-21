@@ -1,4 +1,4 @@
-# 가지마켓 ![KakaoTalk_20200722_035417472](https://user-images.githubusercontent.com/41982435/88094917-4684d280-cbcf-11ea-9ebf-8f32b09895fd.png)
+# 가지마켓 <img src="https://user-images.githubusercontent.com/41982435/88094917-4684d280-cbcf-11ea-9ebf-8f32b09895fd.png" width="50" height="50">
 ### 멀리 가지 말고 가지마켓에서! 당신 옆의 마켓, 가지마켓.
 # Tab 소개
 ## 0. Login
