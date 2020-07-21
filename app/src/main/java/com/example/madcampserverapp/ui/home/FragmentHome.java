@@ -40,24 +40,6 @@ public class FragmentHome extends Fragment {
     private ArrayList<Bitmap> imageList;
     private EditText editText;
 
-    //editText = (EditText) view.findViewById(R.id.edittext);
-    //        editText.addTextChangedListener(new TextWatcher() {
-    //            @Override
-    //            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-    //
-    //            }
-    //
-    //            @Override
-    //            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-    //                mAdapter.getFilter().filter(charSequence);
-    //            }
-    //
-    //            @Override
-    //            public void afterTextChanged(Editable editable) {
-    //
-    //            }
-    //        });
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -66,8 +48,6 @@ public class FragmentHome extends Fragment {
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(linearLayoutManager);
-
-
 
         /* Initialize postArrayList */
         postArrayList = new ArrayList<>();

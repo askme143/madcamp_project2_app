@@ -29,9 +29,19 @@
                 android:padding="10dp" />
 
             <EditText
-                android:layout_width="match_parent"
+                android:layout_width="300dp"
                 android:layout_height="50dp"
                 android:id="@+id/search_bar"/>
+
+            <ImageButton
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@drawable/newpost"
+                android:id="@+id/new_btn"
+                android:layout_weight="1"
+                android:scaleType="fitCenter"
+                />
+
         </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView

@@ -18,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageButton;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -56,6 +57,7 @@ public class FragmentContact extends Fragment {
     private Bundle bundle2;
     private Bundle bundle1;
     private String mFacebookID;
+    private ImageButton imageButton;
 
     @Nullable
     @Override
@@ -76,6 +78,15 @@ public class FragmentContact extends Fragment {
         mRecyclerView.setAdapter(mAdapter);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(linearLayoutManager);
+
+        /* Get bundle of writer_name from MainActivity */
+        bundle2=null;
+        bundle2=getArguments();
+
+        if(bundle2!=null){
+            writer_name=bundle2.getString("writer_name");
+            editText.setText(writer_name);
+        }
 
         editText.addTextChangedListener(
                 new TextWatcher() {
@@ -105,6 +116,9 @@ public class FragmentContact extends Fragment {
                     public void afterTextChanged(Editable editable) { }
                 }
         );
+
+        /* 새로고침 image button */
+        imageButton = (ImageButton) mView.findViewById(R.id.new_btn);
 
         return mView;
     }
@@ -169,15 +183,6 @@ public class FragmentContact extends Fragment {
 
                         /* Notify data changed */
                         mAdapter.notifyDataSetChanged();
-
-                        /* Get bundle of writer_name from MainActivity */
-                        bundle2=null;
-                        bundle2=getArguments();
-
-                        if(bundle2!=null){
-                            writer_name=bundle2.getString("writer_name");
-                            editText.setText(writer_name);
-                        }
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
