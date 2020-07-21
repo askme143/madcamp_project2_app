@@ -73,7 +73,7 @@ public class FragmentHome extends Fragment {
 
     /* Get All Posts from server */
     public ArrayList<Post> getAllPostList() {
-        String url = "http://192.249.19.244:1780" + "/post/download";
+        String url = "http://192.249.19.242:7380" + "/post/download";
         String fbID = ((MainActivity) getActivity()).getFacebookID();
 
         MyResponse myResponse = new MyResponse() {

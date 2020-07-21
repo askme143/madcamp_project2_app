@@ -47,7 +47,7 @@ public class FullImageActivity extends Activity {
     }
 
     private void requestBitmapArrayList() {
-        String url = "http://192.249.19.244:1780";
+        String url = "http://192.249.19.242:7380";
         String testUrl = url + "/gallery/download";
         ContentValues contentValues = new ContentValues();
         contentValues.put("fb_id", mFacebookID);

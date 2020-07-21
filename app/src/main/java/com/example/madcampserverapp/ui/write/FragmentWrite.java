@@ -97,7 +97,7 @@ public class FragmentWrite extends Fragment {
                     tempPost = new Post(goodsImageList, goodsName, goodsPrice, goodsLocation, goodsDetail, 0, name);
 
                     /* TODO: Upload the post / Testing */
-                    String url = "http://192.249.19.244:1780" + "/post/upload";
+                    String url = "http://192.249.19.242:7380" + "/post/upload";
                     String fbID = ((MainActivity) getActivity()).getFacebookID();
 
                     MyResponse myResponse = new MyResponse() {

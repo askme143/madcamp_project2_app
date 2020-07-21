@@ -73,7 +73,7 @@ public class BigPostActivity extends AppCompatActivity {
 
         /* TODO: Request and a get post object */
         /* TODO: Make more specific queries ("location or skip or limit, ..") */
-        String url = "http://192.249.19.244:1780" + "/post/download/list";
+        String url = "http://192.249.19.242:7380" + "/post/download/list";
 
         ContentValues contentValues = new ContentValues();
         contentValues.put("fb_id", mFbID);
