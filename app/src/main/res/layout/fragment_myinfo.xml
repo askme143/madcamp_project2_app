@@ -4,41 +4,43 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/color_lightpurple">
+    android:background="@drawable/gradient">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
         android:id="@+id/linear">
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="회원 정보"
             android:textSize="30dp"
+            android:fontFamily="@font/nanumb"
             android:gravity="center"
             android:layout_marginTop="30dp"
             />
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="50dp"
+            android:src="@drawable/icon1" />
     </LinearLayout>
-
-   <!-- <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/image_person"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_gravity="left"
-        android:layout_margin="30dp"
-        android:src="@drawable/profile_default" />-->
 
 <LinearLayout
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:layout_marginLeft="50dp"
+    android:layout_marginLeft="60dp"
+    android:layout_marginTop="50dp"
     >
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp">
+        android:layout_marginTop="0dp">
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -66,7 +68,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="20dp"
-        android:text="[이메일]     "
+        android:text="[이메일]      "
         android:paddingTop="10dp"
 
         />
@@ -101,13 +103,13 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="20dp"
-        android:text="[전화번호]  "
-        android:paddingTop="10dp"
-        />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20dp"
+            android:text="[전화번호]   "
+            android:paddingTop="10dp"
+            />
         <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -117,17 +119,10 @@
         android:id="@+id/phonenumber_person"
         />
     </LinearLayout>
+
+
 </LinearLayout>
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        >
-        <!--게시한 게시물 , 관심게시물-->
 
-        <!--게시물 말고 사진 할까-->
-
-
-    </RelativeLayout>
 
 
     <com.facebook.login.widget.LoginButton
@@ -135,7 +130,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="100dp"
         android:layout_marginBottom="30dp"
 
         />

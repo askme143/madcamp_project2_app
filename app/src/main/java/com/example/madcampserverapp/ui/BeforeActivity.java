@@ -105,14 +105,24 @@ public class BeforeActivity extends Activity {
         arrayLocation.add("대전");
 
         ArrayList<String> arraySeoulLocation = new ArrayList<String>();
-        arraySeoulLocation.add("서초구");
-        arraySeoulLocation.add("동작구");
+        arraySeoulLocation.add("강남구");
+        arraySeoulLocation.add("강서구");
+        arraySeoulLocation.add("관악구");
         arraySeoulLocation.add("노원구");
+        arraySeoulLocation.add("동작구");
+        arraySeoulLocation.add("마포구");
+        arraySeoulLocation.add("서대문구");
+        arraySeoulLocation.add("서초구");
+        arraySeoulLocation.add("송파구");
+        arraySeoulLocation.add("용산구");
+        arraySeoulLocation.add("중구");
 
         ArrayList<String > arrayDaejeonLocation = new ArrayList<String>();
+        arrayDaejeonLocation.add("동구");
+        arrayDaejeonLocation.add("중구");
+        arrayDaejeonLocation.add("서구");
         arrayDaejeonLocation.add("유성구");
-        arrayDaejeonLocation.add("ㅇㅇ구");
-        arrayDaejeonLocation.add("ㅁㅁ구");
+        arrayDaejeonLocation.add("대덕구");
 
         arrayChild.put(arrayLocation.get(0),arraySeoulLocation);
         arrayChild.put(arrayLocation.get(1),arrayDaejeonLocation);

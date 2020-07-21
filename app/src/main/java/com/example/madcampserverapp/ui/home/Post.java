@@ -30,40 +30,20 @@ public class Post {
         return goods_name;
     }
 
-    public void setGoods_name(String goods_name) {
-        this.goods_name = goods_name;
-    }
-
     public int getGoods_price() {
         return goods_price;
-    }
-
-    public void setGoods_price(int goods_price) {
-        this.goods_price = goods_price;
     }
 
     public String getGoods_location() {
         return goods_location;
     }
 
-    public void setGoods_location(String goods_location) {
-        this.goods_location = goods_location;
-    }
-
     public ArrayList<Bitmap> getGoods_images() {
         return goods_images;
     }
 
-    public void setGoods_images(ArrayList<Bitmap> goods_images) {
-        this.goods_images = goods_images;
-    }
-
     public String getGoods_detail() {
         return goods_detail;
-    }
-
-    public void setGoods_detail(String goods_detail) {
-        this.goods_detail = goods_detail;
     }
 
     public String getName() {
@@ -78,9 +58,29 @@ public class Post {
         return like_cnt;
     }
 
+    public void setGoods_name(String goods_name) {
+        this.goods_name = goods_name;
+    }
+
+    public void setGoods_price(int goods_price) {
+        this.goods_price = goods_price;
+    }
+
+    public void setGoods_location(String goods_location) {
+        this.goods_location = goods_location;
+    }
+
+    public void setGoods_images(ArrayList<Bitmap> goods_images) {
+        this.goods_images = goods_images;
+    }
+
+    public void setGoods_detail(String goods_detail) {
+        this.goods_detail = goods_detail;
+    }
+
     public void setLike_cnt(int like_cnt) {
         this.like_cnt = like_cnt;
     }
 
-    public void increaseLikeCnt() { this.like_cnt++; }
+    public void increaseLikeCnt() {this.like_cnt++;}
 }

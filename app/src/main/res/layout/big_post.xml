@@ -13,8 +13,8 @@
 
     <ImageButton
         android:id="@+id/big_goods_like"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
         android:background="@drawable/heart"
         android:scaleType="fitCenter"
         android:layout_below="@+id/post_view_pager"
@@ -28,7 +28,7 @@
         android:layout_below="@+id/post_view_pager"
         android:text="0"
         android:textSize="25dp"
-        android:layout_marginTop="-8dp"
+        android:layout_marginTop="-2dp"
         android:layout_marginLeft="5dp"
         android:id="@+id/big_like_cnt"
         />

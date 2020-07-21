@@ -129,7 +129,7 @@ public class ImageSelectAdapter extends BaseAdapter {
             }
         }
 
-        String testUrl = "http://192.249.19.242:7380" + "/gallery/delete";
+        String testUrl = "http://192.249.19.244:1780" + "/gallery/delete";
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("fb_id", mFacebookID);

@@ -6,6 +6,8 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.util.Log;
 
+import com.example.madcampserverapp.ui.home.Post;
+
 import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
@@ -20,6 +22,7 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.ProtocolException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Map;
 
 public class RequestHttpURLConnection {
@@ -144,7 +147,7 @@ public class RequestHttpURLConnection {
             request.writeBytes("Content-Disposition: form-data; name=\"" +
                     "image" + "\";filename=\"" +
                     filename + "\"" + crlf +
-                    "Content-Type: image/png" + crlf);
+                    "Content-Type: image/jpg" + crlf);
             request.writeBytes(crlf);
 
             /* Write image */
@@ -162,9 +165,90 @@ public class RequestHttpURLConnection {
                     "fb_id" + "\"" + crlf);
             request.writeBytes(crlf);
 
-            /* Write empty file */
+            /* Write data (not file) */
             request.writeBytes(fbID);
             request.writeBytes(crlf);
+
+            /* End */
+            request.writeBytes(twoHyphens + boundary +
+                    twoHyphens + crlf);
+            request.flush();
+            request.close();
+
+            return getResponse(urlConnection);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        if (urlConnection != null)
+            urlConnection.disconnect();
+
+        return null;
+    }
+
+    public byte[] uploadPost(String pUrl, Post post, String fbID) {
+        HttpURLConnection urlConnection = null;
+
+        ArrayList<Bitmap> goodsImages = post.getGoods_images();
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("location", post.getGoods_location());
+        contentValues.put("detail", post.getGoods_detail());
+        contentValues.put("price", post.getGoods_price() + "");
+        contentValues.put("name", post.getGoods_name());
+        contentValues.put("like_count", post.getLike_cnt() + "");
+        contentValues.put("writer", post.getName());
+        contentValues.put("fb_id", fbID);
+
+        /* Get data */
+        try {
+            URL url = new URL(pUrl);
+            urlConnection = (HttpURLConnection) url.openConnection();
+            urlConnection.setUseCaches(false);
+            urlConnection.setDoOutput(true);
+
+            /* urlConnection setting */
+            urlConnectionSetting(urlConnection, "multipart/form-data");
+
+            DataOutputStream request = new DataOutputStream(
+                    urlConnection.getOutputStream());
+
+            Log.e("YAYAYA!", "Hey you!");
+            for (int i = 0; i < goodsImages.size(); i++) {
+                System.out.println(i);
+
+                /* Start writing image */
+                request.writeBytes(twoHyphens + boundary + crlf);
+                request.writeBytes("Content-Disposition: form-data; name=\"" +
+                        "images" + "\";filename=\"" +
+                        "filename.jpg" + "\"" + crlf +
+                        "Content-Type: image/jpg" + crlf);
+                request.writeBytes(crlf);
+
+                /* Write image */
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                goodsImages.get(i).compress(Bitmap.CompressFormat.JPEG, 10, stream);
+                byte[] pixels = stream.toByteArray();
+                request.write(pixels);
+                request.writeBytes(crlf);
+            }
+
+            for (Map.Entry<String, Object> parameter : contentValues.valueSet()) {
+                String key = parameter.getKey();
+                String value = parameter.getValue().toString();
+
+                /* Start writing data */
+                request.writeBytes(twoHyphens + boundary + crlf);
+                request.writeBytes("Content-Disposition: form-data; name=\"" +
+                        key + "\"" + crlf);
+                request.writeBytes(crlf);
+
+                /* Write data (not file) */
+                request.write(value.getBytes("UTF-8"));
+                request.writeBytes(crlf);
+
+                System.out.println(key + " : " + value);
+            }
 
             /* End */
             request.writeBytes(twoHyphens + boundary +

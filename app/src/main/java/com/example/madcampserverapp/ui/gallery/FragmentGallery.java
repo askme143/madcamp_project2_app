@@ -137,7 +137,7 @@ public class FragmentGallery extends Fragment {
     }
 
     private void initFragment() {
-        String url = "http://192.249.19.242:7380";
+        String url = "http://192.249.19.244:1780";
         String testUrl = url + "/gallery/download";
         ContentValues contentValues = new ContentValues();
         contentValues.put("fb_id", mFacebookID);
@@ -314,7 +314,7 @@ public class FragmentGallery extends Fragment {
                 mImageArrayList.add(new Image(bitmap, mCellSize));
 
                 /* Upload an image */
-                String testUrl = "http://192.249.19.242:7380" + "/gallery/upload";
+                String testUrl = "http://192.249.19.244:1780" + "/gallery/upload";
                 ContentValues contentValues = new ContentValues();
                 contentValues.put("fb_id", mFacebookID);
                 contentValues.put("file_name", mCurrentPhotoPath);

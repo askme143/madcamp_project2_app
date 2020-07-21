@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
     private FragmentGallery fragmentGallery;
     private FragmentMyinfo2 fragmentMyinfo;
 
-    private String url = "http://192.249.19.242:7380";
+    private String url = "http://192.249.19.244:1780";
     private String mFacebookID;
     private String mName;
     private String phoneNumber;
