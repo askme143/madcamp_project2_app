@@ -113,7 +113,8 @@ public class FragmentWrite extends Fragment {
                     /* Flush all selected images */
                     goodsImageList = new ArrayList<>();
 
-                    /* TODO: Change to home fragment */
+                    /* Change to home fragment */
+                    ((MainActivity) getActivity()).endWritePost();
                 }
             }
         });

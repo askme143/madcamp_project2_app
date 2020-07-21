@@ -1,6 +1,5 @@
 package com.example.madcampserverapp.ui.home;
 
-import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -8,15 +7,11 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager.widget.ViewPager;
 
 import com.example.madcampserverapp.MainActivity;
@@ -24,17 +19,15 @@ import com.example.madcampserverapp.R;
 import com.example.madcampserverapp.ThreadTask;
 import com.example.madcampserverapp.server.MyResponse;
 import com.example.madcampserverapp.server.RequestHttpURLConnection;
-import com.example.madcampserverapp.ui.contact.FragmentContact;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.zip.Inflater;
 
 public class BigPostActivity extends AppCompatActivity {
-    private static final String TAG = "BigPostActivity";
+    private static final String TAG = "BitPostActivity";
 
     private String mFbID;
     private String mPhotoID;

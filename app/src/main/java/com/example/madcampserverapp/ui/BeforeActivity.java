@@ -44,6 +44,9 @@ public class BeforeActivity extends Activity {
         mName = intent.getStringExtra("name");
         mFacebookID = intent.getStringExtra("fbID");
 
+        /* TODO: if the server already has loaction and phone number of the user,
+            go directly to main activity */
+
         eplist=(ExpandableListView) this.findViewById(R.id.expandable_listview);
         setArrayData();
         eplist.setAdapter(new AdptMain(this,arrayLocation,arrayChild));
@@ -51,7 +54,7 @@ public class BeforeActivity extends Activity {
         textView1=(TextView) findViewById(R.id.location_result);
         textView2=(TextView) findViewById(R.id.location_result2);
 
-        /*Group click event*/
+        /* Group click event */
         eplist.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
             @Override
             public boolean onGroupClick(ExpandableListView expandableListView, View view, int i, long l) {
@@ -63,7 +66,7 @@ public class BeforeActivity extends Activity {
             }
         });
 
-        /*Child click event*/
+        /* Child click event */
         eplist.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
             public boolean onChildClick(ExpandableListView expandableListView, View view, int i, int i1, long l) {
@@ -73,22 +76,25 @@ public class BeforeActivity extends Activity {
             }
         });
 
+        /* Button click: Pass user phone number and location */
         button=(Button) findViewById(R.id.before_btn);
         button.setOnClickListener(new Button.OnClickListener(){
-
-            /*intent로 phonenumber, location 넘김*/
             @Override
             public void onClick(View view) {
-                /*phonenumber에 editText값 전달*/
                 editText=(EditText)findViewById(R.id.input_phonenumber);
                 phonenumber=editText.getText().toString();
                 location=location1+" "+location2;
+
                 Intent intent;
                 intent = new Intent(getApplicationContext(), MainActivity.class);
                 intent.putExtra("phonenumber",phonenumber);
                 intent.putExtra("location",location);
                 intent.putExtra("fb_id", mFacebookID);
                 intent.putExtra("name", mName);
+
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
                 startActivity(intent);
             }
         });

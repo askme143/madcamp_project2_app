@@ -106,10 +106,23 @@ public class FragmentGallery extends Fragment {
         /* If writeImageSelection */
         if (((MainActivity) getActivity()).isWriteImageSelection()) {
             mFloatButton.setVisibility(View.GONE);
+
+            /* Change callback button action */
+            final OnBackPressedCallback callback = new OnBackPressedCallback(true) {
+                @Override
+                public void handleOnBackPressed() {
+                    this.remove();
+                    ((MainActivity) mContext).endWriteImageSelection(null);
+                }
+            };
+            requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), callback);
+
+            /* Set item click listener */
             mGridView.setOnItemClickListener(new OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View v,
                                         int position, long id) {
+                    callback.remove();
                     ((MainActivity) mContext).endWriteImageSelection(mImageArrayList.get(position).getOriginalImage());
                 }
             });
@@ -371,7 +384,6 @@ public class FragmentGallery extends Fragment {
 
         private Bitmap mBitmap;
         private ContentValues mValues;
-        private JSONObject mJSONObject;
 
         public NetworkTask(String url, Bitmap bitmap, ContentValues contentValues, MyResponse myResponse) {
             mUrl = url;

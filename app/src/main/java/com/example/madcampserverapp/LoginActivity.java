@@ -166,10 +166,15 @@ public class LoginActivity extends AppCompatActivity {
                 String resultString = new String(result);
 
                 if (resultString.equals("success")) {
-                    /* Goto MainAcivity -> BeforeActivity*/ //전화번호 존재하면 Mainactivity
+                    /* Go to Before Activity */
                     Intent intent_goActive = new Intent(getApplicationContext(), BeforeActivity.class);
+
                     intent_goActive.putExtra("name", name);
                     intent_goActive.putExtra("fbID", fbID );
+
+                    intent_goActive.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    intent_goActive.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
                     startActivity(intent_goActive);
                 } else if (resultString.equals("failed")) {
                     /* Start sign up process */

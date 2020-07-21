@@ -4,23 +4,6 @@
     android:layout_height="match_parent"
     android:id="@+id/fragment_container">
 
-<!--    <ImageView-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="300dp"-->
-<!--        android:id="@+id/big_goods_image"-->
-<!--        android:src="@drawable/blankpic"-->
-<!--        android:layout_margin="20dp"-->
-<!--        />-->
-
-    <!--  <ImageView
-          android:id="@+id/big_goods_like"
-          android:layout_width="20dp"
-          android:layout_height="20dp"
-          android:layout_marginLeft="30dp"
-          android:layout_below="@+id/big_goods_image"
-          android:src="@drawable/heart" />-->
-
-
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/post_view_pager"
         android:layout_width="match_parent"
@@ -60,7 +43,6 @@
         android:id="@+id/big_writer"
         android:paddingRight="30dp"
         />
-<!--        android:layout_below="@+id/big_goods_image"-->
 
     <TextView
         android:layout_width="match_parent"
@@ -72,6 +54,7 @@
         android:textSize="25dp"
         android:id="@+id/big_goods_name"
         />
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -82,6 +65,7 @@
         android:id="@+id/big_goods_price"
         android:layout_margin="10dp"
         />
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -92,6 +76,7 @@
         android:paddingLeft="20dp"
         android:id="@+id/big_goods_location"
         />
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -102,14 +87,6 @@
         android:layout_below="@+id/big_goods_location"
         android:id="@+id/big_goods_detail"
         />
-
-  <!--  <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/heart"
-        android:id="@+id/big_heart"
-        />-->
-
 
 </RelativeLayout>
 
