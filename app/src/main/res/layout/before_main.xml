@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@drawable/gradient">
+    android:background="@color/color_white">
 
 
     <ImageView
@@ -25,12 +25,12 @@
         android:layout_marginTop="30dp"
         />
     <EditText
-        android:layout_width="150dp"
+        android:layout_width="135dp"
         android:layout_height="wrap_content"
         android:id="@+id/input_phonenumber"
         android:layout_gravity="center"
         android:layout_marginTop="5dp"
-        android:hint="@string/_010_0000_0000"
+        android:hint="01012345678"
         android:textSize="20dp"
         android:textColor="@color/colorPrimaryDark"
         android:textColorHint="#888888"
@@ -55,8 +55,8 @@
             android:id="@+id/location_result"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="ㅁㅁ"
-            android:layout_marginLeft="200dp"
+            android:text=""
+            android:layout_marginLeft="170dp"
             android:textColor="@color/colorPrimaryDark"
             android:textSize="15dp" />
 
@@ -66,7 +66,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="8dp"
             android:layout_toRightOf="@+id/location_result"
-            android:text="ㅐㅐ구"
+            android:text=""
             android:textColor="@color/colorPrimaryDark"
             android:textSize="15dp" />
 

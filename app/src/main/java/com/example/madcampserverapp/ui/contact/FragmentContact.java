@@ -64,9 +64,10 @@ public class FragmentContact extends Fragment {
         mFacebookID = ((MainActivity) getActivity()).getFacebookID();
         checkPermission();
 
+
         /*Get bundle of writer_name from MainActivity*/
+        editText = (EditText) mView.findViewById(R.id.search_bar);
         bundle2=null;
-        editText=(EditText) mView.findViewById(R.id.search_bar);
         bundle2=getArguments();
         System.out.println("--------------------"+bundle2);
         if(bundle2!=null){

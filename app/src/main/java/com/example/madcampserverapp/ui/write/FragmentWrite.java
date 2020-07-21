@@ -44,10 +44,12 @@ public class FragmentWrite extends Fragment {
     private String goodsLocation;
     private ArrayList<Bitmap> goodsImageList = new ArrayList<>();
     private String name;
+    private String location;
 
     private EditText editGoodsName;
     private EditText editGoodsPrice;
     private EditText editGoodsDetail;
+    private EditText editGoodsLocation;
     private Button postButton;
 
     private WriteRecyclerAdapter mAdapter;
@@ -67,10 +69,20 @@ public class FragmentWrite extends Fragment {
         mAdapter = new WriteRecyclerAdapter(getActivity(), goodsImageList);
         imgRecyclerView.setAdapter(mAdapter);
 
+        /* Get location from BeforeActivity */
+        Bundle bundle3=getArguments();
+        if (bundle3 != null){
+            location=bundle3.getString("location");
+        }
+
         /* Edit views */
-        editGoodsName= (EditText) view.findViewById(R.id.ed_goods_name);
-        editGoodsPrice= (EditText) view.findViewById(R.id.ed_goods_price);
-        editGoodsDetail= (EditText) view.findViewById(R.id.ed_goods_detail);
+        editGoodsName = (EditText) view.findViewById(R.id.ed_goods_name);
+        editGoodsPrice = (EditText) view.findViewById(R.id.ed_goods_price);
+        editGoodsDetail = (EditText) view.findViewById(R.id.ed_goods_detail);
+        editGoodsLocation = (EditText) view.findViewById(R.id.ed_goods_location);
+
+        /* Set location */
+        editGoodsLocation.setText(location);
 
         /* Post button */
         postButton = (Button) view.findViewById(R.id.write_btn);
@@ -87,11 +99,11 @@ public class FragmentWrite extends Fragment {
                     goodsName = editGoodsName.getText().toString();
                     goodsPrice = parseInt(editGoodsPrice.getText().toString());
                     goodsDetail = editGoodsDetail.getText().toString();
-
-                    goodsLocation = ((MainActivity) getActivity()).getLocation();
-                    if (goodsLocation == null) {
-                        goodsLocation = "";
-                    }
+                    goodsLocation = location;
+//                    goodsLocation = ((MainActivity) getActivity()).getLocation();
+//                    if (goodsLocation == null) {
+//                        goodsLocation = "";
+//                    }
                     name = ((MainActivity) getActivity()).getName();
 
                     tempPost = new Post(goodsImageList, goodsName, goodsPrice, goodsLocation, goodsDetail, 0, name);
