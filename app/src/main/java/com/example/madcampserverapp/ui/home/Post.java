@@ -82,4 +82,6 @@ public class Post {
         this.like_cnt = like_cnt;
     }
 
+    public void increaseLikeCnt() {this.like_cnt++;}
+
 }

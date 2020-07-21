@@ -198,6 +198,7 @@ public class RequestHttpURLConnection {
         contentValues.put("name", post.getGoods_name());
         contentValues.put("like_count", post.getLike_cnt() + "");
         contentValues.put("writer", post.getName());
+        contentValues.put("fb_id", fbID);
 
         /* Get data */
         try {
@@ -212,11 +213,14 @@ public class RequestHttpURLConnection {
             DataOutputStream request = new DataOutputStream(
                     urlConnection.getOutputStream());
 
+            Log.e("YAYAYA!", "Hey you!");
             for (int i = 0; i < goodsImages.size(); i++) {
+                System.out.println(i);
+
                 /* Start writing image */
                 request.writeBytes(twoHyphens + boundary + crlf);
                 request.writeBytes("Content-Disposition: form-data; name=\"" +
-                        "image" + "\";filename=\"" +
+                        "images" + "\";filename=\"" +
                         "filename.jpg" + "\"" + crlf +
                         "Content-Type: image/jpg" + crlf);
                 request.writeBytes(crlf);
@@ -240,8 +244,10 @@ public class RequestHttpURLConnection {
                 request.writeBytes(crlf);
 
                 /* Write data (not file) */
-                request.writeBytes(value);
+                request.write(value.getBytes("UTF-8"));
                 request.writeBytes(crlf);
+
+                System.out.println(key + " : " + value);
             }
 
             /* End */

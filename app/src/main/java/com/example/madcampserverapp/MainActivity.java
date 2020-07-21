@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
     private FragmentGallery fragmentGallery;
     private FragmentMyinfo2 fragmentMyinfo;
 
-    private String url = "http://192.249.19.242:7380";
+    private String url = "http://192.249.19.244:1780";
     private String mFacebookID;
     private String mName;
     private String phoneNumber;
@@ -202,27 +202,4 @@ public class MainActivity extends AppCompatActivity {
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.frame_layout, fragmentWrite).commitAllowingStateLoss();
     }
-
-//    /* Image Gallery Code */
-//    public boolean selectingImage = false;
-//    public String startTimeID;
-//
-//    public boolean isSelection() {
-//        return selectingImage;
-//    }
-//
-//    public void startSelectImage(String id) {
-//        selectingImage = true;
-//        startTimeID = id;
-//        getSupportFragmentManager().beginTransaction()
-//                .replace(R.id.frame_layout, fragmentGallery).commitAllowingStateLoss();
-//    }
-//
-//    public void finishSelectImage(com.example.madcampserverapp.ui.gallery.Image image) {
-//        image.saveExerciseImage(startTimeID);
-//        selectingImage = false;
-//        startTimeID = null;
-//        getSupportFragmentManager().beginTransaction()
-//                .replace(R.id.frame_layout, fragmentWrite).commitAllowingStateLoss();
-//    }
 }

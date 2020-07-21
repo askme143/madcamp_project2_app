@@ -11,7 +11,7 @@
         app:showAsAction="always"
         android:icon="@drawable/write_icon"
         android:enabled="true"
-        android:title="write"/>
+        android:title="Write"/>
     <item android:id="@+id/gallery"
         app:showAsAction="always"
         android:icon="@drawable/gallery_icon"

@@ -1,5 +1,6 @@
 package com.example.madcampserverapp.ui.userinfo;
 
+import android.content.ContentValues;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,6 +14,11 @@ import androidx.fragment.app.Fragment;
 import com.example.madcampserverapp.LoginActivity;
 import com.example.madcampserverapp.MainActivity;
 import com.example.madcampserverapp.R;
+import com.example.madcampserverapp.ThreadTask;
+import com.example.madcampserverapp.server.MyResponse;
+import com.example.madcampserverapp.server.RequestHttpURLConnection;
+import com.example.madcampserverapp.ui.home.Post;
+import com.example.madcampserverapp.ui.write.FragmentWrite;
 import com.facebook.AccessToken;
 import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
@@ -21,12 +27,15 @@ import com.facebook.FacebookException;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 
+import java.util.ArrayList;
+
 public class FragmentMyinfo2 extends Fragment {
     private static final String TAG = "FragmentMyinfo2";
     private String location;
     private String phonenumber;
     private TextView tv1;
     private TextView tv2;
+    private ArrayList<Post> postArrayList;
 
     AccessTokenTracker accessTokenTracker;
     CallbackManager callbackManager = CallbackManager.Factory.create();
@@ -97,7 +106,6 @@ public class FragmentMyinfo2 extends Fragment {
         };
         return view;
     }
-
 
 
 }

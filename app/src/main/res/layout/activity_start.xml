@@ -5,8 +5,8 @@
     android:orientation="vertical"
     android:background="@color/color_white">
     <ImageView
-        android:layout_width="300dp"
-        android:layout_height="500dp"
+        android:layout_width="250dp"
+        android:layout_height="450dp"
         android:src="@drawable/start"
         android:layout_gravity="center"
         android:layout_marginTop="50dp"/>

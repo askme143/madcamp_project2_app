@@ -1,10 +1,12 @@
 package com.example.madcampserverapp.ui.write;
 
+import android.content.ContentValues;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +24,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.madcampserverapp.MainActivity;
 import com.example.madcampserverapp.R;
+import com.example.madcampserverapp.ThreadTask;
+import com.example.madcampserverapp.server.MyResponse;
+import com.example.madcampserverapp.server.RequestHttpURLConnection;
 import com.example.madcampserverapp.ui.gallery.Image;
 import com.example.madcampserverapp.ui.home.FragmentHome;
 import com.example.madcampserverapp.ui.home.HomeRecyclerAdapter;
@@ -72,7 +77,7 @@ public class FragmentWrite extends Fragment {
         postButton.setOnClickListener(new Button.OnClickListener(){
             @Override
             public void onClick(View view) {
-                Post temp_post = null;
+                Post tempPost = null;
 
                 /* If name or price is blank */
                 if ((editGoodsName.getText().toString().length() == 0) || (editGoodsPrice.getText().toString().length()) == 0) {
@@ -89,9 +94,21 @@ public class FragmentWrite extends Fragment {
                     }
                     name = ((MainActivity) getActivity()).getName();
 
-                    temp_post = new Post(goodsImageList, goodsName, goodsPrice, goodsLocation, goodsDetail, 0, name);
+                    tempPost = new Post(goodsImageList, goodsName, goodsPrice, goodsLocation, goodsDetail, 0, name);
 
-                    /* TODO: Upload the post */
+                    /* TODO: Upload the post / Testing */
+                    String url = "http://192.249.19.244:1780" + "/post/upload";
+                    String fbID = ((MainActivity) getActivity()).getFacebookID();
+
+                    MyResponse myResponse = new MyResponse() {
+                        @Override
+                        public void response(byte[] result) {
+                            Log.e("YAYA!", new String(result));
+                        }
+                    };
+
+                    NetworkTask networkTask = new NetworkTask(url, tempPost, fbID, myResponse);
+                    networkTask.execute(null);
 
                     /* Flush all selected images */
                     goodsImageList = new ArrayList<>();
@@ -106,5 +123,39 @@ public class FragmentWrite extends Fragment {
 
     public void addWriteImage(Bitmap bitmap) {
         goodsImageList.add(bitmap);
+    }
+
+    public static class NetworkTask extends ThreadTask<Void, byte[]> {
+
+        private String mUrl;
+        private Post mPost;
+        private String fbID;
+        private MyResponse mMyResponse;
+
+        public NetworkTask(String url, Post post, String fbID, MyResponse myResponse) {
+            mUrl = url;
+            mPost = post;
+            this.fbID = fbID;
+            mMyResponse = myResponse;
+        }
+
+        @Override
+        protected void onPreExecute() {
+        }
+
+        @Override
+        protected byte[] doInBackground(Void arg) {
+            if (mPost != null) {
+                RequestHttpURLConnection requestHttpURLConnection = new RequestHttpURLConnection();
+                return requestHttpURLConnection.uploadPost(mUrl, mPost, fbID);
+            } else {
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(byte[] result) {
+            mMyResponse.response(result);
+        }
     }
 }
