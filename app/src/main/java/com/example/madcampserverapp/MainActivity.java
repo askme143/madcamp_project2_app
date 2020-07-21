@@ -39,6 +39,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
+    private BottomNavigationView bottomNavigationView;
+
     private FragmentHome fragmentHome;
     private FragmentWrite fragmentWrite;
     private FragmentContact fragmentContact;
@@ -70,10 +72,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        checkPermission();
-
         /* bottom navigation view click listener */
-        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation_view);
+        bottomNavigationView = findViewById(R.id.bottom_navigation_view);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView
                 .OnNavigationItemSelectedListener(){
             @Override
@@ -111,6 +111,8 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
+        checkPermission();
     }
 
     public void checkPermission() {
@@ -175,20 +177,23 @@ public class MainActivity extends AppCompatActivity {
         bundle.putString("phonenumber", phoneNumber);
         fragmentMyinfo.setArguments(bundle);
 
-        /* TODO: If caller is BIG_POST_ACTIVITY, then move to CONTACT TAB */
-        /* Get writer name from BigPostActivity */
+        /* View selecting point */
         if (intent.hasExtra("writer_name")) {
-            writer_name = intent.getStringExtra("writer_name");
+            /* If caller is BIG_POST_ACTIVITY, then move to CONTACT TAB */
 
+            /* Send writer naem to contact tab */
             Bundle bundle2 = new Bundle();
+            writer_name = intent.getStringExtra("writer_name");
             bundle2.putString("writer_name", writer_name);
             fragmentContact.setArguments(bundle2);
-            getSupportFragmentManager().beginTransaction().replace(R.id.frame_layout,fragmentContact).commitAllowingStateLoss();
-        }
 
-        /* Default fragment (home tab) */
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.frame_layout, fragmentHome).commitAllowingStateLoss();
+            bottomNavigationView.setSelectedItemId(R.id.contact);
+            getSupportFragmentManager().beginTransaction().replace(R.id.frame_layout,fragmentContact).commitAllowingStateLoss();
+        } else {
+            /* Default fragment (home tab) */
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.frame_layout, fragmentHome).commitAllowingStateLoss();
+        }
     }
 
     public void startWriteImageSelection() {
@@ -198,9 +203,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void endWriteImageSelection(Bitmap bitmap) {
-        fragmentWrite.addWriteImage(bitmap);
+        if (bitmap != null)
+            fragmentWrite.addWriteImage(bitmap);
+
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.frame_layout, fragmentWrite).commitAllowingStateLoss();
+    }
+
+    public void endWritePost() {
+        bottomNavigationView.setSelectedItemId(R.id.home);
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.frame_layout, fragmentHome).commitAllowingStateLoss();
     }
 
 //    /* Image Gallery Code */

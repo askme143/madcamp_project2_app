@@ -1,11 +1,14 @@
 package com.example.madcampserverapp.ui.home;
 
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.util.Base64;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.Animation;
@@ -21,141 +24,184 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.example.madcampserverapp.MainActivity;
 import com.example.madcampserverapp.R;
+import com.example.madcampserverapp.ThreadTask;
+import com.example.madcampserverapp.server.MyResponse;
+import com.example.madcampserverapp.server.RequestHttpURLConnection;
 import com.example.madcampserverapp.ui.contact.FragmentContact;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.zip.Inflater;
 
 public class BigPostActivity extends AppCompatActivity {
-    private ArrayList<Bitmap> imageArraylist;
-    private ArrayList<byte[]> imagebyteArraylist;
-    private String goods_name;
-    private int goods_price;
-    private String goods_location;
-    public int like_cnt;
-    private String writer;
-    private String goods_detail;
-    private byte[] b;
-    private Bitmap bitmap;
-    private boolean click_heart;
-    private int is_click;
-    private ImageView new_images;
+    private static final String TAG = "BitPostActivity";
+
+    private String mFbID;
+    private String mPhotoID;
+
+    private boolean liked;
+    private Post post = null;
 
     private ViewPager viewPager;
     private BigImageViewPagerAdapter bigImageViewPagerAdapter;
 
-    ImageView imageView;
-    TextView textgoodsname, textgoodsprice, textgoodslocation, textlikecnt,textgoodsdetail;
-    TextView textwriter;
-    ImageButton imageButton;
+    TextView textGoodsName, textGoodsPrice, textGoodsLocation, textLikeCnt, textGoodsDetail;
+    TextView textWriter;
+    ImageButton likeButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.big_post);
-        ////inflate item layout
-        //        View v= LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_home_row, parent, false);
-        //        System.out.println("size of imageList in HomeRecyclerAdapter ::: "+imageList.size());
-        //        return new ViewHolder(v);
-        //    }
-      //  new_images=(ImageView) findViewById(R.id.postimage_ViewPager);
-//        LayoutInflater inflater = null;
-//
-//        View layout = inflater.inflate(R.layout.postimage_viewpager, null);
-        View view = (View) getLayoutInflater().
-                inflate(R.layout.postimage_viewpager, null);
 
+        /* Get facebook id and photo id */
+        Intent intent = getIntent();
+        mFbID = intent.getStringExtra("fb_id");
+        mPhotoID = intent.getStringExtra("photo_id");
 
-        Intent intent=getIntent();
-        click_heart=false;
-        is_click=0;
-        bitmap=null;
-        imageArraylist=new ArrayList<>();
+        /* Get views */
+        viewPager = (ViewPager) findViewById(R.id.post_view_pager);
+        textGoodsName = (TextView) findViewById(R.id.big_goods_name);
+        textGoodsPrice = (TextView) findViewById(R.id.big_goods_price);
+        textGoodsLocation = (TextView) findViewById(R.id.big_goods_location);
+        textGoodsDetail = (TextView) findViewById(R.id.big_goods_detail);
 
-        /*Get intent from HomeRecyclerAdapter*/
-        goods_name=intent.getExtras().getString("goods_name");
-        goods_price=intent.getExtras().getInt("goods_price");
-        goods_location=intent.getExtras().getString("goods_location");
-        like_cnt=intent.getExtras().getInt("like_cnt");
-        writer=intent.getExtras().getString("writer");
-        goods_detail=intent.getExtras().getString("goods_detail");
-        imagebyteArraylist= (ArrayList<byte[]>) intent.getSerializableExtra("goods_byteimagelist");
-        System.out.println("size of byteimageList in BigPostActivity at this point-1 ::: "+imagebyteArraylist.size());
+        textLikeCnt = (TextView) findViewById(R.id.big_like_cnt);
 
-        //imagebyteArraylist 얘는 intent로 arratList<byte[]>받아온거.
-        //그래서 iamgeArraylist에 byte[]->bitmap으로 변환해야함
-        for (int j=0;j<imagebyteArraylist.size();j++){
-            b=imagebyteArraylist.get(j);
-            bitmap= BitmapFactory.decodeByteArray(b,0,b.length);
-            imageArraylist.add(bitmap);
+        textWriter = (TextView) findViewById(R.id.big_writer);
+        likeButton = (ImageButton) findViewById(R.id.big_goods_like);
+
+        /* TODO: Request and a get post object */
+        /* TODO: Make more specific queries ("location or skip or limit, ..") */
+        String url = "http://192.249.19.242:7380" + "/post/download/list";
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("fb_id", mFbID);
+        contentValues.put("photo_id", mPhotoID);
+
+        NetworkTask networkTask = new NetworkTask(url, contentValues, responsePost);
+        networkTask.execute(null);
+    }
+
+    private MyResponse responsePost = new MyResponse() {
+        @Override
+        public void response(byte[] result) {
+            if (result == null) {
+                Log.e(TAG, "Fail to get response");
+                return;
+            }
+
+            /* Get post and liked */
+            try {
+                JSONObject postDoc = new JSONObject(new String(result));
+
+                ArrayList<Bitmap> goodsImages = new ArrayList<>();
+                JSONArray postImageArray = postDoc.getJSONArray("goods_images");
+                for (int j = 0; j < postImageArray.length(); j++) {
+                    byte[] imageByteArray = Base64.decode(postImageArray.getString(j), Base64.DEFAULT);
+                    Bitmap bitmap = BitmapFactory.decodeByteArray(imageByteArray, 0, imageByteArray.length);
+                    goodsImages.add(bitmap);
+                }
+
+                String goodsName = postDoc.getString("goods_name");
+                int goodsPrice = Integer.parseInt(postDoc.getString("goods_price"));
+                String goodsLocation = postDoc.getString("goods_location");
+                String goodsDetail = postDoc.getString("goods_detail");
+
+                int lickCount = Integer.parseInt(postDoc.getString("like_count"));
+
+                String writer = postDoc.getString("writer");
+
+                post = new Post(goodsImages, goodsName, goodsPrice, goodsLocation, goodsDetail, lickCount, writer);
+                liked = Boolean.parseBoolean(postDoc.getString("liked"));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            /* Draw and set listener */
+            drawView();
+            setListener();
         }
+    };
 
-        /* Get Views */
-        viewPager=(ViewPager) findViewById(R.id.postimage_ViewPager);
-        imageView=(ImageView) view.findViewById(R.id.goods_images);
-        textgoodsname=(TextView) findViewById(R.id.big_goods_name);
-        textgoodsprice=(TextView) findViewById(R.id.big_goods_price);
-        textgoodslocation=(TextView) findViewById(R.id.big_goods_location);
-        textlikecnt=(TextView) findViewById(R.id.big_like_cnt);
-        textwriter=(TextView) findViewById(R.id.big_writer);
-        textgoodsdetail=(TextView) findViewById(R.id.big_goods_detail);
-        imageButton=(ImageButton) findViewById(R.id.big_goods_like);
+    private void drawView() {
+        /* Set views */
+        textGoodsName.setText(post.getGoods_name());
+        textGoodsPrice.setText(post.getGoods_price() + "");
+        textGoodsLocation.setText(post.getGoods_location());
+        textGoodsDetail.setText(post.getGoods_detail());
 
-        /*Set texts and image*/
-        imageView.setImageBitmap(imageArraylist.get(0));////////////////////////////////
-        System.out.println("--+++++++++++----"+imageView);
-        textgoodsname.setText(goods_name);
-        textgoodsprice.setText(goods_price+"");
-        textgoodslocation.setText(goods_location);
-        textlikecnt.setText(like_cnt+"");
-        textwriter.setText(writer);
-        textgoodsdetail.setText(goods_detail);
+        textLikeCnt.setText(post.getLike_cnt() + "");
+        textWriter.setText(post.getName());
 
-        /* Heart Click event : like_cnt +1 */
-        imageButton.setOnClickListener(new View.OnClickListener(){
+        /* Set viewpager Adapter */
+        bigImageViewPagerAdapter = new BigImageViewPagerAdapter(this, post.getGoods_images());
+        viewPager.setAdapter(bigImageViewPagerAdapter);
+        viewPager.setCurrentItem(0);
+    }
+
+    private void setListener() {
+        /* Like click listener */
+        likeButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                click_heart=true;
-                if (click_heart && is_click==0){
-                    like_cnt++;
-                    textlikecnt.setText(like_cnt+"");
-                    click_heart=false;
-                    is_click++;
+                if (!liked){
+                    post.increaseLikeCnt();
+                    textLikeCnt.setText(post.getLike_cnt() + "");
+                    liked = true;
+
+                    /* TODO: Notify to the server */
                 }
             }
         });
-//        textlikecnt.setOnClickListener(new View.OnClickListener() {
-//            ImageView heart=(ImageView) findViewById(R.id.big_heart);
-//            Animation anima = AnimationUtils.loadAnimation(imageView.getContext(), R.anim.alpha);
-//            @Override
-//            public void onClick(View view) {
-//                click_heart=true;
-//                if (click_heart) {
-//                    like_cnt++;
-//                    click_heart = false;
-//                    heart.startAnimation(anima);
-//                }
-//            }
-//        });
 
-        /* Writer name Click Event : goto Contacts */
-        textwriter.setOnClickListener(new View.OnClickListener(){
-//            FragmentContact fragmentContact=new FragmentContact();
-//             FragmentManager fragmentManager = getSupportFragmentManager();
-//             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        /* Contact click listener: Go to contact tab and search automatically */
+        textWriter.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(view.getContext(), MainActivity.class);
-                intent.putExtra("writer_name", writer);
+
+                intent.putExtra("writer_name", post.getName());
+
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
                 startActivity(intent);
             }
         });
+    }
 
+    public static class NetworkTask extends ThreadTask<Void, byte[]> {
+        private String mUrl;
+        private ContentValues mValues;
+        private MyResponse mMyResponse;
 
-        /* Big image Viewpager Adapter */
-        bigImageViewPagerAdapter=new BigImageViewPagerAdapter(this,imageArraylist);
-        viewPager.setAdapter(bigImageViewPagerAdapter);
-        viewPager.setCurrentItem(0);
-        bigImageViewPagerAdapter.notifyDataSetChanged();
+        public NetworkTask(String url, ContentValues contentValues, MyResponse myResponse) {
+            mUrl = url;
+            mValues = contentValues;
+            mMyResponse = myResponse;
+        }
+
+        @Override
+        protected void onPreExecute() {
+        }
+
+        @Override
+        protected byte[] doInBackground(Void arg) {
+            RequestHttpURLConnection requestHttpURLConnection = new RequestHttpURLConnection();
+
+            if (mValues != null)
+                return requestHttpURLConnection.request(mUrl, mValues);
+            else
+                return null;
+        }
+
+        @Override
+        protected void onPostExecute(byte[] result) {
+            mMyResponse.response(result);
+        }
     }
 }

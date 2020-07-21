@@ -6,10 +6,10 @@ import java.util.ArrayList;
 
 public class Post {
     /*image, goods name, goods location, goods price*/
+    private ArrayList<Bitmap> goods_images;
     private String goods_name;
     private int goods_price;
     private String goods_location;
-    private ArrayList<Bitmap> goods_images;
     private String goods_detail;
 
     private String name;
@@ -82,4 +82,5 @@ public class Post {
         this.like_cnt = like_cnt;
     }
 
+    public void increaseLikeCnt() { this.like_cnt++; }
 }
