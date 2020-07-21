@@ -138,7 +138,7 @@ public class LoginActivity extends AppCompatActivity {
         });
 
         Bundle parameters = new Bundle();
-        parameters.putString("fields", "id,email,name");
+        parameters.putString("fields", "id, email, name");
         request.setParameters(parameters);
         request.executeAsync();
     }

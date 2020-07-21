@@ -18,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageButton;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -55,6 +56,7 @@ public class FragmentContact extends Fragment {
     private Bundle bundle2;
     private Bundle bundle1;
     private String mFacebookID;
+    private ImageButton imageButton;
 
     @Nullable
     @Override
@@ -63,7 +65,6 @@ public class FragmentContact extends Fragment {
 
         mFacebookID = ((MainActivity) getActivity()).getFacebookID();
         checkPermission();
-
 
         /*Get bundle of writer_name from MainActivity*/
         editText = (EditText) mView.findViewById(R.id.search_bar);
@@ -74,6 +75,9 @@ public class FragmentContact extends Fragment {
             writer_name=bundle2.getString("writer_name");
             editText.setText(writer_name);
         }
+
+        /* 새로고침 image button */
+        imageButton = (ImageButton) mView.findViewById(R.id.new_btn);
 
         return mView;
     }
