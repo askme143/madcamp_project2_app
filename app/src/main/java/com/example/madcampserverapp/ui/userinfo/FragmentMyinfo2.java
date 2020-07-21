@@ -49,41 +49,34 @@ public class FragmentMyinfo2 extends Fragment {
         tv1=(TextView) view.findViewById(R.id.location_person);
         tv2=(TextView) view.findViewById(R.id.phonenumber_person);
 
-        //Bundle
+        /* Get location and phonenumber from BeforeActivity */
         Bundle bundle=getArguments();
         if (bundle!=null){
             location=bundle.getString("location");
             phonenumber=bundle.getString("phonenumber");
         }
-        //tv setText
+
         tv1.setText(location);
         tv2.setText(phonenumber);
-
 
         loginButtonfb2 = (LoginButton) view.findViewById(R.id.login_button2);
 
         loginButtonfb2.setReadPermissions("email");
-        // If using in a fragment
+
+        /* If using in a fragment */
         loginButtonfb2.setFragment(this);
 
-        // Callback registration
+        /* Callback registration */
         loginButtonfb2.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
-            public void onSuccess(LoginResult loginResult) {
-                // App code
-            }
+            public void onSuccess(LoginResult loginResult) { }
 
             @Override
-            public void onCancel() {
-                // App code
-            }
+            public void onCancel() { }
 
             @Override
-            public void onError(FacebookException exception) {
-                // App code
-            }
+            public void onError(FacebookException exception) { }
         });
-
 
         /* Build Access Tracker of FB */
         accessTokenTracker = new AccessTokenTracker() {
@@ -100,7 +93,6 @@ public class FragmentMyinfo2 extends Fragment {
                 }
                 /* Start tracking */
                 accessTokenTracker.startTracking();
-
             }
 
         };

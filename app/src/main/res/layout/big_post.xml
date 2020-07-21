@@ -31,6 +31,7 @@
         android:layout_marginTop="-2dp"
         android:layout_marginLeft="5dp"
         android:id="@+id/big_like_cnt"
+        android:fontFamily="@font/binggrae"
         />
 
     <TextView

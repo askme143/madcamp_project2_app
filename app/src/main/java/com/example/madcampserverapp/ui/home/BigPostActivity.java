@@ -80,6 +80,7 @@ public class BigPostActivity extends AppCompatActivity {
         contentValues.put("fb_id", mFbID);
         contentValues.put("post_id", mPostID);
 
+        Log.e(TAG, "Request!!");
         NetworkTask networkTask = new NetworkTask(url, contentValues, responsePost);
         networkTask.execute(null);
     }

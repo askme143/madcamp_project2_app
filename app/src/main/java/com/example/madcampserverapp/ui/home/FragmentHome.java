@@ -5,11 +5,14 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -35,6 +38,25 @@ public class FragmentHome extends Fragment {
     private ArrayList<Post> postArrayList;
     private HomeRecyclerAdapter mAdapter;
     private ArrayList<Bitmap> imageList;
+    private EditText editText;
+
+    //editText = (EditText) view.findViewById(R.id.edittext);
+    //        editText.addTextChangedListener(new TextWatcher() {
+    //            @Override
+    //            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+    //
+    //            }
+    //
+    //            @Override
+    //            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+    //                mAdapter.getFilter().filter(charSequence);
+    //            }
+    //
+    //            @Override
+    //            public void afterTextChanged(Editable editable) {
+    //
+    //            }
+    //        });
 
     @Nullable
     @Override
@@ -44,6 +66,8 @@ public class FragmentHome extends Fragment {
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(linearLayoutManager);
+
+
 
         /* Initialize postArrayList */
         postArrayList = new ArrayList<>();

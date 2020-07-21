@@ -177,11 +177,16 @@ public class MainActivity extends AppCompatActivity {
         bundle.putString("phonenumber", phoneNumber);
         fragmentMyinfo.setArguments(bundle);
 
+        /* Send user info to FragmentWrite */
+        Bundle bundle3 = new Bundle(1);
+        bundle3.putString("location",location);
+        fragmentWrite.setArguments(bundle3);
+
         /* View selecting point */
         if (intent.hasExtra("writer_name")) {
             /* If caller is BIG_POST_ACTIVITY, then move to CONTACT TAB */
 
-            /* Send writer naem to contact tab */
+            /* Send writer name to contact tab */
             Bundle bundle2 = new Bundle();
             writer_name = intent.getStringExtra("writer_name");
             bundle2.putString("writer_name", writer_name);
@@ -215,27 +220,4 @@ public class MainActivity extends AppCompatActivity {
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.frame_layout, fragmentHome).commitAllowingStateLoss();
     }
-
-//    /* Image Gallery Code */
-//    public boolean selectingImage = false;
-//    public String startTimeID;
-//
-//    public boolean isSelection() {
-//        return selectingImage;
-//    }
-//
-//    public void startSelectImage(String id) {
-//        selectingImage = true;
-//        startTimeID = id;
-//        getSupportFragmentManager().beginTransaction()
-//                .replace(R.id.frame_layout, fragmentGallery).commitAllowingStateLoss();
-//    }
-//
-//    public void finishSelectImage(com.example.madcampserverapp.ui.gallery.Image image) {
-//        image.saveExerciseImage(startTimeID);
-//        selectingImage = false;
-//        startTimeID = null;
-//        getSupportFragmentManager().beginTransaction()
-//                .replace(R.id.frame_layout, fragmentWrite).commitAllowingStateLoss();
-//    }
 }

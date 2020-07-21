@@ -10,12 +10,11 @@
     card_view:cardCornerRadius="5dp"
     >
 
-
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="160dp"
         android:padding="5dp"
-        android:background="@color/color_lightgray"
+        android:background="@color/color_lightpurple"
         android:layout_margin="10dp"
         >
 
@@ -88,6 +87,7 @@
             android:id="@+id/home_goods_like_cnt"
             android:text="0"
             android:textSize="20dp"
+            android:fontFamily="@font/binggrae"
             />
 
         <ImageView
@@ -99,7 +99,6 @@
             android:layout_marginBottom="8dp"
             android:layout_toLeftOf="@+id/home_goods_like_cnt"
             android:src="@drawable/heart" />
-
 
     </RelativeLayout>
 </androidx.cardview.widget.CardView>

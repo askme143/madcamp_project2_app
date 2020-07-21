@@ -15,7 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="5dp"
-        android:background="@color/color_lightgray">
+        android:background="@color/color_lightpurple">
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:layout_width="50dp"
@@ -48,7 +48,7 @@
             android:layout_below="@id/name"
             android:layout_marginTop="10dp"
             android:visibility="visible"
-            android:background="@color/colorPrimary"
+            android:background="@color/colorMiddlePurple"
             >
 
             <androidx.appcompat.widget.LinearLayoutCompat
@@ -76,7 +76,7 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="10dp"
                     android:adjustViewBounds="true"
-                    android:background="@color/colorPrimary"
+                    android:background="@color/colorMiddlePurple"
                     android:contentDescription="Call"
                     android:padding="7dp"
                     android:scaleType="fitCenter"
@@ -90,7 +90,7 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="0dp"
                     android:layout_marginRight="0dp"
-                    android:background="@color/colorPrimary"
+                    android:background="@color/colorMiddlePurple"
                     android:contentDescription="Message"
                     android:padding="7dp"
                     android:scaleType="fitCenter"
