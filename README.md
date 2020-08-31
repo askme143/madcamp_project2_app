@@ -1,5 +1,5 @@
 # 가지마켓 <img src="https://user-images.githubusercontent.com/41982435/88094917-4684d280-cbcf-11ea-9ebf-8f32b09895fd.png" width="50" height="50">
-### 멀리 가지 말고 가지마켓에서! 당신 옆의 마켓, 가지마켓.
+### 멀리 가지 말고 가지마켓에서!
 # Tab 소개
 ## 0. Login
 Facebook SDK를 이용한 로그인 탭입니다. Facebook에서는 고유ID(실제 아이디 아닙니다!), 이름 정보를 획득합니다.
